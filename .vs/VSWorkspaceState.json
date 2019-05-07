@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\router",
+    "\\src\\views",
+    "\\src\\views\\dashboard",
+    "\\src\\views\\dashboard\\admin"
+  ],
+  "SelectedNode": "\\src\\views\\dashboard\\admin\\index.vue",
+  "PreviewInSolutionExplorer": false
+}
