@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 // 单位列表
-export function deptList11111() {
+export function deptList() {
   return request({
     url: '/Department/AllList',
     method: 'get'
