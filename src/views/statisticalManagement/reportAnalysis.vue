@@ -25,7 +25,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item :label="$t('statisticalTable.month')">
-              <el-date-picker v-model="listQuery.periodName" type="date" format="yyyy-MM" :placeholder="$t('statisticalTable.selectMonth')"/>
+              <el-date-picker v-model="listQuery.periodName" type="month" :placeholder="$t('statisticalTable.selectMonth')"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -315,7 +315,7 @@ export default {
     },
     getList() {
       this.listLoading = true;
-      this.listQuery.periodName = this.getMonthByTimeStr(this.listQuery.periodName);
+      // this.listQuery.periodName = this.getMonthByTimeStr(this.listQuery.periodName);
       reportList(this.listQuery).then(response => {
         var data = response.data.datas;
         if(data) {
@@ -449,18 +449,18 @@ export default {
       var str = yy + "-" + MM;
       return str;
     },
-     //通过时间获取年月
-    getMonthByTimeStr(timeStr){
-      var objD = new Date(timeStr);
-      var yy = objD.getYear();
-      if (yy < 1900)
-        yy = yy + 1900;
-      var MM = objD.getMonth() + 1;
-      if (MM < 10)
-        MM = '0' + MM;
-      var str = yy + "-" + MM;
-      return str;
-    },
+    //  //通过时间获取年月
+    // getMonthByTimeStr(timeStr){
+    //   var objD = new Date(timeStr);
+    //   var yy = objD.getYear();
+    //   if (yy < 1900)
+    //     yy = yy + 1900;
+    //   var MM = objD.getMonth() + 1;
+    //   if (MM < 10)
+    //     MM = '0' + MM;
+    //   var str = yy + "-" + MM;
+    //   return str;
+    // },
     // handleDownload() {
     //   this.downloadLoading = true
     //   import('@/vendor/Export2Excel').then(excel => {

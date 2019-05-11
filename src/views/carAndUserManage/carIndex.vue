@@ -119,15 +119,15 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('userAndCarTable.vechileType')" >
-              <el-select v-model="addParam.vechileType" class="filter-item" placeholder="请选择">
-                <el-option v-for="item in carTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
+              <el-select v-model="addParam.vechileType" class="filter-item" placeholder="请选择"  style="width: 205px;">
+                <el-option v-for="item in carTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('userAndCarTable.approvedSeating')" prop="dept">
+            <el-form-item :label="$t('userAndCarTable.approvedSeating')">
               <el-input v-model="addParam.approvedSeating" style="width: 205px;"/>
             </el-form-item>
           </el-col>
@@ -181,8 +181,8 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('userAndCarTable.vehicleProperties')" prop="type">
-              <el-select v-model="addParam.vehicleProperties" class="filter-item" placeholder="请选择">
-                <el-option v-for="item in carPropertyOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
+              <el-select v-model="addParam.vehicleProperties" class="filter-item" placeholder="请选择" style="width: 205px;">
+                <el-option v-for="item in carPropertyOptions" :key="item.key" :label="item.display_name" :value="item.key" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -195,8 +195,8 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('userAndCarTable.oilType')" >
-              <el-select v-model="addParam.oilType" class="filter-item" placeholder="请选择">
-                <el-option v-for="item in oilTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
+              <el-select v-model="addParam.oilType" class="filter-item" placeholder="请选择" style="width: 205px;">
+                <el-option v-for="item in oilTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -204,8 +204,8 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('userAndCarTable.departmentName')" >
-              <el-select v-model="addParam.departmentId" class="filter-item" placeholder="请选择">
-                <el-option v-for="item in deptOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
+              <el-select v-model="addParam.departmentId" class="filter-item" placeholder="请选择"  style="width: 205px;">
+                <el-option v-for="item in deptOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
               </el-select>
             </el-form-item>
           </el-col>

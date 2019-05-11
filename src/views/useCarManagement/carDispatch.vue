@@ -151,8 +151,8 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('applyTable.userDept')" prop="dept">
-              <el-select v-model="addParam.departmentId" class="filter-item" placeholder="请选择" :disabled="true">
-                <el-option v-for="item in deptOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
+              <el-select v-model="addParam.departmentId" class="filter-item" placeholder="请选择" :disabled="true"  style="width: 205px;">
+                <el-option v-for="item in deptOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
               </el-select>
             </el-form-item>
           </el-col>
@@ -165,15 +165,15 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('applyTable.carType')" prop="carType">
-              <el-select v-model="addParam.carType" class="filter-item" placeholder="请选择" :disabled="true">
-                <el-option v-for="item in carTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
+              <el-select v-model="addParam.carType" class="filter-item" placeholder="请选择" :disabled="true" style="width: 205px;">
+                <el-option v-for="item in carTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('applyTable.useArea')" prop="useArea">
-              <el-select v-model="addParam.useArea" class="filter-item" placeholder="请选择" :disabled="true">
-                <el-option v-for="item in useAreaOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
+              <el-select v-model="addParam.useArea" class="filter-item" placeholder="请选择" :disabled="true" style="width: 205px;">
+                <el-option v-for="item in useAreaOptions" :key="item.key" :label="item.display_name" :value="item.key" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -205,8 +205,8 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('applyTable.carProperty')" >
-              <el-select v-model="addParam.carProperty"  placeholder="请选择" :disabled="true">
-                <el-option v-for="item in carPropertyOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
+              <el-select v-model="addParam.carProperty"  placeholder="请选择" :disabled="true"  style="width: 205px;">
+                <el-option v-for="item in carPropertyOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
               </el-select>
             </el-form-item>
           </el-col>
@@ -236,8 +236,8 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('applyTable.departmentName')" prop="dept">
-              <el-select v-model="applyDepartmentId" class="filter-item" placeholder="请选择" :disabled="true">
-                <el-option v-for="item in deptOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
+              <el-select v-model="applyDepartmentId" class="filter-item" placeholder="请选择" :disabled="true"  style="width: 205px;">
+                <el-option v-for="item in deptOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
               </el-select>
             </el-form-item>
           </el-col>
@@ -253,6 +253,7 @@
                 suffix-icon="el-icon-search"
                 placeholder="请输入内容"
                 @select="handleSelectCar"
+                style="width: 205px;"
               ></el-autocomplete>
             </el-form-item>
           </el-col>
@@ -266,6 +267,7 @@
                 suffix-icon="el-icon-search"
                 placeholder="请输入内容"
                 @select="handleSelectDriver"
+                style="width: 205px;"
               ></el-autocomplete>
             </el-form-item>
           </el-col>
@@ -378,7 +380,7 @@
         deptOptions:[],
         applyStatusOptions:[{key:'',display_name:'全部'},{key:'0',display_name:'未审核'},{key:'1',display_name:'通过'},{key:'2',display_name:'驳回'},{key:'3',display_name:'已派车'}],
         useAreaOptions:[{key:'县区内',display_name:'县区内'},{key:'市内',display_name:'市内'},{key:'市外',display_name:'市外'},{key:'省外',display_name:'省外'}],
-        carPropertyOptions:[{key:0,display_name:'公务用车组'},{key:1,display_name:'应急执法组'}],
+        carPropertyOptions:[{key:0,display_name:'公务用车组'},{key:1,display_name:'执法用车组'}],
         carTypeOptions:[{key:'轿车',display_name:'轿车'},{key:'商务车',display_name:'商务车'},{key:'小型客车',display_name:'小型客车'},{key:'客车',display_name:'客车'}],
         statusOptions: ['published', 'deleted'],
         showReviewer: false,
@@ -516,12 +518,12 @@
           var carData=[];
           for(var i=0;i<result.length;i++){
               if(this.addParam.carProperty==0 || this.addParam.carProperty=='0'){
-                 if(result[i].desc.indexOf(queryString) !=-1 && result[i].desc.indexOf("公务用车") !=-1){
-                    carData.push({value:result[i].desc,id:result[i].id,plateNumber:result[i].plateNumber});
+                 if(result[i].desc.indexOf(queryString) !=-1 && result[i].vehicleProperties==0){
+                    carData.push({value:result[i].plateNumber,id:result[i].id,plateNumber:result[i].plateNumber});
                  }
               }else{
-                if(result[i].desc.indexOf(queryString) !=-1 && result[i].desc.indexOf("应急执法") !=-1){
-                    carData.push({value:result[i].desc,id:result[i].id,plateNumber:result[i].plateNumber});
+                if(result[i].desc.indexOf(queryString) !=-1 && result[i].vehicleProperties==0){
+                    carData.push({value:result[i].plateNumber,id:result[i].id,plateNumber:result[i].plateNumber});
                  }
               }
           }
@@ -530,7 +532,7 @@
       },
       handleSelectCar(item){
         this.dispatchModel.vehicleId=item.id;
-        this.dispatchModel.plateNumber=item.value;
+        this.dispatchModel.plateNumber=item.plateNumber;
       },
       //选择司机
       querySearchDriver(queryString, cb){

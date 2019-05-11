@@ -67,18 +67,18 @@ export const constantRouterMap = [
     component: Layout,
     redirect: 'dashboard',
     children: [
-      // {
-      //   path: 'dashboard',
-      //   component: () => import('@/views/dashboard/index'),
-      //   name: 'Dashboard',
-      //   meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
-      // },
-       {
-         path: 'dashboard',
-         component: () => import('@/views/useCarManagement/quickDispatch'),
-         name: 'Dashboard',
-         meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
-       },  
+      {
+        path: 'dashboard',
+        component: () => import('@/views/dashboard/index'),
+        name: 'Dashboard',
+        meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
+      },
+      //  {
+      //    path: 'dashboard',
+      //    component: () => import('@/views/useCarManagement/quickDispatch'),
+      //    name: 'Dashboard',
+      //    meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
+      //  },  
 
     ]
   },
@@ -99,17 +99,29 @@ export const constantRouterMap = [
       //   meta: { title: 'quickDispatch' }
       // },
       {
-        path: 'carApply',
-        component: () => import('@/views/useCarManagement/carApply'),
-        name: 'carApply',
-        meta: { title: 'carApply' }
+        path: 'quickDispatchForBusiness',
+        component: () => import('@/views/useCarManagement/quickDispatchForBusiness'),
+        name: 'quickDispatch',
+        meta: { title: 'quickDispatchForBusiness' }
       },
       {
-        path: 'carApproval',
-        component: () => import('@/views/useCarManagement/carApproval'),
-        name: 'carApproval',
-        meta: { title: 'carApproval' }
+        path: 'quickDispatchForEmergency',
+        component: () => import('@/views/useCarManagement/quickDispatchForEmergency'),
+        name: 'quickDispatchForEmergency',
+        meta: { title: 'quickDispatchForEmergency' }
       },
+      // {
+      //   path: 'carApply',
+      //   component: () => import('@/views/useCarManagement/carApply'),
+      //   name: 'carApply',
+      //   meta: { title: 'carApply' }
+      // },
+      // {
+      //   path: 'carApproval',
+      //   component: () => import('@/views/useCarManagement/carApproval'),
+      //   name: 'carApproval',
+      //   meta: { title: 'carApproval' }
+      // },
       {
         path: 'carDispatch',
         component: () => import('@/views/useCarManagement/carDispatch'),
@@ -290,6 +302,30 @@ export const constantRouterMap = [
         name: 'userIndex',
         meta: { title: 'userIndex' }
       }
+    ]
+  },
+  {
+    path: '/formworkManagement',//模板管理
+    component: Layout,
+    redirect: '/formworkManagement/index',
+    meta: {
+      title: 'formworkManagement',
+      icon: 'formworkManagement',
+      noCache: true
+    },
+    children: [
+      {
+        path: 'tableFormwork',
+        component: () => import('@/views/formworkManagement/tableFormwork'),
+        name: 'tableFormwork',
+        meta: { title: 'tableFormwork' }
+      },
+      {
+        path: 'excelFormwork',
+        component: () => import('@/views/formworkManagement/excelFormwork'),
+        name: 'excelFormwork',
+        meta: { title: 'excelFormwork' }
+      },
     ]
   }
 

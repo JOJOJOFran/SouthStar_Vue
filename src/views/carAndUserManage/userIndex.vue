@@ -120,15 +120,15 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('userAndCarTable.roleName')">
-              <el-select v-model="addParam.roleId" class="filter-item" placeholder="请选择">
-                <el-option v-for="item in roleOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
+              <el-select v-model="addParam.roleId" class="filter-item" placeholder="请选择"  style="width: 205px;">
+                <el-option v-for="item in roleOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('userAndCarTable.departmentName')">
-              <el-select v-model="addParam.departmentId" class="filter-item" placeholder="请选择">
-                <el-option v-for="item in deptOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
+              <el-select v-model="addParam.departmentId" class="filter-item" placeholder="请选择"  style="width: 205px;">
+                <el-option v-for="item in deptOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
               </el-select>
             </el-form-item>
           </el-col>

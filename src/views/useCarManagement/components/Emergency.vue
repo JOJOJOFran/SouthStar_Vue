@@ -3,397 +3,22 @@
     <el-form ref="postForm" :model="postForm" :rules="rules" class="form-container">
 
       <sticky :class-name="'sub-navbar '+postForm.status">
-        <CommentDropdown v-model="postForm.comment_disabled" />
+        <CommentForEmergency v-model="postForm.comment_disabled" />
         <!--<PlatformDropdown v-model="postForm.platforms" />-->
         <!--<SourceUrlDropdown v-model="postForm.source_uri" />-->
-        <el-button v-loading="loading" style="margin-left: 10px;" type="success"  @click="submitForm">{{buttonText[btnStatus]}}
-        </el-button>
+        <el-button v-loading="loading" style="margin-left: 10px;" type="primary"  @click="saveMould">保存模板</el-button>
+        <el-button v-loading="loading" style="margin-left: 10px;" type="danger"  @click="clear">清空</el-button>
+        <el-button v-loading="loading" style="margin-left: 10px;" type="success"  @click="submitForm">{{buttonText[btnStatus]}}</el-button>
         <el-button v-loading="loading" type="warning" @click="printForm">打印</el-button>
       </sticky>
-
-      <!-- 公务用车填写 -->
-      <div class="createPost-main-container" v-show="!postForm.comment_disabled && !showPrintDetail">
-        <el-form ref="dataForm"  label-position="left" label-width="80px" style="margin-left:20px;">
-          <div ref="print" style="width:100%;height:100%;" id="printContent">
-            <div class="postInfo-container">
-              <table width="100%" height="100%" border="1" cellspacing="0">
-            <tr>
-              <td colspan="7"><h1 style="text-align:center;font-weight:bold;font-family:'STKaiti';">武汉市江夏新城通汽车服务有限公司</h1></td>
-            </tr>
-            <tr>
-              <td colspan="7"><h2 style="text-align:center;font-family:'STKaiti';">公务用车派车单</h2></td>
-            </tr>
-            <tr>
-              <!--<td style="text-align:center;border-right: none">编号:</td>-->
-              <!--<td style="text-align:center;font-weight:bold;font-family:'STKaiti';border-left: none;border-right: none">-->
-                <!--<el-col :span="24">-->
-                  <!--<el-input v-model="addParam.applyReason"  style="width: 205px;"/>-->
-                <!--</el-col>-->
-              <!--</td>-->
-              <td colspan="3" style="border-right: none"></td>
-              <td style="border-left: none;border-right: none"></td>
-              <td style="border-left: none;border-right: none"></td>
-              <td style="text-align:center;border-left: none;border-right: none">日期:</td>
-              <td style="border-left: none;border-right: none">
-                <el-row style="height: 40px;text-align:center;">
-                  <el-col :span="24">
-                      <!--<el-date-picker v-model="localDate" type="date" format="yyyy-MM-dd" placeholder="选择日期" style="width:205px;"/>-->
-                     <el-input v-model="localDate"  style="width: 205px;" :readonly="true"/>
-                  </el-col>
-                </el-row>
-              </td>
-            </tr>
-            <tr>
-              <td rowspan="3" style="text-align:center;">用车单位申请信息</td>
-              <td style="text-align:center;">用车单位</td>
-              <td id="userDepartment" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                  <el-col :span="24">
-                      <el-autocomplete
-                        class="inline-input"
-                        v-model="addParam.departmentName"
-                        :fetch-suggestions="querySearchDept"
-                        suffix-icon="el-icon-search"
-                        placeholder="请输入内容"
-                        @select="handleSelectDept"
-                        style="width: 205px;"
-                      ></el-autocomplete>
-                  </el-col>
-              </td>
-              <td style="text-align:center;">用车事由</td>
-              <td style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                <el-col :span="24">
-                    <el-input v-model="addParam.applyReson"  style="width: 205px;"/>
-                </el-col>
-              </td>
-              <td style="text-align:center;">出发地点</td>
-              <td id="startPoint" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                <el-col :span="24">
-                  <el-input v-model="addParam.startPoint"  style="width: 205px;"/>
-                </el-col>
-              </td>
-            </tr>
-            <tr>
-              <td style="text-align:center;">用车人</td>
-              <td id="userName" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                <el-col :span="24">
-                  <el-input v-model="addParam.userName"  style="width: 205px;"/>
-                </el-col>
-              </td>
-              <td style="text-align:center;">联系电话</td>
-              <td id="userMobile" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                <el-col :span="24">
-                  <el-input v-model="addParam.userMobile"  style="width: 205px;"/>
-                </el-col>
-              </td>
-              <td style="text-align:center;">目的地</td>
-              <td id="destination" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                <el-col :span="24">
-                  <el-input v-model="addParam.destination"  style="width: 205px;"/>
-                </el-col>
-              </td>
-            </tr>
-            <tr>
-              <td style="text-align:center;">计划用车时间</td>
-              <td id="startPlanTime" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                  <el-col :span="24">
-                      <el-date-picker v-model="addParam.startPlanTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="计划用车时间" style="width: 205px;"/>
-                  </el-col>
-              </td>
-              <td style="text-align:center;">搭车人数</td>
-              <td id="userCount" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                <el-col :span="24">
-                  <el-input v-model="addParam.userCount"  style="width: 205px;"/>
-                </el-col>
-              </td>
-              <td style="text-align:center;">用车性质</td>
-              <td id="userProperty" style="text-align:center;">
-                公务用车
-                <!--<el-col :span="24">-->
-                  <!--<el-input v-model="addParam.carProperty"  readonly="true"  style="width: 205px;"/>-->
-                <!--</el-col>-->
-              </td>
-            </tr>
-            <tr>
-              <td rowspan="2" style="text-align:center;">公用平台出车信息</td>
-              <td style="text-align:center;">派用车种类</td>
-              <td id="carType" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                <el-col :span="24">
-                  <el-select v-model="addParam.carType" class="filter-item" placeholder="选择派车种类" style="width:205px;">
-                    <el-option v-for="item in carTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
-                  </el-select>
-                </el-col>
-              </td>
-              <td style="text-align:center;">调度车辆</td>
-              <td id="plateNumber" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                <el-col :span="24">
-                  <el-autocomplete
-                    class="inline-input"
-                    v-model="addParam.plateNumber"
-                    :fetch-suggestions="querySearchVehicle"
-                    suffix-icon="el-icon-search"
-                    placeholder="请输入内容"
-                    @select="handleSelectVehicle"
-                    style="width: 205px;"
-                  ></el-autocomplete>
-                </el-col>
-              </td>
-              <td style="text-align:center;">调度驾驶员</td>
-              <td id="driverName" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                <el-col :span="24">
-                  <el-autocomplete
-                    class="inline-input"
-                    v-model="addParam.driverName"
-                    :fetch-suggestions="querySearchDriver"
-                    suffix-icon="el-icon-search"
-                    placeholder="请输入内容"
-                    @select="handleSelectDriver"
-                    style="width: 205px;"
-                  ></el-autocomplete>
-                </el-col>
-              </td>
-            </tr>
-            <tr>
-              <td style="text-align:center;">出车时间</td>
-              <td  style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                <el-col :span="24">
-                  <el-date-picker v-model="addParam.departureTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="出车时间" style="width:205px;"/>
-                </el-col>
-              </td>
-              <td style="text-align:center;">归队时间</td>
-              <td  style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                <!-- <el-col :span="24">
-                  <el-date-picker v-model="addParam.backPlanTime" type="date" format="yyyy-MM-dd" placeholder="选择出车时间" style="width:205px;"/>
-                </el-col> -->
-              </td>
-              <td style="text-align:center;">用车时长</td>
-              <td style="text-align:center;">
-                <!-- <el-col :span="24">
-                  <el-input v-model="addParam.remark"  style="width: 205px;"/>
-                </el-col> -->
-              </td>
-            </tr>
-            <tr>
-              <td style="text-align:center;" rowspan="3">驾驶人员填写</td>
-              <td style="text-align:center;">出车前里程数(公里)</td>
-              <td></td>
-              <td style="text-align:center;">收车后里程数(公里)</td>
-              <td></td>
-              <td style="text-align:center;">本次行车里程(公里)</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td style="text-align:center;">高速(元)</td>
-              <td></td>
-              <td style="text-align:center;">停车费(元)</td>
-              <td></td>
-              <td style="text-align:center;" rowspan="2">驾驶员签字</td>
-              <td rowspan="2"></td>
-            </tr>
-            <tr>
-              <td style="text-align:center;">是否清洗</td>
-              <td>
-                <el-col :span="24" style="margin-left: 20px;">
-                  <el-checkbox-group v-model="addParam.achievement">
-                    <el-checkbox label="是" name="type"></el-checkbox>
-                    <el-checkbox label="否" name="type"></el-checkbox>
-                  </el-checkbox-group>
-                </el-col>
-              </td>
-              <td  style="text-align:center;">入库时间</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td style="text-align:center;" colspan="2"><span>对此次出行的评价</span></td>
-              <td style="text-align:center;" colspan="5">
-                <el-col :span="10">
-                  <el-checkbox-group v-model="addParam.achievement">
-                    <el-checkbox label="准时到达" name="type"></el-checkbox>
-                    <el-checkbox label="满意" name="type"></el-checkbox>
-                    <el-checkbox label="一般" name="type"></el-checkbox>
-                    <el-checkbox label="不满意" name="type"></el-checkbox>
-                  </el-checkbox-group>
-                </el-col>
-                <span style="margin-left:30px;">用车人签字：</span>
-                <span style="margin-left:100px;">电话：</span>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="7">
-                <span style="margin-left:120px;">收车人签字：</span>
-                <span style="margin-left:250px;">收车时间：</span>
-                <span style="margin-left:250px;">平台电话：027-87985966</span>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="7"><span style="margin-left:20px;">备注：本派车单由申请用车部门确认签字后，交给驾驶员作为出车凭证</span></td>
-            </tr>
-          </table>
-            </div>
-        </div>
-        </el-form>
-      </div>
-      <!-- 公务用车打印 -->
-      <div class="createPost-main-container" v-show="!postForm.comment_disabled && showPrintDetail">
-        <el-form ref="dataForm"  label-position="left" label-width="80px" style="margin-left:20px;">
-          <div ref="printBusiness" style="width:100%;height:100%;" id="printContent">
-            <div class="postInfo-container">
-              <table width="100%" height="100%" border="1" cellspacing="0">
-            <tr>
-              <td colspan="7"><h1 style="text-align:center;font-weight:bold;font-family:'STKaiti';">武汉市江夏新城通汽车服务有限公司</h1></td>
-            </tr>
-            <tr>
-              <td colspan="7"><h2 style="text-align:center;font-family:'STKaiti';">公务用车派车单</h2></td>
-            </tr>
-            <tr>
-              <td style="text-align:center;border-right: none">编号:</td>
-              <td style="text-align:center;font-weight:bold;font-family:'STKaiti';border-left: none;border-right: none">
-                {{addParam.applyNum}}
-              </td>
-              <td style="border-right: none;border-left: none"></td>
-              <td style="border-left: none;border-right: none"></td>
-              <td style="border-left: none;border-right: none"></td>
-              <td style="text-align:center;border-left: none;border-right: none">日期:</td>
-              <td style="border-left: none;font-family:'STKaiti';text-align:center;">
-                {{localDate}}
-              </td>
-            </tr>
-            <tr>
-              <td rowspan="3" style="text-align:center;">用车单位申请信息</td>
-              <td style="text-align:center;">用车单位</td>
-              <td id="userDepartment" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                  {{addParam.departmentName}}
-              </td>
-              <td style="text-align:center;">用车事由</td>
-              <td style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                {{addParam.applyReson}}
-              </td>
-              <td style="text-align:center;">出发地点</td>
-              <td id="startPoint" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                {{addParam.startPoint}}
-              </td>
-            </tr>
-            <tr>
-              <td style="text-align:center;">用车人</td>
-              <td id="userName" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-               {{addParam.userName}}
-              </td>
-              <td style="text-align:center;">联系电话</td>
-              <td id="userMobile" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                {{addParam.userMobile}}
-              </td>
-              <td style="text-align:center;">目的地</td>
-              <td id="destination" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                {{addParam.destination}}
-              </td>
-            </tr>
-            <tr>
-              <td style="text-align:center;">计划用车时间</td>
-              <td id="startPlanTime" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                  {{addParam.startPlanTime}}
-              </td>
-              <td style="text-align:center;">搭车人数</td>
-              <td id="userCount" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                {{addParam.userCount}}
-              </td>
-              <td style="text-align:center;">用车性质</td>
-              <td id="userProperty" style="text-align:center;font-weight:bold;font-family:'STKaiti'">
-                公务用车
-                <!--<el-col :span="24">-->
-                  <!--<el-input v-model="addParam.carProperty"  readonly="true"  style="width: 205px;"/>-->
-                <!--</el-col>-->
-              </td>
-            </tr>
-            <tr>
-              <td rowspan="2" style="text-align:center;">公用平台出车信息</td>
-              <td style="text-align:center;">派用车种类</td>
-              <td id="carType" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                {{addParam.carType}}
-              </td>
-              <td style="text-align:center;">调度车辆</td>
-              <td id="plateNumber" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                {{addParam.plateNumber}}
-              </td>
-              <td style="text-align:center;">调度驾驶员</td>
-              <td id="driverName" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                {{addParam.driverName}}
-              </td>
-            </tr>
-            <tr>
-              <td style="text-align:center;">出车时间</td>
-              <td  style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                {{addParam.departureTime}}
-              </td>
-              <td style="text-align:center;">归队时间</td>
-              <td  style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                {{addParam.backPlanTime}}
-              </td>
-              <td style="text-align:center;">用车时长</td>
-              <td style="text-align:center;">
-                {{addParam.remark}}
-              </td>
-            </tr>
-            <tr>
-              <td style="text-align:center;" rowspan="3">驾驶人员填写</td>
-              <td style="text-align:center;">出车前里程数(公里)</td>
-              <td></td>
-              <td style="text-align:center;">收车后里程数(公里)</td>
-              <td></td>
-              <td style="text-align:center;">本次行车里程(公里)</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td style="text-align:center;">高速(元)</td>
-              <td></td>
-              <td style="text-align:center;">停车费(元)</td>
-              <td></td>
-              <td style="text-align:center;" rowspan="2">驾驶员签字</td>
-              <td rowspan="2"></td>
-            </tr>
-            <tr>
-              <td style="text-align:center;">是否清洗</td>
-              <td>
-                <el-col :span="24" style="margin-left: 20px;">
-                  <el-checkbox-group v-model="addParam.achievement">
-                    <el-checkbox label="是" name="type"></el-checkbox>
-                    <el-checkbox label="否" name="type"></el-checkbox>
-                  </el-checkbox-group>
-                </el-col>
-              </td>
-              <td  style="text-align:center;">入库时间</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td style="text-align:center;" colspan="2"><span>对此次出行的评价</span></td>
-              <td style="text-align:center;" colspan="5">
-                <el-col :span="10">
-                  <el-checkbox-group v-model="addParam.achievement">
-                    <el-checkbox label="准时到达" name="type"></el-checkbox>
-                    <el-checkbox label="满意" name="type"></el-checkbox>
-                    <el-checkbox label="一般" name="type"></el-checkbox>
-                    <el-checkbox label="不满意" name="type"></el-checkbox>
-                  </el-checkbox-group>
-                </el-col>
-                <span style="margin-left:30px;">用车人签字：</span>
-                <span style="margin-left:100px;">电话：</span>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="7">
-                <span style="margin-left:120px;">收车人签字：</span>
-                <span style="margin-left:250px;">收车时间：</span>
-                <span style="margin-left:250px;">平台电话：027-87985966</span>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="7"><span style="margin-left:20px;">备注：本派车单由申请用车部门确认签字后，交给驾驶员作为出车凭证</span></td>
-            </tr>
-          </table>
-            </div>
-        </div>
-        </el-form>
+      <div style="margin-top: 10px">
+        <span style="margin-left:20px;font-family:'STKaiti';font-weight:bold;font-size:20px;">填表模板：</span>
+        <el-radio-group v-model="checkTemplate" @change="templateChange">
+          <el-radio :label="item" :key="item" v-for="item in templateList" border>{{item}}</el-radio>
+        </el-radio-group>
       </div>
       <!-- 应急执法填写 -->
-      <div class="createPost-main-container" v-show="postForm.comment_disabled && !showPrintDetail">
+      <div class="createPost-main-container" v-show="!postForm.comment_disabled && !showPrintDetail">
         <el-form ref="dataForm" label-position="left" label-width="80px" style="margin-left:20px;">
           <div ref="print" style="width:100%;height:100%;">
             <div class="postInfo-container">
@@ -415,12 +40,8 @@
                   <td style="border-left: none;border-right: none"></td>
                   <td style="border-left: none;border-right: none"></td>
                   <td style="text-align:center;border-left: none;border-right: none">日期:</td>
-                  <td style="border-left: none;border-right: none">
-                    <el-row style="height: 40px;">
-                      <el-col :span="24">
-                        <el-input v-model="localDate"  style="width: 205px;" :readonly="true"/>
-                      </el-col>
-                    </el-row>
+                  <td style="border-left: none;border-right: none;font-family:'STKaiti';text-align:center;font-weight:bold;">
+                    {{localDate}}
                   </td>
                 </tr>
                 <tr>
@@ -607,7 +228,7 @@
         </el-form>
       </div>
       <!-- 应急执法打印 -->
-      <div class="createPost-main-container" v-show="postForm.comment_disabled && showPrintDetail">
+      <div class="createPost-main-container" v-show="!postForm.comment_disabled && showPrintDetail">
         <el-form ref="dataForm" label-position="left" label-width="80px" style="margin-left:20px;">
           <div ref="printEmergency" style="width:100%;height:100%;">
             <div class="postInfo-container">
@@ -731,11 +352,11 @@
                   <td style="text-align:center;" colspan="2"><span>对此次出行的评价</span></td>
                   <td style="text-align:center;" colspan="5">
                     <el-col :span="10">
-                      <el-checkbox-group v-model="addParam.achievement">
+                      <el-checkbox-group v-model="addParam.achievement" style="width:400px">
                         <el-checkbox label="准时到达" name="type"></el-checkbox>
-                        <el-checkbox label="满意" name="type" style="margin-left:-10px;"></el-checkbox>
-                        <el-checkbox label="一般" name="type" style="margin-left:-10px;"></el-checkbox>
-                        <el-checkbox label="不满意" name="type" style="margin-left:-10px;"></el-checkbox>
+                        <el-checkbox label="满意" name="type"></el-checkbox>
+                        <el-checkbox label="一般" name="type"></el-checkbox>
+                        <el-checkbox label="不满意" name="type"></el-checkbox>
                       </el-checkbox-group>
                     </el-col>
                     <span style="margin-left:30px;">用车人签字：</span>
@@ -772,9 +393,9 @@ import { validateURL } from '@/utils/validate'
 import { fetchArticle } from '@/api/article'
 import { userSearch } from '@/api/remoteSearch'
 import { setNewToken,getNewToken,removeNewToken} from '@/utils/auth'
-import { deptList,driverEnableList,vehicleEnableList,quickDispatch,getQuickDispatchCache,setQuickDispatchCache} from '@/api/applyCar'
+import { deptList,driverEnableList,vehicleEnableList,quickDispatch,getQuickDispatchCache,setQuickDispatchCache,setTemplate,getTemplate,getTemplateKeys} from '@/api/applyCar'
 import Warning from './Warning'
-import { CommentDropdown, PlatformDropdown, SourceUrlDropdown } from './Dropdown'
+import { CommentForEmergency, PlatformDropdown, SourceUrlDropdown } from './Dropdown'
 
 import Vue from 'vue'
 import Print from '@/print'
@@ -795,8 +416,8 @@ const defaultForm = {
 }
 
 export default {
-  name: 'ArticleDetail',
-  components: { Tinymce, MDinput, Upload, Sticky, Warning, CommentDropdown, PlatformDropdown, SourceUrlDropdown },
+  name: 'Emergency',
+  components: { Tinymce, MDinput, Upload, Sticky, Warning, CommentForEmergency, PlatformDropdown, SourceUrlDropdown },
   props: {
     isEdit: {
       type: Boolean,
@@ -904,9 +525,11 @@ export default {
       showPrintDetail:false,
       buttonText:{
         submit:'提交',
-        create:'填写'
+        // create:'填写'
       },
       btnStatus:'submit',
+      checkTemplate:'',
+      templateList:[],
     }
   },
   computed: {
@@ -952,9 +575,30 @@ export default {
     else {
       this.clear();
     }
-
+    this.getTemplateList();
   },
   methods: {
+    //获取所有模板
+    getTemplateList(){
+      var type=1;//执法用车
+      getTemplateKeys(type).then(response => {
+        var result = response.data.datas;
+        this.templateList=[];
+        for(var i=0;i<result.length;i++){
+          this.templateList.push(result[i]);
+        }
+      });
+    },
+    //模板选中事件
+    templateChange(item){
+       var type=1;//执法用车
+      getTemplate(type,item).then(response => {
+        var result = response.data.datas;
+        if(result){
+          this.addParam = result;
+        }
+      });
+    },
     querySearchDept(queryString, cb){
       deptList().then(response => {
         var result = response.data.datas;
@@ -1054,6 +698,35 @@ export default {
         }
       });
     },
+    //保存模板
+    saveMould(){
+      var key=this.addParam.departmentName+'-'+this.addParam.userName;
+      //清空不需要存入模板的内容
+      // this.addParam.startPlanTime='';
+      // this.addParam.backPlanTime='';
+      // this.addParam.remark='';
+      // this.addParam.driverId='';
+      // this.addParam.driverName='';
+      // this.addParam.driverPhone='';
+      // this.addParam.vehicleId='';
+      // this.addParam.plateNumber='';
+      // this.addParam.departureTime='';
+      var type=1;//执法用车
+      setTemplate(type,key,this.addParam).then(response => {
+        if(response.data.code==0){
+          this.$message({
+            message: '保存模板成功',
+            type: 'success'
+          });
+          this.getTemplateList();
+        }else{
+          this.$message({
+            message: '保存模板失败',
+            type: 'error'
+          })
+        }
+      });
+    },
     //通过key获取页面数据缓存
     getFormData(key){
       debugger;
@@ -1072,6 +745,8 @@ export default {
         });
     },
     clear(){
+      this.checkTemplate='';
+      this.showPrintDetail=false;
       this.addParam = {
           applyNum:'',
           applicantId: getNewToken("ApplicationId"),
@@ -1099,12 +774,12 @@ export default {
   },
     submitForm() {
       debugger
-      if(this.btnStatus =='create'){
-        this.showPrintDetail=false;
-        this.btnStatus='submit';
-        this.clear();
-        return;
-      }
+      // if(this.btnStatus =='create'){
+      //   this.showPrintDetail=false;
+      //   this.btnStatus='submit';
+      //   this.clear();
+      //   return;
+      // }
       if(this.postForm.comment_disabled){
         this.addParam.carProperty='1';
       }else{
@@ -1116,9 +791,10 @@ export default {
             message: '提交成功',
             type: 'success'
           });
+          this.checkTemplate='';
           this.addParam.applyNum=response.data.datas.applyNum;
           this.showPrintDetail=true;
-          this.btnStatus='create';
+          // this.btnStatus='create';
           if(this.postForm.comment_disabled){
             removeNewToken("CookieKey_Emergency");
           }else{
@@ -1139,9 +815,9 @@ export default {
           type: 'error'
         })
       }else if(!this.postForm.comment_disabled){
-        this.$print(this.$refs.printBusiness);
-      }else if(this.postForm.comment_disabled){
         this.$print(this.$refs.printEmergency);
+      }else if(this.postForm.comment_disabled){
+        this.$print(this.$refs.printBusiness);
       }
     },
     getRemoteUserList(query) {
@@ -1186,7 +862,7 @@ export default {
 .createPost-container {
   position: relative;
   .createPost-main-container {
-    padding: 40px 45px 20px 50px;
+    padding: 20px 45px 20px 50px;
     .postInfo-container {
       position: relative;
       @include clearfix;

@@ -5,7 +5,7 @@
         <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
 
         <bm-marker v-for="(marker,index) of markList" :key="index" @click="infoWindowOpen(index)" :position="{lng: markList[index].lng, lat: markList[index].lat}" :icon="{url:markList[index].icon, size: {width: 40, height: 50}}">
-            <bm-label :content="markList[index].plateNumber" :position="{lng: markList[index].lng, lat: markList[index].lat}" :offset="labelOffset" :labelStyle="{color: 'blue', fontSize : '12px'}"/>
+            <bm-label :content="markList[index].plateNumber" :position="{lng: markList[index].lng, lat: markList[index].lat}" :offset="labelOffset" :labelStyle="{background:'#FFFF00', fontSize : '12px'}"/>
         </bm-marker>
 
         <!-- <div v-for="(marker,index) of markList" :key="index">
@@ -31,7 +31,7 @@
         </bm-info-window>
         <bm-polygon :path="polygonPath" stroke-color="red" :stroke-opacity="1" :fillOpacity="0" :fillColor="''" :stroke-weight="3" :editing="false" :strokeStyle="'solid'"/>
     </baidu-map>
-    <div style="z-index: 10;position: absolute;top:0px;left:0px;bottom: 0px;width: 300px;background-color: white;">
+    <div style="z-index: 10;position: absolute;top:0px;left:0px;bottom: 0px;width: 250px;background-color: white;">
       <el-input placeholder="输入关键字检索" v-model="filterText"></el-input>
       <el-tree
         style="margin-top: 20px;"
@@ -49,12 +49,76 @@
             </span>
       </el-tree>
     </div>
-    <div style="z-index:10;position:absolute;right:10px;bottom: 10px;width:150px;height:70px;background-color: white;">
+    <div style="z-index:10;position:absolute;right:10px;bottom: 210px;width:150px;height:70px;background-color: white;">
          <el-checkbox-group   v-model="checkFenceOne" class="checkGroup" style="width:150px;height:70px;">
               <el-checkbox  v-for="(item,index1) in fenceList" :label="item.fence_name"  :key="item.district"  
                            style="margin-left:15px;margin-top:10px"
                            @change="checked=>handleCheckedFenceChange(checked,item)">{{item.fence_name}}</el-checkbox>
          </el-checkbox-group>
+    </div>
+    <div style="z-index:10;position:absolute;left:250px;bottom:0px;right:-15px;height:200px;background-color: white;font-size:12px">
+      <div style="width:100%;height:40px;border-top:3px solid #409EFF">
+        <div class="title">实时数据</div>
+        <div class="sign" style="background-color:#EB7201">10</div>
+        <div class="label">全部</div>
+        <div class="sign" style="background-color:#409EFF">{{onlineCount}}</div>
+        <div class="label">在线</div>
+        <div class="sign" style="background-color:#616161">{{outlineCount}}</div>
+        <div class="label">离线</div>
+        <div class="sign" style="background-color:#EA1313">0</div>
+        <div class="label">报警</div>
+        <div class="sign" style="background-color:#1FB223">{{onlinePercent.toFixed(2)}}%</div>
+        <div class="label">在线率</div>
+      </div>
+      <el-table
+        :data="markList"
+        stripe
+        fit
+        highlight-current-row
+        height="160"
+        :header-cell-style="{'background-color':'#409EFF','height':'30px','color':'white','font-size':'12px'}"
+        style="width: 100%;">
+        <el-table-column :label="'车牌号'" align="center" width="120">
+          <template slot-scope="scope">
+            <span style="color:#409EFF">{{ scope.row.plateNumber }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="'发动机号'" width="auto" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.deviceNumber }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="'车辆性质'" width="auto" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.entityType }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="'经度'" width="auto" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.lng}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="'纬度'" width="auto" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.lat }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="'速度'" width="auto" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.speed }}km/h</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="'定位时间'" width="160" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.time }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="'状态'" width="auto" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.status }}</span>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
     <!--轨迹查询弹窗-->
     <el-dialog :title="$t('userAndCarTable.queryTrajectory')" :visible.sync="dialogFormVisible" id="" width="90%">
@@ -97,14 +161,6 @@
             <bm-map-type :map-types="['BMAP_NORMAL_MAP', 'BMAP_HYBRID_MAP']" anchor="BMAP_ANCHOR_TOP_LEFT"></bm-map-type>
             <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
             <bm-polyline :path="trackPoints" stroke-color="blue" :stroke-opacity="1" :stroke-weight="5" :editing="false" :strokeStyle="'solid'" ></bm-polyline>
-            <!--<bm-driving start="黄鹤楼" end="当代梦工场" @searchcomplete="handleSearchComplete" :panel="false" :autoViewport="true"></bm-driving>-->
-            <!--<bml-lushu-->
-              <!--@stop="reset"-->
-              <!--:path="trackPoints"-->
-              <!--:icon="icon"-->
-              <!--:play="play"-->
-              <!--:rotation="true">-->
-            <!--</bml-lushu>-->
             <bm-marker v-show="showStartAndEnd" :position="{lng:startMarker.lng,lat:startMarker.lat}" :dragging="true" :icon="{url:startMarker.icon, size: {width: 32, height: 32}}" animation="BMAP_ANIMATION_BOUNCE"></bm-marker>
             <bm-marker v-show="showStartAndEnd" :position="{lng:endMarker.lng,lat:endMarker.lat}" :dragging="true" :icon="{url:endMarker.icon, size: {width: 32, height: 32}}" animation="BMAP_ANIMATION_BOUNCE"></bm-marker>
           </baidu-map>
@@ -253,12 +309,6 @@ import GithubCorner from '@/components/GithubCorner'
 import jsonp from 'jsonp'
 import Vue from 'vue'
 import BaiduMap from 'vue-baidu-map'
-// import BaiduMap from './baidu_components/map/Map'
-//  import BmlMarker from './baidu_components/overlays/Marker'
-//  import InfoWindow from './baidu_components/overlays/InfoWindow'
-//  import Label from './baidu_components/overlays/Label'
-//  import Polygon from './baidu_components/overlays/Polygon'
-
 import {BmlMarkerClusterer} from 'vue-baidu-map'
 import {BmlLushu} from 'vue-baidu-map'
 
@@ -371,7 +421,7 @@ export default {
       m:0,
       exportData:[],
       zoom:15,
-      center:{lng: 114.32, lat: 30.38},
+      center:{lng: 114.35, lat: 30.35},
       labelOffset:new BMap.Size(40, 10),
       dialogStatus: '',
       dialogPvVisible: false,
@@ -409,6 +459,9 @@ export default {
       startMarker:{lng:0,lat:0,icon:start},//轨迹起点
       endMarker:{lng:0,lat:0,icon:end},//轨迹终点
       showStartAndEnd:false,
+      onlineCount:0,
+      outlineCount:0,
+      onlinePercent:0,
     };
   },
   mounted() {
@@ -618,10 +671,6 @@ export default {
         }
       })
     },
-    // GetUnixTime(timeStr) {
-    //   var time = new Date(timeStr);
-    //   return (time.getTime() / 1000);
-    // },
     //轨迹数据导出
     exportTrajectory(){
       this.downloadLoading = true;
@@ -775,15 +824,23 @@ export default {
               ]
             }];
             this.carOptions=[];
+            this.onlineCount=0;
+            this.outlineCount=0;
             for(var i=0;i<result.length;i++){
               var obj = {
                 key: result[i].entity_name,
                 display_name: result[i].entity_desc
               }
               this.carOptions.push(obj);
-              var onlineStatus = 0; //在线状态 1在线 0离线
+              var onlineStatus = 0; //在线状态 0在线 1离线
               var lastTime = this.GetUnixTime(result[i].modify_time);
               onlineStatus = this.getOnlineStatus(lastTime);
+             
+              if(onlineStatus==0){
+                this.onlineCount++;
+              }else{
+                this.outlineCount++;
+              }
               //判断是否静止
               var speed=result[i].latest_location.speed?result[i].latest_location.speed:0;
               var isMove = this.getSpeed(speed);
@@ -809,6 +866,8 @@ export default {
                 treeData[0].children[1].children.push({id:2+'_'+i,icon:icon,desc:result[i].entity_desc,lat:result[i].latest_location.latitude,lng:result[i].latest_location.longitude,label:result[i].entity_desc+" ( "+statusName+" )"});
               }
             }
+            this.onlinePercent=(this.onlineCount/result.length)*100;
+
             var count0=treeData[0].children[0].children.length;
             var count1=treeData[0].children[1].children.length;
             treeData[0].label+='('+result.length+'辆)';
@@ -827,7 +886,7 @@ export default {
     },
     loadEntities(data) {
       var that=this;
-      that.markList=[]; 
+      that.markList=[];
 
       for (var x = 0; x < data.length; x++) {
         var lastTime = this.GetUnixTime(data[x].modify_time);
@@ -850,6 +909,7 @@ export default {
           location:'',
           deviceNumber:data[x].deviceNumber,
           vinCode:data[x].vinCode,
+          status:onlineStatus==0?'在线':'离线'
         };
         that.markList.push(obj);
       }
@@ -965,7 +1025,7 @@ export default {
     getSpeed(speed) {
       var speedDesc
       if (speed >= 150) {
-        speedDesc = ' - - ';
+        speedDesc = ' -- ';
       } else if (speed >= 1 && speed < 150) {
         speedDesc = speed.toFixed(1) + 'km/h';
       } else {
@@ -1069,18 +1129,10 @@ export default {
     display: inline-block;
     /*padding-right: 10px;*/
   }
-
-  .body-panel{
-    position: absolute;
-    top:0px;
-    left:0px;
-    right: 0px;
-    bottom: 0px;
-  }
   .bm-view {
     position: absolute;
     top:0px;
-    left:300px;
+    left:250px;
     right: 0px;
     bottom: 0px;
     z-index: 0
@@ -1089,4 +1141,18 @@ export default {
    width: 100%;
     height: 100%;
   }
+  .el-table .cell{
+    line-height: 14px !important;
+    font-size: 12px !important;
+  }
+  .title{
+    height:20px;line-height:20px;color:#409EFF;margin-top:10px;margin-left:20px;float:left;font-size: 14px;font-weight: bold;
+  }
+  .sign{
+    height:20px;line-height:20px;width:40px;margin-top:10px;margin-left:30px;float:left;border-radius: 5px 5px 5px 5px;color:white;text-align: center
+  }
+  .label{
+    height:20px;line-height:20px;margin-top:10px;margin-left:5px;float:left
+  }
+
 </style>

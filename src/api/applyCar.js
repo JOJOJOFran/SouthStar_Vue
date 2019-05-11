@@ -218,5 +218,42 @@ export function deleteOrder(dispatchId) {
   })
 }
 
+//保存模板
+export function setTemplate(type,key,data) {
+  return request({
+    url: '/Dispatch/SetTemplate?type='+type+'&key='+key,
+    method: 'Post',
+    data
+  })
+}
+
+//获取模板
+export function getTemplate(type,key) {
+  return request({
+    url: '/Dispatch/GetTemplate?type='+type+'&key='+key,
+    method: 'Get',
+  })
+}
+
+//获取所有模板
+export function getTemplateKeys(type) {
+  return request({
+    url: '/Dispatch/GetTemplateKeys?type='+type,
+    method: 'Get',
+  })
+}
+
+
+//批量删除模板
+export function delTemplate(type,data) {
+  return request({
+    url: '/Dispatch/DelTemplate?type='+type,
+    method: 'Post',
+    data
+  })
+}
+
+
+
 
 

@@ -3,6 +3,8 @@ export default {
     dashboard: '首页',
 
     quickDispatch: '快速派车单',
+    quickDispatchForBusiness:'公务用车派车单',
+    quickDispatchForEmergency:'执法用车派车单',
     useCarManagement: '用车管理',
     carApply: '用车申请',
     carApproval: '用车审批管理',
@@ -36,6 +38,10 @@ export default {
     carIndex: '车辆管理',
     driverIndex: '驾驶员管理',
     userIndex: '用户管理',
+
+    formworkManagement:'模板管理',
+    tableFormwork:'填表模板',
+    excelFormwork:'Excel模板',
 
     introduction: '简述',
     documentation: '文档',

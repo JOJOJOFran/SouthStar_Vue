@@ -17,9 +17,9 @@
 
         <!-- <lang-select class="international right-menu-item"/> -->
 
-        <el-tooltip :content="$t('navbar.theme')" effect="dark" placement="bottom">
+        <!-- <el-tooltip :content="$t('navbar.theme')" effect="dark" placement="bottom">
           <theme-picker class="theme-switch right-menu-item"/>
-        </el-tooltip>
+        </el-tooltip> -->
       </template>
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
@@ -89,8 +89,11 @@
 
     </div>
     <div class="right-menu" style="margin-right: 30px;">
-      欢迎您，<span style="color: #409EFF;">{{displayName}}</span>
+      <span style="color:white;">欢迎您，</span><span style="color: #409EFF;">{{displayName}}</span>
     </div>
+    <!-- <div class="right-menu" style="margin-right: 100px;font-size:22px;font-weight:bold;color:#409EFF">
+      江 夏 区 公 务 用 车 管 理 平 台
+    </div> -->
   </div>
 </template>
 
@@ -193,7 +196,9 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .navbar {
-  height: 50px;
+  height: 60px;
+  // background: url('http://139.224.66.204/images/newCarIcon/bg_01.png');
+  background: url('../../../assets/bg_title.png');
   line-height: 50px;
   border-radius: 0px !important;
   .hamburger-container {
@@ -246,6 +251,7 @@ export default {
           right: -20px;
           top: 25px;
           font-size: 12px;
+          color: #fff;
         }
       }
     }

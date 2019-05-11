@@ -298,8 +298,8 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('applyTable.isClean')">
-              <el-select v-model="recieptModel.isClean" class="filter-item" placeholder="请选择">
-                <el-option v-for="item in cleanOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
+              <el-select v-model="recieptModel.isClean" class="filter-item" placeholder="请选择"  style="width: 205px;">
+                <el-option v-for="item in cleanOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
               </el-select>
             </el-form-item>
           </el-col>
@@ -319,8 +319,8 @@
         <el-row>
           <el-col :span="12">
             <el-form-item  :label="$t('applyTable.satisfactionDegree')" class="postInfo-container-item" >
-               <el-select v-model="recieptModel.evaluation" class="filter-item" placeholder="请选择">
-                <el-option v-for="item in degreeOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
+               <el-select v-model="recieptModel.evaluation" class="filter-item" placeholder="请选择"  style="width: 205px;">
+                <el-option v-for="item in degreeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
               </el-select>
             </el-form-item>
           </el-col>
@@ -390,8 +390,8 @@
           </el-col>
            <el-col :span="12">
             <el-form-item :label="$t('applyTable.isClean')">
-              <el-select v-model="recieptModel.isClean" class="filter-item" placeholder="请选择">
-                <el-option v-for="item in cleanOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
+              <el-select v-model="recieptModel.isClean" class="filter-item" placeholder="请选择" style="width: 205px;">
+                <el-option v-for="item in cleanOptions" :key="item.key" :label="item.display_name" :value="item.key" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -424,8 +424,8 @@
         <el-row>
           <el-col :span="12">
             <el-form-item  :label="$t('applyTable.satisfactionDegree')" class="postInfo-container-item" >
-               <el-select v-model="recieptModel.evaluation" class="filter-item" placeholder="请选择">
-                <el-option v-for="item in degreeOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
+               <el-select v-model="recieptModel.evaluation" class="filter-item" placeholder="请选择" style="width: 205px;">
+                <el-option v-for="item in degreeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -592,14 +592,14 @@
               <td style="text-align:center;" colspan="2"><span>对此次出行的评价</span></td>
               <td style="text-align:center;" colspan="5">
                 <el-col :span="10">
-                  <el-checkbox-group v-model="checkDegree" :disabled="true">
-                    <el-checkbox label="准时到达" name="type"></el-checkbox>
-                    <el-checkbox label="满意" name="type"></el-checkbox>
-                    <el-checkbox label="一般" name="type"></el-checkbox>
-                    <el-checkbox label="不满意" name="type"></el-checkbox>
-                  </el-checkbox-group>
+                  <el-checkbox-group v-model="addParam.achievement" style="width:400px" :disabled="true">
+                        <el-checkbox label="准时到达" name="type"></el-checkbox>
+                        <el-checkbox label="满意" name="type"></el-checkbox>
+                        <el-checkbox label="一般" name="type"></el-checkbox>
+                        <el-checkbox label="不满意" name="type"></el-checkbox>
+                      </el-checkbox-group>
                 </el-col>
-                <span style="margin-left:30px;">用车人签字：</span>
+                <span style="margin-left:20px;">用车人签字：</span>
                 <span style="margin-left:100px;">电话：</span>
               </td>
             </tr>
@@ -687,7 +687,7 @@
                   </td>
                   <td style="text-align:center;">用车性质</td>
                   <td style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                    应急执法
+                    执法用车
                   </td>
                 </tr>
                 <tr>
@@ -755,12 +755,13 @@
                   <td style="text-align:center;" colspan="2"><span>对此次出行的评价</span></td>
                   <td style="text-align:center;" colspan="5">
                     <el-col :span="10">
-                      <el-checkbox-group v-model="checkDegree" :disabled="true">
+                      <el-checkbox-group v-model="checkDegree" :disabled="true" style="width:400px">
                         <el-checkbox label="准时到达" name="type"></el-checkbox>
-                        <el-checkbox label="满意" name="type"></el-checkbox>
-                        <el-checkbox label="一般" name="type"></el-checkbox>
-                        <el-checkbox label="不满意" name="type"></el-checkbox>
+                        <el-checkbox label="满意" name="type" ></el-checkbox>
+                        <el-checkbox label="一般" name="type" ></el-checkbox>
+                        <el-checkbox label="不满意" name="type" ></el-checkbox>
                       </el-checkbox-group>
+                      
                     </el-col>
                     <span style="margin-left:30px;">用车人签字：</span>
                     <span style="margin-left:100px;">电话：</span>
@@ -832,7 +833,7 @@
         deptList:null,
         deptOptions:[],
         useAreaOptions:[{key:'县区内',display_name:'县区内'},{key:'市内',display_name:'市内'},{key:'市外',display_name:'市外'},{key:'省外',display_name:'省外'}],
-        carPropertyOptions:[{key:0,display_name:'公务用车组'},{key:1,display_name:'应急执法组'}],
+        carPropertyOptions:[{key:0,display_name:'公务用车组'},{key:1,display_name:'执法用车组'}],
         carTypeOptions:[{key:'轿车',display_name:'轿车'},{key:'商务车',display_name:'商务车'},{key:'小型客车',display_name:'小型客车'},{key:'客车',display_name:'客车'}],
         cleanOptions:[{key:true,display_name:'是'},{key:false,display_name:'否'}],
         degreeOptions:[{key:1,display_name:'准时到达'},{key:16,display_name:'满意'},{key:32,display_name:'一般'},{key:48,display_name:'不满意'}],

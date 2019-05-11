@@ -106,8 +106,8 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('userAndCarTable.departmentName')" >
-              <el-select v-model="addParam.departmentId" class="filter-item" placeholder="请选择">
-                <el-option v-for="item in deptOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
+              <el-select v-model="addParam.departmentId" class="filter-item" placeholder="请选择"  style="width: 205px;">
+                <el-option v-for="item in deptOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
               </el-select>
             </el-form-item>
           </el-col>
@@ -120,8 +120,8 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('userAndCarTable.sex')" >
-              <el-select v-model="addParam.sex" class="filter-item" placeholder="请选择">
-                <el-option v-for="item in sexOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
+              <el-select v-model="addParam.sex" class="filter-item" placeholder="请选择"  style="width: 205px;">
+                <el-option v-for="item in sexOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
               </el-select>
             </el-form-item>
           </el-col>
@@ -168,15 +168,15 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('userAndCarTable.driverStatus')">
-              <el-select v-model="addParam.status" class="filter-item" placeholder="请选择">
-                <el-option v-for="item in driverStatusOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
+              <el-select v-model="addParam.status" class="filter-item" placeholder="请选择" style="width: 205px;">
+                <el-option v-for="item in driverStatusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
               </el-select>
             </el-form-item>
           </el-col>
            <el-col :span="12">
             <el-form-item :label="$t('userAndCarTable.groupNum')">
-              <el-select v-model="addParam.groupNum" class="filter-item" placeholder="请选择">
-                <el-option v-for="item in groupOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
+              <el-select v-model="addParam.groupNum" class="filter-item" placeholder="请选择"  style="width: 205px;">
+                <el-option v-for="item in groupOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
               </el-select>
             </el-form-item>
           </el-col>
