@@ -33,6 +33,7 @@ export default {
     statisticalManagement: '统计分析',
     useCarStatistical: '用车统计',
     reportAnalysis: '报表统计',
+    oilDetail:'用油明细',
 
     carAndUserManage: '后台管理',
     carIndex: '车辆管理',
@@ -302,7 +303,20 @@ export default {
     useTimeFee:'时长费',
     expresswayExpense:'高速费(元)',
     parkExpense:'停车费(元)',
-    totalFee:'合计(元)'
+    totalFee:'合计(元)',
+
+    uploadExcel:'导入数据',
+    orderNum:'序号',
+    addOilDate:'日期',
+    odograph:'用车里程数',
+    condition:'车辆目前状况',
+    addOilTime:'加油时间',
+    oilType:'加油型号',
+    carCode:'油卡编号',
+    oilAmount:'加油数量(升)',
+    moneyAmount:'金额(元)',
+    dealPerson:'加油人',
+    remark:'备注',
   },
 
   vehicleManageTable: {
@@ -330,7 +344,8 @@ export default {
     insuranceEndDate: '保险结束时间',
     insuranceType: '保险类型',
     insuranceFee: '保险费用',
-    status: '状态'
+    status: '状态',
+
   },
   monitorTable: {
     fenceName: '围栏名称',

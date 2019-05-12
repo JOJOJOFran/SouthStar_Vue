@@ -271,6 +271,12 @@ export const constantRouterMap = [
         component: () => import('@/views/statisticalManagement/reportAnalysis'),
         name: 'reportAnalysis',
         meta: { title: 'reportAnalysis' }
+      },
+      {
+        path: 'oilDetail',
+        component: () => import('@/views/statisticalManagement/oilDetail'),
+        name: 'oilDetail',
+        meta: { title: 'oilDetail' }
       }
     ]
   },

@@ -80,7 +80,7 @@ export default {
         var keyData=[];
         keyData.push(row.key);
         delTemplate(this.checkTemplate,keyData).then(response => {
-          if (response.data.code == 200) {
+          if (response.data.code == 0) {
             this.$message({
               type: 'success',
               message: '删除成功!'

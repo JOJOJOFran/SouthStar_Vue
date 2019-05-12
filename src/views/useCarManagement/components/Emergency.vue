@@ -12,11 +12,14 @@
         <el-button v-loading="loading" type="warning" @click="printForm">打印</el-button>
       </sticky>
       <div style="margin-top: 10px">
-        <span style="margin-left:20px;font-family:'STKaiti';font-weight:bold;font-size:20px;">填表模板：</span>
-        <el-radio-group v-model="checkTemplate" @change="templateChange">
-          <el-radio :label="item" :key="item" v-for="item in templateList" border>{{item}}</el-radio>
-        </el-radio-group>
-      </div>
+          <div style="width:110px;height:20px;margin-left:20px;font-family:'STKaiti';font-weight:bold;font-size:20px;">填表模板：</div>
+          <!-- <span style=""></span> -->
+          <div style="margin-left:70px">
+            <el-radio-group v-model="checkTemplate" @change="templateChange">
+              <el-radio :label="item" :key="item" v-for="item in templateList" border style="margin-top:10px;margin-left:0px;">{{item}}</el-radio>
+            </el-radio-group>
+          </div>
+        </div>
       <!-- 应急执法填写 -->
       <div class="createPost-main-container" v-show="!postForm.comment_disabled && !showPrintDetail">
         <el-form ref="dataForm" label-position="left" label-width="80px" style="margin-left:20px;">

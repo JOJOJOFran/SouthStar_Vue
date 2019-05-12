@@ -1,10 +1,11 @@
 <template>
   <div class="icons-container">
+    <span>功能开发中...</span>
     <!-- <aside>
       <a href="https://panjiachen.github.io/vue-element-admin-site/guide/advanced/icon.html" target="_blank">Add and use
       </a>
     </aside> -->
-    <el-tabs type="border-card">
+    <!-- <el-tabs type="border-card">
       <el-tab-pane label="Excel模板">
         <div v-for="item of svgIcons" :key="item" @click="handleClipboard(generateIconCode(item),$event)">
           <el-tooltip placement="top">
@@ -30,7 +31,7 @@
             </div>
           </el-tooltip>
         </div>
-      </el-tab-pane>
+      </el-tab-pane> -->
     </el-tabs>
   </div>
 </template>
