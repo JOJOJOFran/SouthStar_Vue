@@ -214,42 +214,42 @@ export const constantRouterMap = [
   //     }
   //   ]
   // },
-  // {
-  //   path: '/vehicleManagement',
-  //   component: Layout,
-  //   redirect: '/vehicleManagement/index',
-  //   meta: {
-  //     title: 'vehicleManagement',
-  //     icon: 'vehicleManagement',
-  //     noCache: true
-  //   },
-  //   children: [
-  //     {
-  //       path: 'checkRemind',
-  //       component: () => import('@/views/vehicleManagement/checkRemind'),
-  //       name: 'checkRemind',
-  //       meta: { title: 'checkRemind' }
-  //     },
-  //     {
-  //       path: 'insuranceRemind',
-  //       component: () => import('@/views/vehicleManagement/insuranceRemind'),
-  //       name: 'insuranceRemind',
-  //       meta: { title: 'insuranceRemind' }
-  //     },
-  //     {
-  //       path: 'maintenanceRemind',
-  //       component: () => import('@/views/vehicleManagement/maintenanceRemind'),
-  //       name: 'maintenanceRemind',
-  //       meta: { title: 'maintenanceRemind' }
-  //     },
-  //     {
-  //       path: 'maintenanceManage',
-  //       component: () => import('@/views/vehicleManagement/maintenanceManage'),
-  //       name: 'maintenanceManage',
-  //       meta: { title: 'maintenanceManage' }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/vehicleManagement',
+    component: Layout,
+    redirect: '/vehicleManagement/index',
+    meta: {
+      title: 'vehicleManagement',
+      icon: 'vehicleManagement',
+      noCache: true
+    },
+    children: [
+      // {
+      //   path: 'checkRemind',
+      //   component: () => import('@/views/vehicleManagement/checkRemind'),
+      //   name: 'checkRemind',
+      //   meta: { title: 'checkRemind' }
+      // },
+      {
+        path: 'insuranceRemind',
+        component: () => import('@/views/vehicleManagement/insuranceRemind'),
+        name: 'insuranceRemind',
+        meta: { title: 'insuranceRemind' }
+      },
+      // {
+      //   path: 'maintenanceRemind',
+      //   component: () => import('@/views/vehicleManagement/maintenanceRemind'),
+      //   name: 'maintenanceRemind',
+      //   meta: { title: 'maintenanceRemind' }
+      // },
+      // {
+      //   path: 'maintenanceManage',
+      //   component: () => import('@/views/vehicleManagement/maintenanceManage'),
+      //   name: 'maintenanceManage',
+      //   meta: { title: 'maintenanceManage' }
+      // }
+    ]
+  },
   {
     path: '/statisticalManagement',
     component: Layout,

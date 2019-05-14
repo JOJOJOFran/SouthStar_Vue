@@ -27,12 +27,10 @@ const userMap = {
 
 export default {
   loginByUsername: config => {
-    debugger
     const { username } = JSON.parse(config.body)
     return userMap[username]
   },
   getUserInfo: config => {
-    debugger
     const { token } = param2Obj(config.url)
     if (userMap[token]) {
       return userMap[token]

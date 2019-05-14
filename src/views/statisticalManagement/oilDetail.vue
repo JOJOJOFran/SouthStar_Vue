@@ -22,10 +22,12 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8">
+          <el-col :span="4">
             <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{ $t('table.search') }}</el-button>
-            <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">{{ $t('statisticalTable.uploadExcel') }}</el-button>
             <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('table.export') }}</el-button>
+          </el-col>
+          <el-col :span="8">
+            <upload-excel-component :on-success="handleSuccess" :before-upload="beforeUpload"/>
           </el-col>
         </el-row>
       </el-form>
@@ -38,144 +40,86 @@
       border
       fit
       highlight-current-row
-      style="width: 100%;"
-      @sort-change="sortChange">
-      <el-table-column :label="$t('statisticalTable.orderNum')" align="center" width="120px">
+      style="width: 100%;">
+      <el-table-column :label="$t('statisticalTable.orderNum')" align="center" width="50px">
         <template slot-scope="scope">
-          <span>{{ scope.row.plateNum }}</span>
+          <span>{{ scope.row.orderNum }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('statisticalTable.addOilDate')" width="auto" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.insuranceStartDate }}</span>
+          <span>{{ scope.row.addOilDate }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('statisticalTable.odograph')" min-width="auto">
+      <el-table-column :label="$t('statisticalTable.plateNumber')" width="auto" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.insuranceEndDate }}</span>
+          <span>{{ scope.row.plateNumber }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('statisticalTable.condition')" width="auto" align="center">
+      <el-table-column :label="$t('statisticalTable.carProperty')" width="auto" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.insuranceType }}</span>
+          <span>{{ scope.row.carProperty }}</span>
         </template>
       </el-table-column>
+      <el-table-column :label="$t('statisticalTable.odograph')" width="140" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.odograph }}</span>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column :label="$t('statisticalTable.condition')" width="140" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.condition }}</span>
+        </template>
+      </el-table-column> -->
       <el-table-column :label="$t('statisticalTable.addOilTime')" width="auto" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.reminderDate }}</span>
+          <span>{{ scope.row.addOilTime }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('statisticalTable.oilType')" width="auto" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.dealPerson }}</span>
+          <span>{{ scope.row.oilType }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('statisticalTable.carCode')" width="auto" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.insuranceFee }}</span>
+          <span>{{ scope.row.carCode }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('statisticalTable.oilAmount')" width="auto" align="center">
+      <el-table-column :label="$t('statisticalTable.oilAmount')" width="140" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.status }}</span>
+          <span>{{ scope.row.oilAmount }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('statisticalTable.moneyAmount')" width="auto" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.status }}</span>
+          <span>{{ scope.row.moneyAmount }}</span>
+        </template>
+      </el-table-column>
+       <el-table-column :label="$t('statisticalTable.surplusAmount')" width="auto" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.surplusAmount }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('statisticalTable.dealPerson')" width="auto" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.status }}</span>
+          <span>{{ scope.row.dealPerson }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('statisticalTable.remark')" width="auto">
+      <!-- <el-table-column :label="$t('statisticalTable.remark')" width="auto">
         <template slot-scope="scope">
           <span>{{ scope.row.remark }}</span>
         </template>
-      </el-table-column>
-      <el-table-column :label="$t('statisticalTable.caozuo')" align="center" width="auto" fixed="right">
+      </el-table-column> -->
+      <el-table-column :label="$t('statisticalTable.caozuo')" align="center" width="150" fixed="right">
         <template slot-scope="scope">
-          <el-button  type="primary" size="mini" @click="handleAccounting(scope.row)">{{ scope.row.edit }}</el-button>
-          <el-button  type="danger" size="mini" @click="handleAccounting(scope.row)">{{ scope.row.delete }}</el-button>
+          <el-button  type="primary" size="mini" @click="handleAccounting(scope.row)">修改</el-button>
+          <el-button  type="danger" size="mini" @click="handleAccounting(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" >
-      <el-form :model="addParam" label-position="left" label-width="100px" style=" margin-left:50px;">
-        <el-row>
-          <el-col :span="12">
-            <el-form-item :label="$t('vehicleManageTable.plateNum')" prop="userName">
-              <el-input v-model="addParam.plateNum" style="width: 205px;"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('vehicleManageTable.vehiclBrand')" >
-              <el-input v-model="addParam.vehiclBrand" style="width: 205px;"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item :label="$t('vehicleManageTable.insuranceStartDate')" >
-              <el-date-picker v-model="addParam.insuranceStartDate" :placeholder="$t('vehicleManageTable.startTime')" type="date" style="width: 205px;"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('vehicleManageTable.insuranceEndDate')" >
-              <el-date-picker v-model="addParam.insuranceEndDate" :placeholder="$t('vehicleManageTable.endTime')" type="date" style="width: 205px;"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item :label="$t('vehicleManageTable.reminderDate')" >
-              <el-date-picker v-model="addParam.reminderDate" :placeholder="$t('vehicleManageTable.reminderDate')" type="date" style="width: 205px;"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('vehicleManageTable.insuranceType')">
-              <el-input v-model="addParam.insuranceType" style="width: 205px;"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item :label="$t('vehicleManageTable.insuranceFee')">
-              <el-input v-model="addParam.insuranceFee" style="width: 205px;"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('vehicleManageTable.dealPerson')">
-              <el-input v-model="addParam.dealPerson" style="width: 205px;"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item :label="$t('userAndCarTable.remark')">
-          <el-input :autosize="{ minRows: 2, maxRows: 4}" v-model="addParam.remark" type="textarea" placeholder="请输入" style="width: 540px;"/>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">{{ $t('userAndCarTable.cancel') }}</el-button>
-        <el-button v-if="dialogStatus==='create'" type="primary" @click="createData()">{{ $t('userAndCarTable.save') }}</el-button>
-        <el-button v-if="dialogStatus==='edit'" type="primary" @click="editData()">{{ $t('userAndCarTable.save') }}</el-button>
-
-      </div>
-    </el-dialog>
-
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel"/>
-        <el-table-column prop="pv" label="Pv"/>
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">{{ $t('table.confirm') }}</el-button>
-      </span>
-    </el-dialog>
 
   </div>
 </template>
@@ -186,6 +130,7 @@ import { setToken, getToken } from '@/utils/auth'
 import waves from '@/directive/waves' // Waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import UploadExcelComponent from '@/components/UploadExcel/index.vue'
 
 const deptOptions = []
 
@@ -197,7 +142,7 @@ const calendarTypeKeyValue = deptOptions.reduce((acc, cur) => {
 
 export default {
   name: 'ComplexTable',
-  components: { Pagination },
+  components: { Pagination,UploadExcelComponent},
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -240,18 +185,14 @@ export default {
         Remark: ''
       },
       carPropertyOptions:[{key:0,display_name:'公务用车组'},{key:1,display_name:'应急执法组'}],
-      statusOptions: ['published', 'deleted'],
-      showReviewer: false,
       dialogFormVisible: false,
       dialogVisible: false,
       dialogStatus: '',
-      textMap: {
-        edit: '编辑保险提醒',
-        create: '新增保险提醒'
-      },
       dialogPvVisible: false,
-      pvData: [],
-      downloadLoading: false
+      downloadLoading: false,
+
+      tableData: [],
+      tableHeader: []
     }
   },
   created() {
@@ -278,6 +219,46 @@ export default {
       //     this.listLoading = false;
       //   }, 1.5 * 1000)
       // })
+    },
+    beforeUpload(file) {
+      const isLt1M = file.size / 1024 / 1024 < 1
+      if (isLt1M) {
+        return true
+      }
+      this.$message({
+        message: 'Please do not upload files larger than 1m in size.',
+        type: 'warning'
+      })
+      return false
+    },
+    handleSuccess({ results, header }) {
+      console.log(results);
+      console.log(header);
+      var listData=[];
+      for(var i=0;i<results.length;i++){
+        var lineObj={
+          orderNum:results[i].序号,
+          addOilDate:results[i].日期,
+          plateNumber:results[i].车牌号,
+          carProperty:results[i].车辆性质,
+          odograph:results[i].用车里程数,
+          condition:results[i].车辆目前状况?results[i].车辆目前状况:'',
+          addOilTime:results[i].加油时间,
+          oilType:results[i].加油型号,
+          carCode:results[i].油卡编号,
+          oilAmount:results[i].加油数量,
+          moneyAmount:results[i].金额,
+          surplusAmount:results[i].余额,
+          dealPerson:results[i].加油人,
+          remark:results[i].备注?results[i].备注:''
+        }
+        listData.push(lineObj);
+        this.list.push(lineObj);
+      }
+      console.log(listData);
+    },
+    carPropertyChange(item){
+
     },
     getLocalDatetime() {
       var objD = new Date()

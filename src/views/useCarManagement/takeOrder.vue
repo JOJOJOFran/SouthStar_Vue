@@ -1130,7 +1130,6 @@
         }
       },
       getCountTime(value){
-        debugger
         var startTime=this.GetUnixTime(this.addParam.startPlanTime);
         var endTime=this.GetUnixTime(value);
         this.recieptModel.useTime=(endTime-startTime)/60;

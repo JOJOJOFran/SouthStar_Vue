@@ -553,7 +553,6 @@ export default {
           this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
           this.temp.author = 'vue-element-admin'
           addApply(this.addParam).then(response => {
-            debugger
             if(response.data.code==0){
               this.dialogFormVisible = false;
               this.$message({

@@ -433,7 +433,6 @@
         })
       },
       handlePictureCardPreview(file){
-        debugger;
         this.dialogImageUrl = file.url;
         this.dialogVisible = true;
       },
@@ -450,7 +449,6 @@
         const _self = this;
         return new Promise((resolve, reject) => {
           getQiniuToken(file.name).then(response => {
-            debugger;
             const token = response.data.datas.uploadToken;
              _self.dataObj.key ='southstar:'+ file.name;
             _self.dataObj.token = token;
@@ -589,7 +587,6 @@
       },
       createData() {
         vehicleAdd(this.addParam).then(response => {
-          debugger
           if(response.data.code==0){
             this.$message({
               message: '添加成功',

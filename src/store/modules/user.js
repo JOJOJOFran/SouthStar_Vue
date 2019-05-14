@@ -81,7 +81,6 @@ const user = {
 
     // 获取用户信息
     GetUserInfo({ commit, state }) {
-      debugger
      // return new Promise() user.state;
        return new Promise((resolve, reject) => {
         const username = getNewToken("Account")

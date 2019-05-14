@@ -56,8 +56,8 @@
                            @change="checked=>handleCheckedFenceChange(checked,item)">{{item.fence_name}}</el-checkbox>
          </el-checkbox-group>
     </div>
-    <div style="z-index:10;position:absolute;left:250px;bottom:0px;right:-15px;height:200px;background-color: white;font-size:12px">
-      <div style="width:100%;height:40px;border-top:3px solid #409EFF">
+    <div id="building-foot" style="z-index:10;position:absolute;left:250px;bottom:0px;right:-15px;height:160px;background-color: white;font-size:12px">
+      <div style="width:100%;height:30px;border-top:3px solid #409EFF">
         <div class="title">实时数据</div>
         <div class="sign" style="background-color:#EB7201">10</div>
         <div class="label">全部</div>
@@ -76,7 +76,8 @@
         fit
         highlight-current-row
         height="160"
-        :header-cell-style="{'background-color':'#409EFF','height':'30px','color':'white','font-size':'12px'}"
+        :header-cell-style="{'background-color':'#409EFF','height':'20px','color':'white','font-size':'12px','padding':'0px'}"
+        :cell-style="{'height':'20px','font-size':'12px','padding':'0px'}"
         style="width: 100%;">
         <el-table-column :label="'车牌号'" align="center" width="120">
           <template slot-scope="scope">
@@ -1146,13 +1147,12 @@ export default {
     font-size: 12px !important;
   }
   .title{
-    height:20px;line-height:20px;color:#409EFF;margin-top:10px;margin-left:20px;float:left;font-size: 14px;font-weight: bold;
+    height:20px;line-height:20px;color:#409EFF;margin-top:5px;margin-left:20px;float:left;font-size: 14px;font-weight: bold;
   }
   .sign{
-    height:20px;line-height:20px;width:40px;margin-top:10px;margin-left:30px;float:left;border-radius: 5px 5px 5px 5px;color:white;text-align: center
+    height:20px;line-height:20px;width:40px;margin-top:5px;margin-left:30px;float:left;border-radius: 5px 5px 5px 5px;color:white;text-align: center
   }
   .label{
-    height:20px;line-height:20px;margin-top:10px;margin-left:5px;float:left
+    height:20px;line-height:20px;margin-top:5px;margin-left:5px;float:left
   }
-
 </style>

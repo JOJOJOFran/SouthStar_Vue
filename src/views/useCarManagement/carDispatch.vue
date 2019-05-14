@@ -555,7 +555,6 @@
         this.dispatchModel.driverPhone=item.driverPhone;
       },
       handleDetail(row) {
-        debugger
         this.applyId=row.applyId;
         this.dispatchType=row.checkStatus==="待调度"?0:1;
         applyDetail(row.applyId).then(resp => {

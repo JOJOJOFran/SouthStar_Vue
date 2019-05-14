@@ -129,7 +129,6 @@
           var listData = response.fences;
           var size=response.size;
           var data=[];
-          debugger;
           for (var i = 0; i < size; i++) {
             if(listData[i].fence_name.indexOf(this.listQuery.fenceName)!=-1 &&
             (this.GetUnixTime(this.listQuery.startTime) < this.GetUnixTime(listData[i].create_time)

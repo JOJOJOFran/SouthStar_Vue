@@ -271,7 +271,7 @@ export default {
   },
 
   statisticalTable:{
-    condition:'筛选条件',
+    changeCondition:'筛选条件',
     driverName:'司机姓名',
     plateNumber:'车牌号',
     department:'用车单位',
@@ -315,6 +315,7 @@ export default {
     carCode:'油卡编号',
     oilAmount:'加油数量(升)',
     moneyAmount:'金额(元)',
+    surplusAmount:'余额(元)',
     dealPerson:'加油人',
     remark:'备注',
   },

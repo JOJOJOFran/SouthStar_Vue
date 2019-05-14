@@ -20,10 +20,13 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8">
+          <el-col :span="4">
             <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{ $t('table.search') }}</el-button>
-            <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">{{ $t('table.add') }}</el-button>
+            <!-- <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">{{ $t('table.add') }}</el-button> -->
             <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('table.export') }}</el-button>
+          </el-col>
+           <el-col :span="8">
+            <upload-excel-component :on-success="handleSuccess" :before-upload="beforeUpload"/>
           </el-col>
         </el-row>
       </el-form>
@@ -174,11 +177,12 @@
 </template>
 
 <script>
-import { insuranceReminderList, vehicleList, insuranceReminderDelete, insuranceReminder, insuranceReminderUpdate, insuranceReminderAdd } from '@/api/vehicleManage'
+import { insuranceReminderList, vehicleList, insuranceReminderDelete, insuranceReminder, insuranceReminderUpdate, insuranceReminderAdd,importInsurance } from '@/api/vehicleManage'
 import { setToken, getToken } from '@/utils/auth'
 import waves from '@/directive/waves' // Waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import UploadExcelComponent from '@/components/UploadExcel/index.vue'
 
 const deptOptions = []
 
@@ -190,7 +194,7 @@ const calendarTypeKeyValue = deptOptions.reduce((acc, cur) => {
 
 export default {
   name: 'ComplexTable',
-  components: { Pagination },
+  components: { Pagination,UploadExcelComponent },
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -270,6 +274,50 @@ export default {
       //     this.listLoading = false;
       //   }, 1.5 * 1000)
       // })
+    },
+    beforeUpload(file) {
+      const isLt1M = file.size / 1024 / 1024 < 1
+      if (isLt1M) {
+        return true
+      }
+      this.$message({
+        message: 'Please do not upload files larger than 1m in size.',
+        type: 'warning'
+      })
+      return false
+    },
+    handleSuccess({ results, header }) {
+      console.log(results);
+      console.log(header);
+      var typeCode='InsuranceJournal';
+      var keyName='PlateNum';
+      var year=2019;
+      if(results.length>0){
+        for(var i=0;i<results.length;i++){
+          var businessInsuranceStartDate=results[i].商业险保险期间.split('-')[0];
+          var businessInsuranceEndDate=results[i].商业险保险期间.split('-')[1];
+          var compulsoryInsuranceStartDate=results[i].交强险保险期间.split('-')[1];
+          var compulsoryInsuranceEndDate=results[i].交强险保险期间.split('-')[1];
+
+          results[i].商业保险开始时间=businessInsuranceStartDate.replace('.','-').replace('.','-');
+          results[i].商业保险结束时间=businessInsuranceEndDate.replace('.','-').replace('.','-');
+          results[i].交强险开始时间=compulsoryInsuranceStartDate.replace('.','-').replace('.','-');
+          results[i].交强险结束时间=compulsoryInsuranceEndDate.replace('.','-').replace('.','-');
+        }
+      }
+      importInsurance(typeCode,keyName, year,results).then(response => {
+        if(response.data.code==0){
+          this.$message({
+            message: '导入数据成功',
+            type: 'success'
+          });
+        }else{
+          this.$message({
+            message: '导入数据失败',
+            type: 'error'
+          })
+        }
+      })
     },
     getLocalDatetime() {
       var objD = new Date()

@@ -391,7 +391,6 @@ export default {
       })
     },
     createData() {
-      debugger
       userAdd(this.addParam).then(response => {
         if (response.data.code == 0) {
           this.$message({
@@ -409,8 +408,6 @@ export default {
       })
     },
     handleEdit(row) {
-      debugger
-
       this.editId = row.id
       userItem(row.id).then(response => {
         this.addParam = response.data.datas

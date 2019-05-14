@@ -4,7 +4,7 @@
       <el-form ref="dataForm" label-position="left" label-width="80px" style="margin-left:50px;">
         <el-row>
           <el-col :span="8">
-            <el-form-item :label="$t('statisticalTable.condition')">
+            <el-form-item :label="$t('statisticalTable.changeCondition')">
                <el-checkbox-group 
                   v-model="checkedTypes"
                   :min="1"

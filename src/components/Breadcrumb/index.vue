@@ -7,7 +7,7 @@
         <!-- <span v-if="item.path==='/dashboard'" style="font-size:20px;">江夏区公务用车管理平台</span>
         <span v-else-if="item.redirect==='noredirect'||index==levelList.length-1" class="no-redirect">{{ generateTitle(item.meta.title) }}</span>
         <a v-else @click.prevent="handleLink(item)" style="font-size:20px;">江夏区公务用车管理平台</a> -->
-        <a @click.prevent="handleLink(item)" style="font-size:30px;color:white;font-weight:bold;font-family:'STKaiti';margin-left:50px;">江 夏 区 公 务 用 车 管 理 平 台</a>
+        <!-- <a @click.prevent="handleLink(item)" style="font-size:30px;color:white;font-weight:bold;font-family:'STKaiti';margin-left:50px;">江 夏 区 公 务 用 车 管 理 平 台</a> -->
       </el-breadcrumb-item>
     </transition-group>
   </el-breadcrumb>

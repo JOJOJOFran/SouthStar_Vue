@@ -444,7 +444,6 @@ export default {
   },
   watch: {
       clearParam(disabledFlag) {
-        debugger
         if(disabledFlag){
           this.showPrintDetail = false;
           var cookieKey = getNewToken("CookieKey_Emergency");
@@ -567,7 +566,6 @@ export default {
     document.onkeydown = function(e) {
       let keyCode = window.event.keyCode;
       if (keyCode == 83 && event.ctrlKey) {
-          debugger
           that.setFormData();
           event.preventDefault();
           event.returnValue = false;
@@ -747,7 +745,6 @@ export default {
     },
     //通过key获取页面数据缓存
     getFormData(key){
-      debugger;
       this.$confirm('是否加载上一次未提交的数据?', '提示', {
           confirmButtonText: '加载',
           cancelButtonText: '取消',
@@ -791,7 +788,6 @@ export default {
         }
   },
     submitForm() {
-      debugger
       // if(this.btnStatus =='create'){
       //   this.showPrintDetail=false;
       //   this.btnStatus='submit';
