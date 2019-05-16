@@ -39,129 +39,90 @@ export function motReminderAdd(data) {
   })
 }
 
-// 维修记录
-export function repairRecordList(query) {
+// 维修、保养
+export function maintainList(query) {
   return request({
-    url: '/RepairRecord/List',
+    url: '/Maintain/List',
     method: 'get',
     params: query
   })
 }
 
-export function repairRecordAdd(data) {
+export function maintainAdd(data) {
   return request({
-    url: '/RepairRecord/Add',
+    url: '/Maintain/Add',
     method: 'post',
     data
   })
 }
 
-export function repairRecord(query) {
+export function maintainItem(query) {
   return request({
-    url: '/RepairRecord/item/' + query,
+    url: '/Maintain/Item?Id='+query,
     method: 'get'
   })
 }
 
-export function repairRecordDelete(query) {
+export function maintainDelete(query) {
   return request({
-    url: '/RepairRecord/item/' + query,
-    method: 'delete'
+    url: '/Maintain/Delete?Id=' + query,
+    method: 'post'
   })
 }
-export function repairRecordUpdate(id, data) {
+export function maintainUpdate(id, data) {
   return request({
-    url: '/RepairRecord/update/' + id,
+    url: '/Maintain/Update?Id=' + id,
     method: 'post',
     data
   })
 }
 
-export function vehicleList(query) {
+export function vehicleAllList() {
   return request({
-    url: '/Vehicle/List',
-    method: 'get',
-    params: query
-  })
-}
-
-// 保养提醒
-export function maintainReminderList(query) {
-  return request({
-    url: '/MaintainReminder/List',
-    method: 'get',
-    params: query
-  })
-}
-
-export function maintainReminderDelete(query) {
-  return request({
-    url: '/MaintainReminder/Delete/' + query,
-    method: 'delete'
-  })
-}
-
-export function maintainReminder(query) {
-  return request({
-    url: '/MaintainReminder/item/' + query,
+    url: '/Vehicle/AllList',
     method: 'get'
   })
 }
 
-export function maintainReminderUpdate(id, data) {
-  return request({
-    url: '/MaintainReminder/Update/' + id,
-    method: 'post',
-    data
-  })
-}
-
-export function maintainReminderAdd(data) {
-  return request({
-    url: '/MaintainReminder/add',
-    method: 'post',
-    data
-  })
-}
 
 // 保险提醒
-export function insuranceReminderList(query) {
-  return request({
-    url: '/InsuranceReminder/List',
-    method: 'get',
-    params: query
-  })
-}
+// export function insuranceReminderList(query) {
+//   return request({
+//     url: '/InsuranceReminder/List',
+//     method: 'get',
+//     params: query
+//   })
+// }
 
-export function insuranceReminderDelete(query) {
-  return request({
-    url: '/InsuranceReminder/Delete/' + query,
-    method: 'delete'
-  })
-}
+// export function insuranceReminderDelete(query) {
+//   return request({
+//     url: '/InsuranceReminder/Delete/' + query,
+//     method: 'delete'
+//   })
+// }
 
-export function insuranceReminder(query) {
-  return request({
-    url: '/InsuranceReminder/item/' + query,
-    method: 'get'
-  })
-}
+// export function insuranceReminder(query) {
+//   return request({
+//     url: '/InsuranceReminder/item/' + query,
+//     method: 'get'
+//   })
+// }
 
-export function insuranceReminderUpdate(id, data) {
-  return request({
-    url: '/InsuranceReminder/Update/' + id,
-    method: 'post',
-    data
-  })
-}
+// export function insuranceReminderUpdate(id, data) {
+//   return request({
+//     url: '/InsuranceReminder/Update/' + id,
+//     method: 'post',
+//     data
+//   })
+// }
 
-export function insuranceReminderAdd(data) {
-  return request({
-    url: '/InsuranceReminder/add',
-    method: 'post',
-    data
-  })
-}
+// export function insuranceReminderAdd(data) {
+//   return request({
+//     url: '/InsuranceReminder/add',
+//     method: 'post',
+//     data
+//   })
+// }
 
 //导入保险明细数据
 export function importInsurance(typeCode,keyName,year,data) {
@@ -169,6 +130,14 @@ export function importInsurance(typeCode,keyName,year,data) {
     url: '/Journal/ImportInsurance?typeCode='+typeCode+'&keyName='+keyName+'&year='+year,
     method: 'post',
     data
+  })
+}
+
+export function insuranceList(query) {
+  return request({
+    url: '/Journal/Insurance',
+    method: 'get',
+    params:query
   })
 }
 

@@ -4,25 +4,34 @@
       <el-form ref="dataForm" label-position="left" label-width="80px" style="margin-left:50px;">
         <el-row>
           <el-col :span="8">
-            <el-form-item :label="$t('vehicleManageTable.maintenanceFolio')" prop="type">
-              <el-input :placeholder="$t('vehicleManageTable.maintenanceFolio')" v-model="listQuery.maintenanceFolio" style="width: 220px;" class="filter-item" @keyup.enter.native="handleFilter"/>
+            <el-form-item :label="$t('vehicleManageTable.plateNumber')">
+              <el-input :placeholder="$t('vehicleManageTable.plateNumber')" v-model="listQuery.plateNum" style="width: 220px;"/>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$t('vehicleManageTable.endTime')" label-width="80px" class="postInfo-container-item">
-              <el-date-picker v-model="listQuery.endDate" :placeholder="$t('applyTable.endTime')" type="date" format="yyyy-MM-dd"/>
+            <el-form-item :label="$t('vehicleManageTable.startDate')">
+              <el-date-picker v-model="listQuery.startDate" type="date" value-format="yyyy-MM-dd" :placeholder="$t('vehicleManageTable.startDate')"/>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$t('vehicleManageTable.startTime')" label-width="80px" class="postInfo-container-item">
-              <el-date-picker v-model="listQuery.startDate" :placeholder="$t('applyTable.beginTime')" type="date" format="yyyy-MM-dd"/>
+            <el-form-item :label="$t('vehicleManageTable.endDate')">
+              <el-date-picker v-model="listQuery.endDate" type="date" value-format="yyyy-MM-dd" :placeholder="$t('vehicleManageTable.endDate')"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item :label="$t('vehicleManageTable.plateNumber')" prop="type">
-              <el-input :placeholder="$t('vehicleManageTable.plateNumber')" v-model="listQuery.plateNum" style="width: 220px;" class="filter-item" @keyup.enter.native="handleFilter"/>
+            <el-form-item :label="$t('vehicleManageTable.carProperty')">
+              <el-select v-model="listQuery.status" :placeholder="$t('vehicleManageTable.carProperty')" style="width；220px" >
+                <el-option v-for="item in carPropertyOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+           <el-col :span="8">
+            <el-form-item :label="$t('vehicleManageTable.maintainType')">
+              <el-select v-model="listQuery.status" :placeholder="$t('vehicleManageTable.maintainType')" style="width；220px" >
+                <el-option v-for="item in maintainTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -41,104 +50,172 @@
       border
       fit
       highlight-current-row
-      style="width: 100%;"
-      @sort-change="sortChange">
-      <el-table-column :label="$t('vehicleManageTable.plateNum')" prop="id" sortable="custom" align="center" width="120px">
+      style="width: 100%;">
+      <el-table-column :label="$t('vehicleManageTable.plateNumber')" align="center" width="120px">
         <template slot-scope="scope">
-          <span>{{ scope.row.plateNum }}</span>
+          <span>{{ scope.row.plateNumber }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('vehicleManageTable.repairStartDate')" prop="id" sortable="custom" align="center" width="auto">
+      <el-table-column :label="$t('vehicleManageTable.carProperty')"  align="center" width="auto">
         <template slot-scope="scope">
-          <span>{{ scope.row.repairStartDate }}</span>
+          <span>{{ scope.row.carProperty }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('vehicleManageTable.repairEndDate')" width="auto" align="center">
+      <el-table-column :label="$t('vehicleManageTable.applyer')" width="auto" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.repairEndDate }}</span>
+          <span>{{ scope.row.applyer }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('vehicleManageTable.garage')" min-width="auto">
+      <el-table-column :label="$t('vehicleManageTable.applyDate')" min-width="auto" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.garage }}</span>
+          <span>{{ scope.row.applyDate }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('vehicleManageTable.repairFee')" width="auto" align="center">
+      <el-table-column :label="$t('vehicleManageTable.captain')" width="auto" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.repairFee }}</span>
+          <span>{{ scope.row.captain }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('vehicleManageTable.dealPerson')" width="auto" align="center">
+      <el-table-column :label="$t('vehicleManageTable.maintainType')" width="auto" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.dealPerson }}</span>
+          <span>{{ scope.row.maintainType }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('vehicleManageTable.remark')" width="auto">
+      <el-table-column :label="$t('vehicleManageTable.amountCount')" width="auto" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.remark }}</span>
+          <span>{{ scope.row.amount}}</span>
         </template>
       </el-table-column>
-
-      <el-table-column :label="$t('vehicleManageTable.edit')" align="center" width="auto">
+       <el-table-column :label="$t('vehicleManageTable.checker')" width="auto" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.checker }}</span>
+        </template>
+      </el-table-column>
+       <el-table-column :label="$t('vehicleManageTable.watcher')" width="auto" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.watcher }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('vehicleManageTable.operation')" align="center" width="160">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleEdit(scope.row)">{{ scope.row.edit }}</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('vehicleManageTable.delete')" align="center" width="auto">
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleDelete(scope.row)">{{ scope.row.delete }}</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">{{ scope.row.delete }}</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" >
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="50%">
       <el-form :model="addParam" label-position="left" label-width="100px" style=" margin-left:50px;">
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('vehicleManageTable.maintenanceFolio')" prop="userName">
-              <el-input v-model="addParam.plateNum" style="width: 205px;"/>
+            <el-form-item :label="$t('vehicleManageTable.applyer')" prop="userName">
+              <el-input v-model="addParam.applyer" style="width: 205px;"/>
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+             <el-form-item :label="$t('vehicleManageTable.applyDate')" >
+              <el-date-picker v-model="addParam.applyDate" value-format="yyyy-MM-dd" :placeholder="$t('vehicleManageTable.applyDate')" type="date" style="width: 205px;"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('vehicleManageTable.plateNumber')" >
-              <el-input v-model="addParam.plateNum" style="width: 205px;"/>
+              <!-- <el-input v-model="addParam.plateNumber" style="width: 205px;"/> -->
+              <el-select v-model="addParam.plateNumber" filterable placeholder="请选择">
+                <el-option
+                  v-for="item in plateOptions"
+                  :key="item.value"
+                  :label="item.value"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('vehicleManageTable.captain')" >
+              <el-input v-model="addParam.captain" style="width: 205px;"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('vehicleManageTable.repairStartDate')" >
-              <el-date-picker v-model="addParam.repairStartDate" :placeholder="$t('vehicleManageTable.startTime')" type="date" style="width: 205px;"/>
+            <el-form-item :label="$t('vehicleManageTable.carProperty')" prop="dept">
+              <el-select v-model="addParam.carProperty" :placeholder="$t('vehicleManageTable.carProperty')"  style="width: 205px;">
+                <el-option v-for="item in carPropertyOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('vehicleManageTable.repairEndDate')" >
-              <el-date-picker v-model="addParam.repairEndDate" :placeholder="$t('vehicleManageTable.endTime')" type="date" style="width: 205px;"/>
+            <el-form-item :label="$t('vehicleManageTable.maintainType')">
+              <el-select v-model="addParam.maintainType" :placeholder="$t('vehicleManageTable.maintainType')" clearable style="width: 205px;">
+                <el-option v-for="item in maintainTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>       
+        <el-row>
+          <el-col :span="24" style="padding-right:30px;">
+            <el-form-item :label="$t('vehicleManageTable.subjectDetail')" prop="dept">
+           <el-table
+              :data="detailList"
+              border
+              fit
+              highlight-current-row>
+              <el-table-column :label="$t('vehicleManageTable.subject')" width="auto"  align="center">
+                <template slot-scope="scope">
+                  <el-input v-model="scope.row.subject"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column :label="$t('vehicleManageTable.number')" width="100"  align="center">
+                <template slot-scope="scope">
+                  <el-input v-model="scope.row.number"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column :label="$t('vehicleManageTable.price')" width="100"  align="center">
+                <template slot-scope="scope">
+                  <el-input v-model="scope.row.price"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column :label="$t('vehicleManageTable.amount')" width="100"  align="center">
+                <template slot-scope="scope">
+                  <el-input v-model="scope.row.amount"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" width="100">
+                <template slot="header" slot-scope="scope">
+                  <el-button type="primary" size="mini" @click="handleAddRow()">添加</el-button>
+                </template>
+                <template slot-scope="scope">
+                  <el-button type="danger" size="mini" @click="handleDeleteRow(scope.row)">{{ scope.row.delete }}</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('vehicleManageTable.garage')" prop="dept">
-              <el-input v-model="addParam.garage" style="width: 205px;"/>
+            <el-form-item :label="$t('vehicleManageTable.amountCount')" prop="dept">
+              <el-input v-model="addParam.amount" style="width: 205px;"/>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('vehicleManageTable.repairFee')">
-              <el-input v-model="addParam.repairFee" style="width: 205px;"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
+        </el-row> 
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('vehicleManageTable.dealPerson')">
-              <el-input v-model="addParam.dealPerson" style="width: 205px;"/>
+            <el-form-item :label="$t('vehicleManageTable.checker')" prop="dept">
+              <el-input v-model="addParam.checker" style="width: 205px;"/>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-form-item :label="$t('userAndCarTable.remark')">
+          <el-col :span="12">
+            <el-form-item :label="$t('vehicleManageTable.watcher')">
+              <el-input v-model="addParam.watcher" style="width: 205px;"/>
+            </el-form-item>
+          </el-col>
+        </el-row> 
+        <el-form-item :label="$t('vehicleManageTable.remark')">
           <el-input :autosize="{ minRows: 2, maxRows: 4}" v-model="addParam.remark" type="textarea" placeholder="请输入" style="width: 540px;"/>
         </el-form-item>
       </el-form>
@@ -146,10 +223,8 @@
         <el-button @click="dialogFormVisible = false">{{ $t('userAndCarTable.cancel') }}</el-button>
         <el-button v-if="dialogStatus==='create'" type="primary" @click="createData()">{{ $t('userAndCarTable.save') }}</el-button>
         <el-button v-if="dialogStatus==='edit'" type="primary" @click="editData()">{{ $t('userAndCarTable.save') }}</el-button>
-
       </div>
     </el-dialog>
-
     <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
       <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
         <el-table-column prop="key" label="Channel"/>
@@ -164,7 +239,7 @@
 </template>
 
 <script>
-import { repairRecordList, repairRecordAdd, repairRecord, repairRecordDelete, repairRecordUpdate } from '@/api/vehicleManage'
+import {maintainList,maintainAdd,maintainItem,maintainDelete,maintainUpdate,vehicleAllList} from '@/api/vehicleManage'
 import { setToken, getToken } from '@/utils/auth'
 import waves from '@/directive/waves' // Waves directive
 import { parseTime } from '@/utils'
@@ -197,68 +272,100 @@ export default {
   },
   data() {
     return {
-      dialogImageUrl: '',
+      carPropertyOptions:[{key:0,display_name:'公务用车'},{key:1,display_name:'执法用车'}],
+      maintainTypeOptions:[{key:0,display_name:'保养'},{key:1,display_name:'维修'}],
+      plateList:[],
+      plateOptions:[],
       deptList: null,
       list: [],
       total: 0,
       listLoading: true,
       tableKey: 0,
       listQuery: {
-        maintenanceFolio: '',
+        plateNum: '',
         startDate: '',
         endDate: '',
-        PlateNum: '',
+        maintainType: '',
+        carProperty: '',
         page: 1,
         limit: 10
       },
+      itemDetailList:[],
+      editId:'',//当前编辑行的Id
       addParam: {
-        // RepairCode: $("#RepairCode").val(),//?????维修单号是否需要
-        PlateNum: '',
-        RepairStartDate: '',
-        RepairEndDate: '',
-        RepairFee: '',
-        Garage: '',
-        DealPerson: '',
-        Remark: ''
+        applyer:'',
+        applyDate:'',
+        plateNumber: '',
+        captain:'',
+        carProperty:'',
+        maintainType:'',
+        amount:'',
+        checker:'',
+        watcher:'',
+        remark: '',
       },
-      statusOptions: ['published', 'deleted'],
+      detailList:[],
+
       showReviewer: false,
       dialogFormVisible: false,
       dialogVisible: false,
       dialogStatus: '',
       textMap: {
-        edit: '编辑维修记录',
-        create: '新增维修记录'
+        edit: '编辑维修保养',
+        create: '新增维修保养'
       },
       dialogPvVisible: false,
       pvData: [],
-      downloadLoading: false
+      downloadLoading: false,
     }
   },
   created() {
-    this.init()
+    vehicleAllList().then(response => {
+      this.plateList = response.data.datas;
+      var count = response.data.datas.length;
+      for (var i = 0; i < count; i++) {
+        var obj = {
+          key: this.plateList[i].id,
+          value: this.plateList[i].plateNumber
+        }
+        this.plateOptions.push(obj);
+      }
+    });
+    this.getList();
   },
   methods: {
-    init() {
-      var userName = getToken('UserName')
-      console.log(userName)
-      this.getList()
-    },
     getList() {
-      this.listLoading = false
-      // this.listLoading = true;
-      // repairRecordList(this.listQuery).then(response => {
-      //   this.list = response.data.datas;
-      //   //this.total = response.data.pageInfo.sum;
-      //   this.total=this.list.length;
-      //   for (var i = 0; i < this.total; i++) {
-      //     this.list[i].edit = '编辑';
-      //     this.list[i].delete ='删除';
-      //   }
-      //   setTimeout(() => {
-      //     this.listLoading = false;
-      //   }, 1.5 * 1000)
-      // })
+      this.listLoading = true;
+      maintainList(this.listQuery).then(response => {
+        if(response.data.datas){
+          this.list = response.data.datas;
+          this.total = response.data.pageInfo.sum;
+          for (var i = 0; i < this.total; i++) {
+            this.list[i].edit = '编辑';
+            this.list[i].delete ='删除';
+          }
+        }
+        setTimeout(() => {
+          this.listLoading = false;
+        }, 1.5 * 1000)
+      })
+    },
+    handleAddRow(){
+      var obj={
+        subject:'',
+        number: '',
+        price:'',
+        amount: '',
+        delete:'删除'
+      };
+      this.detailList.push(obj);
+    },
+    handleDeleteRow(row){
+      for(var i=0;i<this.detailList.length;i++){
+        if(row.subject==this.detailList[i].subject){
+          this.detailList.splice(i,1);
+        }
+      }
     },
     getLocalDatetime() {
       var objD = new Date()
@@ -278,7 +385,7 @@ export default {
       return str
     },
     handleFilter() {
-      this.listQuery.page = 1
+      this.listQuery.page = 1;
       this.getList()
     },
     handleModifyStatus(row, status) {
@@ -288,20 +395,6 @@ export default {
       })
       row.status = status
     },
-    sortChange(data) {
-      const { prop, order } = data
-      if (prop === 'id') {
-        this.sortByID(order)
-      }
-    },
-    sortByID(order) {
-      if (order === 'ascending') {
-        this.listQuery.sort = '+id'
-      } else {
-        this.listQuery.sort = '-id'
-      }
-      this.handleFilter()
-    },
     handleCreate() {
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
@@ -309,38 +402,100 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
+    //新增维修保养
     createData() {
-      repairRecordAdd(this.addParam).then(() => {
-        this.list.unshift(this.addParam)
-        this.dialogFormVisible = false
-        this.$notify({
-          title: '成功',
-          message: '提交成功',
-          type: 'success',
-          duration: 2000
-        })
+      var lines=[];
+      for(var i=0;i<this.detailList.length;i++){
+        var obj={
+          subject:this.detailList[i].subject,
+          number: this.detailList[i].number,
+          price:this.detailList[i].price,
+          amount: this.detailList[i].amount
+        };
+        lines.push(obj);
+      }
+      var data={
+        header:this.addParam,
+        lines:lines,
+        linesChanged:true
+      };
+      maintainAdd(data).then(response => {
+        this.dialogFormVisible = false;
+        if(response.data.code==0){
+          this.$message({
+            message: '新增成功',
+            type: 'success',
+            duration: 2000
+          });
+        }
+        this.getList();
       })
     },
     handleEdit(row) {
-      repairRecord(row.id).then(response => {
-        this.addParam = response.data.datas[0]
-        this.dialogStatus = 'edit'
-        this.dialogFormVisible = true
+      this.detailList=[];
+      this.itemDetailList=[];
+      this.editId=row.id;
+      maintainItem(row.id).then(response => {
+        var result=response.data.datas;
+        this.addParam = result.header;
+        if(result.lines.length > 0){
+          for(var i=0;i<result.lines.length;i++)
+          {
+            var obj={
+              subject:result.lines[i].subject,
+              number: result.lines[i].number,
+              price: result.lines[i].price,
+              amount: result.lines[i].amount,
+              delete:'删除'
+            }
+            var obj1={
+              subject:result.lines[i].subject,
+              number: result.lines[i].number,
+              price: result.lines[i].price,
+              amount: result.lines[i].amount,
+            }
+            this.detailList.push(obj);
+            this.itemDetailList.push(obj1);
+          }
+        }
+        this.dialogStatus = 'edit';
+        this.dialogFormVisible = true;
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })
       })
     },
-    editData(row) {
-      repairRecordUpdate(row.id, this.addParam).then(() => {
-        this.list.unshift(this.addParam)
-        this.dialogFormVisible = false
-        this.$notify({
-          title: '成功',
-          message: '修改成功',
-          type: 'success',
-          duration: 2000
-        })
+    //编辑维修保养
+    editData() {
+      var lines=[];
+      for(var i=0;i<this.detailList.length;i++){
+        var obj={
+          subject:this.detailList[i].subject,
+          number: this.detailList[i].number,
+          price:this.detailList[i].price,
+          amount: this.detailList[i].amount
+        };
+        lines.push(obj);
+      }
+      var linesChanged=false;
+      if(JSON.stringify(lines) !=JSON.stringify(this.itemDetailList)){
+        linesChanged=true;
+      }
+      var data={
+        header:this.addParam,
+        lines:lines,
+        linesChanged:linesChanged
+      };
+      maintainUpdate(this.editId,data).then(response => {
+        this.dialogFormVisible = false;
+        if(response.data.code==0){
+          this.$message({
+            message: '修改成功',
+            type: 'success',
+            duration: 2000
+          });
+        }
+        this.getList();
       })
     },
     handleDelete(row) {
@@ -349,7 +504,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        repairRecordDelete(row.id).then(response => {
+        maintainDelete(row.id).then(response => {
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -367,13 +522,13 @@ export default {
     handleDownload() {
       this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['流程编号', '用车人', '用车类型', '用车人电话', '出发时间', '归队时间', '出发地', '目的地', '用车事由', '申请状态', '审核状态']
-          const filterVal = ['applyNum', 'userName', 'carType', 'userMobile', 'startPlanTime', 'backPlanTime', 'startPoint', 'destination', 'applyReson', 'status', 'checkStatus']
+          const tHeader = ['车牌号', '车车辆类型', '申请人', '申请时间', '车队长', '申请事项', '合计金额', '审核人', '监查人']
+          const filterVal = ['plateNumber', 'carProperty', 'applyer', 'applyDate', 'captain', 'maintainType', 'amount', 'checker', 'watcher']
           const data = this.formatJson(filterVal, this.list)
           excel.export_json_to_excel({
             header: tHeader,
             data,
-            filename: '用车申请列表'
+            filename: '车辆维修保养列表'
           })
           this.downloadLoading = false
         })

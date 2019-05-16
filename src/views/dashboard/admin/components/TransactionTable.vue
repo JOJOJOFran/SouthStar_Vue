@@ -1,9 +1,8 @@
 <template>
   <el-table :data="list" style="width: 100%;padding-top: 15px;">
-    <el-table-column label="Order_No" min-width="200"> -->
+    <el-table-column label="Order_No" min-width="200">
       <template slot-scope="scope">
-        <!-- {{ scope.row.order_no | orderNoFilter }} -->
-         ¥{{ scope.row.price | toThousandFilter }}
+        {{ scope.row.order_no | orderNoFilter }}
       </template>
     </el-table-column>
     <el-table-column label="Price" width="195" align="center">

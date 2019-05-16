@@ -44,6 +44,8 @@ export default {
     tableFormwork:'填表模板',
     excelFormwork:'Excel模板',
 
+    uploadExcelData:'数据导入',
+
     introduction: '简述',
     documentation: '文档',
     guide: '引导页',
@@ -321,17 +323,34 @@ export default {
   },
 
   vehicleManageTable: {
-    maintenanceFolio: '维修单号',
+    // maintenanceFolio: '维修单号',
+    // plateNum: '车牌号码',
+    // repairStartDate: '维修开始时间',
+    // repairEndDate: '维修结束时间',
+    // garage: '维修地点',
+    // dealPerson: '经办人',
+
+    carProperty: '使用性质',
+    startDate: '开始时间',
+    endDate: '结束时间',
+    selectYear:'选择年份',
+    applyer:'申请人',
+    applyDate:'申请时间',
     plateNumber: '车牌号码',
-    startTime: '开始时间',
-    endTime: '结束时间',
-    plateNum: '车牌号码',
-    repairStartDate: '维修开始时间',
-    repairEndDate: '维修结束时间',
-    garage: '维修地点',
-    repairFee: '维修费用',
-    dealPerson: '经办人',
+    captain:'车队长',
+    carProperty:'车辆性质',
+    maintainType:'申请事项',
+    amountCount:'合计金额',
+    checker:'审核人',
+    watcher:'监查人',
     remark: '备注',
+    subjectDetail:'维修明细',
+    subject:'维修项目',
+    number: '数量',
+    price:'单价',
+    amount: '费用',
+    operation:'操作',
+   
     edit: '编辑',
     delete: '删除',
     vehicleType: '车型',
@@ -360,6 +379,13 @@ export default {
     edit: '编辑',
     delete: '删除'
   },
+  uploadExcelTable:{
+    templateType:'模板类型',
+    selectTemplateType:'选择模板类型',
+    selectYear:'选择年份',
+  },
+
+
 
   table: {
     userName: '用户名',

@@ -125,7 +125,7 @@
 </template>
 
 <script>
-import { insuranceReminderList, vehicleList, insuranceReminderDelete, insuranceReminder, insuranceReminderUpdate, insuranceReminderAdd } from '@/api/vehicleManage'
+import {vehicleList} from '@/api/vehicleManage'
 import { setToken, getToken } from '@/utils/auth'
 import waves from '@/directive/waves' // Waves directive
 import { parseTime } from '@/utils'
@@ -310,38 +310,13 @@ export default {
       })
     },
     createData() {
-      insuranceReminderdAdd(this.addParam).then(() => {
-        this.list.unshift(this.addParam)
-        this.dialogFormVisible = false
-        this.$notify({
-          title: '成功',
-          message: '提交成功',
-          type: 'success',
-          duration: 2000
-        })
-      })
+      
     },
     handleEdit(row) {
-      insuranceReminder(row.id).then(response => {
-        this.addParam = response.data.datas[0]
-        this.dialogStatus = 'edit'
-        this.dialogFormVisible = true
-        this.$nextTick(() => {
-          this.$refs['dataForm'].clearValidate()
-        })
-      })
+      
     },
     editData(row) {
-      insuranceReminderUpdate(row.id, this.addParam).then(() => {
-        this.list.unshift(this.addParam)
-        this.dialogFormVisible = false
-        this.$notify({
-          title: '成功',
-          message: '修改成功',
-          type: 'success',
-          duration: 2000
-        })
-      })
+      
     },
     handleDelete(row) {
       this.$confirm('确认删除吗, 是否继续?', '提示', {
@@ -349,14 +324,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        insuranceReminderDelete(row.id).then(response => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
-        })
-        const index = this.list.indexOf(row)
-        this.list.splice(index, 1)
+       
       }).catch(() => {
         this.$message({
           type: 'info',

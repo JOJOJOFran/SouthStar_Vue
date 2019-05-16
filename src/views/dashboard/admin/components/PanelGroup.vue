@@ -6,8 +6,8 @@
           <svg-icon icon-class="peoples" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">平台总车数/辆</div>
-          <count-to :start-val="0" :end-val="10" :duration="2600" class="card-panel-num"/>
+          <div class="card-panel-text">New Visits</div>
+          <count-to :start-val="0" :end-val="102400" :duration="2600" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
@@ -17,8 +17,8 @@
           <svg-icon icon-class="message" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">上线数/辆</div>
-          <count-to :start-val="0" :end-val="2" :duration="3000" class="card-panel-num"/>
+          <div class="card-panel-text">Messages</div>
+          <count-to :start-val="0" :end-val="81212" :duration="3000" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
@@ -28,8 +28,8 @@
           <svg-icon icon-class="money" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">离线数/辆</div>
-          <count-to :start-val="0" :end-val="8" :duration="3200" class="card-panel-num"/>
+          <div class="card-panel-text">Purchases</div>
+          <count-to :start-val="0" :end-val="9280" :duration="3200" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
@@ -39,8 +39,8 @@
           <svg-icon icon-class="shopping" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">报警数/辆</div>
-          <count-to :start-val="0" :end-val="0" :duration="3600" class="card-panel-num"/>
+          <div class="card-panel-text">Shoppings</div>
+          <count-to :start-val="0" :end-val="13600" :duration="3600" class="card-panel-num"/>
         </div>
       </div>
     </el-col>

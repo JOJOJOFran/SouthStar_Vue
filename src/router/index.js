@@ -242,12 +242,12 @@ export const constantRouterMap = [
       //   name: 'maintenanceRemind',
       //   meta: { title: 'maintenanceRemind' }
       // },
-      // {
-      //   path: 'maintenanceManage',
-      //   component: () => import('@/views/vehicleManagement/maintenanceManage'),
-      //   name: 'maintenanceManage',
-      //   meta: { title: 'maintenanceManage' }
-      // }
+      {
+        path: 'maintenanceManage',
+        component: () => import('@/views/vehicleManagement/maintenanceManage'),
+        name: 'maintenanceManage',
+        meta: { title: 'maintenanceManage' }
+      }
     ]
   },
   {
@@ -333,8 +333,26 @@ export const constantRouterMap = [
         meta: { title: 'excelFormwork' }
       },
     ]
+  },
+  {
+    path: '/uploadExcelData',//数据导入
+    component: Layout,
+    redirect: '/uploadExcelData/index',
+    meta: {
+      title: 'uploadExcelData',
+      icon: 'uploadExcelData',
+      noCache: true
+    },
+    children: [
+      {
+        path: 'uploadExcelData',
+        component: () => import('@/views/uploadExcelData/uploadExcelData'),
+        name: 'uploadExcelData',
+        meta: { title: 'uploadExcelData' }
+      },
+    ]
   }
-
+  
   // {
   //   path: '/guide',
   //   component: Layout,
