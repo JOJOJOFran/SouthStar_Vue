@@ -592,7 +592,7 @@
               <td style="text-align:center;" colspan="2"><span>对此次出行的评价</span></td>
               <td style="text-align:center;" colspan="5">
                 <el-col :span="10">
-                  <el-checkbox-group v-model="addParam.achievement" style="width:400px" :disabled="true">
+                  <el-checkbox-group v-model="checkDegree" style="width:400px" :disabled="true">
                         <el-checkbox label="准时到达" name="type"></el-checkbox>
                         <el-checkbox label="满意" name="type"></el-checkbox>
                         <el-checkbox label="一般" name="type"></el-checkbox>

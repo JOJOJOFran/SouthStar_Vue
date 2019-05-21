@@ -53,7 +53,7 @@
               <td style="text-align:center;">用车单位</td>
               <td id="userDepartment" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
                   <el-col :span="24">
-                      <el-autocomplete
+                      <!-- <el-autocomplete
                         class="inline-input"
                         v-model="addParam.departmentName"
                         :fetch-suggestions="querySearchDept"
@@ -61,7 +61,8 @@
                         placeholder="请输入内容"
                         @select="handleSelectDept"
                         style="width: 205px;"
-                      ></el-autocomplete>
+                      ></el-autocomplete> -->
+                      <el-input v-model="addParam.departmentName"  style="width: 205px;"/>
                   </el-col>
               </td>
               <td style="text-align:center;">用车事由</td>

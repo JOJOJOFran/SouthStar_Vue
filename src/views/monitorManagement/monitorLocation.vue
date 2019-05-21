@@ -31,7 +31,7 @@
         </bm-info-window>
         <bm-polygon :path="polygonPath" stroke-color="red" :stroke-opacity="1" :fillOpacity="0" :fillColor="''" :stroke-weight="3" :editing="false" :strokeStyle="'solid'"/>
     </baidu-map>
-    <div style="z-index: 10;position: absolute;top:0px;left:0px;bottom: 0px;width: 250px;background-color: white;">
+    <div style="z-index: 10;position: absolute;top:0px;left:0px;bottom: 0px;padding-bottom:20px;width: 250px;background-color: white;overflow-y:scroll">
       <el-input placeholder="输入关键字检索" v-model="filterText"></el-input>
       <el-tree
         style="margin-top: 20px;"
@@ -49,7 +49,7 @@
             </span>
       </el-tree>
     </div>
-    <div style="z-index:10;position:absolute;right:10px;bottom: 210px;width:150px;height:70px;background-color: white;">
+    <div style="z-index:10;position:absolute;right:10px;bottom: 180px;width:150px;height:70px;background-color: white;">
          <el-checkbox-group   v-model="checkFenceOne" class="checkGroup" style="width:150px;height:70px;">
               <el-checkbox  v-for="(item,index1) in fenceList" :label="item.fence_name"  :key="item.district"  
                            style="margin-left:15px;margin-top:10px"
@@ -59,7 +59,7 @@
     <div id="building-foot" style="z-index:10;position:absolute;left:250px;bottom:0px;right:-15px;height:160px;background-color: white;font-size:12px">
       <div style="width:100%;height:30px;border-top:3px solid #409EFF">
         <div class="title">实时数据</div>
-        <div class="sign" style="background-color:#EB7201">10</div>
+        <div class="sign" style="background-color:#EB7201">{{onlineCount+outlineCount}}</div>
         <div class="label">全部</div>
         <div class="sign" style="background-color:#409EFF">{{onlineCount}}</div>
         <div class="label">在线</div>
@@ -119,6 +119,11 @@
             <span>{{ scope.row.status }}</span>
           </template>
         </el-table-column>
+        <!-- <el-table-column :label="'地理位置'" width="auto" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.location }}</span>
+          </template>
+        </el-table-column> -->
       </el-table>
     </div>
     <!--轨迹查询弹窗-->
@@ -633,6 +638,8 @@ export default {
     searchTrajectory(){
       this.trackPoints=[];
       this.exportData=[];
+      this.startMarker = {lng:0,lat:0,icon:start};//轨迹起点
+      this.endMarker = {lng:0,lat:0,icon:end};//轨迹终点
       var start_time=this.GetUnixTime(this.trajectoryParam.start_time);
       var end_time=this.GetUnixTime(this.trajectoryParam.end_time);
       if(end_time-start_time>86400){
@@ -644,7 +651,7 @@ export default {
       }
       var param='ak=zGObvGv0ofXzW7TpsYCtwTgCp8OGtfTw&service_id=200846&entity_name='+this.trajectoryParam.entity_name;
       param+='&process_option=need_denoise=1,radius_threshold='+this.trajectoryParam.radius_threshold+',need_vacuate=1,need_mapmatch=1,transport_mode=driving';
-      param +='&start_time='+start_time+'&end_time='+end_time+'&is_processed=1&page_size=500';
+      param +='&start_time='+start_time+'&end_time='+end_time+'&is_processed=1&page_size=1000';
       var that=this;
       jsonp('http://yingyan.baidu.com/api/v3/track/gettrack?'+param, {}, (err, response) =>{
         if (err) {
