@@ -1,23 +1,22 @@
 <template>
   <div class="body-panel">
-    <baidu-map class="bm-view" :center="center" :zoom="14" :scroll-wheel-zoom="true" @ready="handler">
+    <baidu-map id="allMap" class="bm-view" :center="center" :zoom="14" :scroll-wheel-zoom="true" @ready="handler">
         <bm-map-type :map-types="['BMAP_NORMAL_MAP', 'BMAP_HYBRID_MAP']" anchor="BMAP_ANCHOR_TOP_LEFT"></bm-map-type>
         <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
 
-        <bm-marker v-for="(marker,index) of markList" :key="index" @click="infoWindowOpen(index)" :position="{lng: markList[index].lng, lat: markList[index].lat}" :icon="{url:markList[index].icon, size: {width: 40, height: 50}}">
+        <!-- <bm-marker v-for="(marker,index) of markList" :key="index" @click="infoWindowOpen(index)" :position="{lng: markList[index].lng, lat: markList[index].lat}" :icon="{url:markList[index].icon, size: {width: 40, height: 50}}">
+            <bm-label :content="markList[index].plateNumber" :position="{lng: markList[index].lng, lat: markList[index].lat}" :offset="labelOffset" :labelStyle="{background:'#FFFF00', fontSize : '12px'}"/>
+        </bm-marker> -->
+
+        <bml-marker-clusterer :averageCenter="true">
+          <bm-marker v-for="(marker,index) of markList" :key="index" @click="infoWindowOpen(index)" :position="{lng: markList[index].lng, lat: markList[index].lat}" :icon="{url:markList[index].icon, size: {width: 40, height: 50}}">
             <bm-label :content="markList[index].plateNumber" :position="{lng: markList[index].lng, lat: markList[index].lat}" :offset="labelOffset" :labelStyle="{background:'#FFFF00', fontSize : '12px'}"/>
         </bm-marker>
+        </bml-marker-clusterer>
 
-        <!-- <div v-for="(marker,index) of markList" :key="index">
-          <bm-marker @click="infoWindowOpen(marker)" :position="{lng: marker.lng, lat: marker.lat}" :icon="{url:marker.icon, size: {width: 40, height: 50}} >
-          </bm-marker>
-           <bm-marker :position="{lng: marker.lng, lat: marker.lat}" :dragging="true" @click="infoWindowOpen(marker)">
-          </bm-marker>
-        </div> -->
+        <bm-traffic :predictDate="{weekday: 7, hour: 12}"></bm-traffic>
 
-        <!-- <bm-label v-for="(marker,index) of markList" :key="index" :content="marker.plateNumber" :position="{lng: marker.lng, lat: marker.lat}" :labelStyle="{color: 'blue', fontSize : '12px'}"/> -->
-
-      <bm-info-window :show="isShow" :position="infoPoints" @close="infoWindowClose" title="实时位置详情" style="line-height:30px;padding:2px;">
+        <bm-info-window :show="isShow" :position="infoPoints" @close="infoWindowClose" title="实时位置详情" style="line-height:30px;padding:2px;">
           <span style="font-weight:bold">车辆：</span><span style="color:#0A8CFF;">{{infoData.plateNumber}}</span><br/>
           <span style="font-weight:bold">车架号：</span><span style="color:#0A8CFF;">{{infoData.vinCode}}</span><br/>
           <span style="font-weight:bold">发动机号：</span><span style="color:#0A8CFF;">{{infoData.deviceNumber}}</span><br/>
@@ -40,9 +39,12 @@
         :props="defaultProps"
         node-key="id"
         :default-checked-keys="checkKey"
-        default-expand-all :filter-node-method="filterNode"
+        :default-expanded-keys="expandedKeys"
+        :filter-node-method="filterNode"
         ref="tree2"
         show-checkbox
+        @node-expand="handleExpand"
+        @node-collapse="handleCollapse"
         @check-change="handleCheckChange">
             <span class="custom-tree-node" slot-scope="{ node, data }">
             <span> <i :class="node.icon"></i>{{ node.label }}</span>
@@ -79,7 +81,7 @@
         :header-cell-style="{'background-color':'#409EFF','height':'20px','color':'white','font-size':'12px','padding':'0px'}"
         :cell-style="{'height':'20px','font-size':'12px','padding':'0px'}"
         style="width: 100%;">
-        <el-table-column :label="'车牌号'" align="center" width="120">
+        <el-table-column :label="'车牌号'" align="center" width="auto">
           <template slot-scope="scope">
             <span style="color:#409EFF">{{ scope.row.plateNumber }}</span>
           </template>
@@ -109,7 +111,7 @@
             <span>{{ scope.row.speed }}km/h</span>
           </template>
         </el-table-column>
-        <el-table-column :label="'定位时间'" width="160" align="center">
+        <el-table-column :label="'定位时间'" width="auto" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.time }}</span>
           </template>
@@ -121,7 +123,7 @@
         </el-table-column>
         <!-- <el-table-column :label="'地理位置'" width="auto" align="center">
           <template slot-scope="scope">
-            <span>{{ scope.row.location }}</span>
+            <span style="color:#409EFF;cursor:pointer" @click="getLocationDetail(scope.row)">{{ scope.row.locationDetail}}</span>
           </template>
         </el-table-column> -->
       </el-table>
@@ -365,12 +367,13 @@ export default {
         driver: [{ required: false, message: '请选择驾驶员', trigger: 'blur' }],
         applyNum: [{ required: false, message: '请选择申请单号', trigger: 'blur' }],
       },
-      filterText: '',
+      filterText:'',
       data2: [],
       defaultProps: {
         children: 'children',
         label: 'label'
       },
+      expandedKeys:[0,1,2],
       isShow: false,
       infoPoints:{
         lng:0,
@@ -468,6 +471,7 @@ export default {
       onlineCount:0,
       outlineCount:0,
       onlinePercent:0,
+
     };
   },
   mounted() {
@@ -668,10 +672,10 @@ export default {
                 that.trackPoints.push({lng:data[i].longitude, lat:data[i].latitude});
                 that.exportData.push(data[i]);
               }
-              this.startMarker={lng:data[0].longitude, lat:data[0].latitude,icon:start};
+              that.startMarker={lng:data[0].longitude, lat:data[0].latitude,icon:start};
               var last=data.length-1;
-              this.endMarker={lng:data[last].longitude, lat:data[last].latitude,icon:end};
-              this.showStartAndEnd=true;
+              that.endMarker={lng:data[last].longitude, lat:data[last].latitude,icon:end};
+              that.showStartAndEnd=true;
           }
          
           // this.exportData = data;
@@ -703,7 +707,7 @@ export default {
                 excel.export_json_to_excel({
                   header: tHeader,
                   data,
-                  filename: '用车申请列表'
+                  filename: '车辆行驶轨迹数据列表'
                 });
                 that.downloadLoading = false;
               });
@@ -715,6 +719,14 @@ export default {
         });
       }
     },
+    // getLocationDetail(row){
+    //   var point = new BMap.Point(row.lng, row.lat);
+    //   var myGeo = new BMap.Geocoder();
+    //   // 根据坐标得到地址描述
+    //   myGeo.getLocation(point, function (result) {
+    //     row.locationDetail=result.address;
+    //   });
+    // },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {
         if (j === 'timestamp') {
@@ -723,6 +735,20 @@ export default {
           return v[j]
         }
       }))
+    },
+    //树节点关闭事件
+    handleCollapse(data, checked, indeterminate) {
+      var id=data.id;
+      for(var i=0;i<this.expandedKeys.length;i++){
+        if(this.expandedKeys[i]==id){
+          this.expandedKeys.splice(i,1);
+        }
+      }
+    },
+    //树节点展开事件
+    handleExpand(data, checked, indeterminate) {
+      var id=data.id;
+      this.expandedKeys.push(id);
     },
     //树节点点击事件
     handleCheckChange(data, checked, indeterminate) {
@@ -870,7 +896,7 @@ export default {
               }
               if(result[i].entityType == "公务用车组"){
                 treeData[0].children[0].children.push({id:1+'_'+i,icon:icon,desc:result[i].entity_desc,lat:result[i].latest_location.latitude,lng:result[i].latest_location.longitude,label:result[i].entity_desc+" ( "+statusName+" )"});
-              }else {
+              }else if(result[i].entityType == "应急执法组") {
                 treeData[0].children[1].children.push({id:2+'_'+i,icon:icon,desc:result[i].entity_desc,lat:result[i].latest_location.latitude,lng:result[i].latest_location.longitude,label:result[i].entity_desc+" ( "+statusName+" )"});
               }
             }
@@ -917,7 +943,8 @@ export default {
           location:'',
           deviceNumber:data[x].deviceNumber,
           vinCode:data[x].vinCode,
-          status:onlineStatus==0?'在线':'离线'
+          status:onlineStatus==0?'在线':'离线',
+          // locationDetail:'查看详细位置',
         };
         that.markList.push(obj);
       }
