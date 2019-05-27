@@ -627,11 +627,7 @@ export default {
         var carData=[];
         for(var i=0;i< count;i++){
           if(this.vehicleList[i].desc.toLowerCase().indexOf(queryString.toLowerCase()) !=-1){
-            if(!this.postForm.comment_disabled && this.vehicleList[i].vehicleProperties==0)//公务用车
-            {
-              carData.push({value:this.vehicleList[i].plateNumber,plateNumber:this.vehicleList[i].plateNumber,vehicleId:this.vehicleList[i].id});
-            }
-            else if(this.postForm.comment_disabled && this.vehicleList[i].vehicleProperties==1)
+            if(this.vehicleList[i].vehicleProperties==1)
             {
               carData.push({value:this.vehicleList[i].plateNumber,plateNumber:this.vehicleList[i].plateNumber,vehicleId:this.vehicleList[i].id});
             }
