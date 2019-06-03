@@ -10,11 +10,11 @@
 
         <bml-marker-clusterer :averageCenter="true">
           <bm-marker v-for="(marker,index) of markList" :key="index" @click="infoWindowOpen(index)" :position="{lng: markList[index].lng, lat: markList[index].lat}" :icon="{url:markList[index].icon, size: {width: 40, height: 50}}">
-            <bm-label :content="markList[index].plateNumber" :position="{lng: markList[index].lng, lat: markList[index].lat}" :offset="labelOffset" :labelStyle="{background:'#FFFF00', fontSize : '12px'}"/>
+            <bm-label :content="markList[index].plateNumber+'('+markList[index].status+')'" :position="{lng: markList[index].lng, lat: markList[index].lat}" :offset="labelOffset" :labelStyle="{background:'#FFFF00', fontSize : '12px'}"/>
         </bm-marker>
         </bml-marker-clusterer>
 
-        <bm-traffic :predictDate="{weekday: 7, hour: 12}"></bm-traffic>
+        <!-- <bm-traffic :predictDate="{weekday: 7, hour: 12}"></bm-traffic> -->
 
         <bm-info-window :show="isShow" :position="infoPoints" @close="infoWindowClose" title="实时位置详情" style="line-height:30px;padding:2px;">
           <span style="font-weight:bold">车辆：</span><span style="color:#0A8CFF;">{{infoData.plateNumber}}</span><br/>
@@ -43,6 +43,7 @@
         :filter-node-method="filterNode"
         ref="tree2"
         show-checkbox
+        :render-content="renderContent"
         @node-expand="handleExpand"
         @node-collapse="handleCollapse"
         @check-change="handleCheckChange">
@@ -61,10 +62,12 @@
     <div id="building-foot" style="z-index:10;position:absolute;left:250px;bottom:0px;right:-15px;height:160px;background-color: white;font-size:12px">
       <div style="width:100%;height:30px;border-top:3px solid #409EFF">
         <div class="title">实时数据</div>
-        <div class="sign" style="background-color:#EB7201">{{onlineCount+outlineCount}}</div>
+        <div class="sign" style="background-color:#EB7201">{{onlineCount+outlineCount+parkCount}}</div>
         <div class="label">全部</div>
-        <div class="sign" style="background-color:#409EFF">{{onlineCount}}</div>
+        <div class="sign" style="background-color:#0ED152">{{onlineCount}}</div>
         <div class="label">在线</div>
+        <div class="sign" style="background-color:#409EFF">{{parkCount}}</div>
+        <div class="label">停车</div>
         <div class="sign" style="background-color:#616161">{{outlineCount}}</div>
         <div class="label">离线</div>
         <div class="sign" style="background-color:#EA1313">0</div>
@@ -135,7 +138,7 @@
         <el-row style="margin-top: -25px !important;">
           <el-col :span="6">
             <el-form-item :label="$t('userAndCarTable.plateNumber')">
-              <el-select v-model="trajectoryParam.entity_name" :placeholder="$t('userAndCarTable.plateNumber')" class="filter-item">
+              <el-select v-model="trajectoryParam.entity_name" @change="selectPlateChange()" :placeholder="$t('userAndCarTable.plateNumber')" class="filter-item">
                 <el-option v-for="item in carOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
               </el-select>
             </el-form-item>
@@ -169,8 +172,15 @@
             <bm-map-type :map-types="['BMAP_NORMAL_MAP', 'BMAP_HYBRID_MAP']" anchor="BMAP_ANCHOR_TOP_LEFT"></bm-map-type>
             <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
             <bm-polyline :path="trackPoints" stroke-color="blue" :stroke-opacity="1" :stroke-weight="5" :editing="false" :strokeStyle="'solid'" ></bm-polyline>
-            <bm-marker v-show="showStartAndEnd" :position="{lng:startMarker.lng,lat:startMarker.lat}" :dragging="true" :icon="{url:startMarker.icon, size: {width: 32, height: 32}}" animation="BMAP_ANIMATION_BOUNCE"></bm-marker>
-            <bm-marker v-show="showStartAndEnd" :position="{lng:endMarker.lng,lat:endMarker.lat}" :dragging="true" :icon="{url:endMarker.icon, size: {width: 32, height: 32}}" animation="BMAP_ANIMATION_BOUNCE"></bm-marker>
+            <bm-marker v-show="showStartAndEnd" @click="startWindowOpen()" :position="{lng:startMarker.lng,lat:startMarker.lat}"  :icon="{url:startMarker.icon, size: {width: 32, height: 32}}"></bm-marker>
+            <bm-marker v-show="showStartAndEnd" @click="endWindowOpen()" :position="{lng:endMarker.lng,lat:endMarker.lat}" :icon="{url:endMarker.icon, size: {width: 32, height: 32}}"></bm-marker>
+            <bm-info-window :show="isStartAndEndWindow" :position="{lng:infoWindowData.lng,lat:infoWindowData.lat}" @close="startAndEndWindowClose" title="实时位置详情" style="line-height:30px;padding:2px;">
+              <span style="font-weight:bold">车辆：</span><span style="color:#0A8CFF;">{{infoWindowData.plateNumber}}</span><br/>
+              <span style="font-weight:bold">经度：</span><span style="color:#0A8CFF;">{{infoWindowData.lng}}</span><br/>
+              <span style="font-weight:bold">纬度：</span><span style="color:#0A8CFF;">{{infoWindowData.lat}}</span><br/>
+              <span style="font-weight:bold">时间：</span><span style="color:#0A8CFF;">{{infoWindowData.time}}</span><br/>
+              <span style="font-weight:bold">地址：</span><span style="color:#0A8CFF;">{{infoWindowData.location}}</span><br/>
+            </bm-info-window>
           </baidu-map>
         </div>
       </el-form>
@@ -338,6 +348,15 @@ import online225 from '@/assets/online/online_225度.png'
 import online270 from '@/assets/online/online_270度.png'
 import online315 from '@/assets/online/online_315度.png'
 
+import park0 from '@/assets/park/park_0度.png'
+import park45 from '@/assets/park/park_45度.png'
+import park90 from '@/assets/park/park_90度.png'
+import park135 from '@/assets/park/park_135度.png'
+import park180 from '@/assets/park/park_180度.png'
+import park225 from '@/assets/park/park_225度.png'
+import park270 from '@/assets/park/park_270度.png'
+import park315 from '@/assets/park/park_315度.png'
+
 import start from '@/assets/起点.png'
 import end from '@/assets/终点.png'
 
@@ -465,10 +484,20 @@ export default {
         queueNo: 0,
         queueId: ''
       },
+      selectPlate:'轨迹查询选中车辆',
+      isStartAndEndWindow:false,
+      infoWindowData:{
+        lng:0,
+        lat:0,
+        plateNumber:'',
+        location:'',
+        time:'',
+      },
       startMarker:{lng:0,lat:0,icon:start},//轨迹起点
       endMarker:{lng:0,lat:0,icon:end},//轨迹终点
       showStartAndEnd:false,
       onlineCount:0,
+      parkCount:0,
       outlineCount:0,
       onlinePercent:0,
 
@@ -480,11 +509,29 @@ export default {
      this.queryFences();
   },
   methods: {
+    renderContent(h, { node, data, store }) {
+      if(data.className=="online"){
+        return (
+          <span style="color:#0ED152;font-size:14px">{node.label}</span>
+        );
+      }else if(data.className=="park"){
+        return (
+          <span style="color:#259BFF;font-size:14px">{node.label}</span>
+        );
+      }else{
+        return (
+          <span style="font-size:14px">{node.label}</span>
+        );
+      }
+    },
     handler ({BMap, map}) {
       this.zoom = 15;
     },
     infoWindowClose (e) {
        this.isShow = false;
+    },
+    startAndEndWindowClose(e) {
+       this.isStartAndEndWindow = false;
     },
     infoWindowOpen (index) {
       var that=this;
@@ -511,6 +558,38 @@ export default {
 
         that.trajectoryParam.entity_name=e.entityName;
         that.isShow = true;
+        that.selectPlate=e.plateNumber;
+      });
+    },
+    selectPlateChange(event, item){
+      this.selectPlate = item.display_name;
+    },
+    startWindowOpen(){
+      var that=this;
+      var point = new BMap.Point(that.startMarker.lng, that.startMarker.lat);
+      var myGeo = new BMap.Geocoder();
+      // 根据坐标得到地址描述
+      myGeo.getLocation(point, function (result) {
+        that.infoWindowData.lat=that.startMarker.lat;
+        that.infoWindowData.lng=that.startMarker.lng;
+        that.infoWindowData.plateNumber=that.selectPlate;
+        that.infoWindowData.location=result.address;
+        that.infoWindowData.time=that.timestampToTime(that.startMarker.loc_time);
+        that.isStartAndEndWindow = true;
+      });
+    },
+    endWindowOpen(){
+      var that=this;
+      var point = new BMap.Point(that.endMarker.lng, that.endMarker.lat);
+      var myGeo = new BMap.Geocoder();
+      // 根据坐标得到地址描述
+      myGeo.getLocation(point, function (result) {
+        that.infoWindowData.lat=that.endMarker.lat;
+        that.infoWindowData.lng=that.endMarker.lng;
+        that.infoWindowData.plateNumber=that.selectPlate;
+        that.infoWindowData.location=result.address;
+        that.infoWindowData.time=that.timestampToTime(that.endMarker.loc_time);
+        that.isStartAndEndWindow = true;
       });
     },
     filterNode(value, data) {
@@ -665,19 +744,24 @@ export default {
             duration: 5 * 1000
           })
         } else {
-          var data=response.points;
+          var res = response;
+          var data=res.points;
           if(data.length>0)
           {
               for (var i = 0; i < data.length; i++) {
                 that.trackPoints.push({lng:data[i].longitude, lat:data[i].latitude});
                 that.exportData.push(data[i]);
               }
-              that.startMarker={lng:data[0].longitude, lat:data[0].latitude,icon:start};
-              var last=data.length-1;
-              that.endMarker={lng:data[last].longitude, lat:data[last].latitude,icon:end};
-              that.showStartAndEnd=true;
+              // that.startMarker={lng:data[0].longitude, lat:data[0].latitude,icon:start,loc_time:loc_time};
+              // var last=data.length-1;
+              // that.endMarker={lng:data[last].longitude, lat:data[last].latitude,icon:end,loc_time:loc_time};
+              // that.showStartAndEnd=true;
           }
-         
+          var startPoint = res.start_point;
+          var endPoint = res.end_point;
+          that.startMarker={lng:startPoint.longitude, lat:startPoint.latitude,icon:start,loc_time:startPoint.loc_time,plateNumber:'',location:''};
+          that.endMarker={lng:endPoint.longitude, lat:endPoint.latitude,icon:end,loc_time:endPoint.loc_time,plateNumber:'',location:''};
+          that.showStartAndEnd=true;
           // this.exportData = data;
           // this.GetLocation();
         }
@@ -699,15 +783,17 @@ export default {
           if (result) {
             var address = result.address;
             that.exportData[that.m].address=address;
+            that.exportData[that.m].plateNumber=that.selectPlate;
+            that.exportData[that.m].direction=that.getDirectionDesc(that.exportData[that.m].direction);
             if (that.m == that.exportData.length - 1) {
               import('@/vendor/Export2Excel').then(excel => {
-                const tHeader = ['时间','经度','纬度','速度','方向','定位','地理位置']
-                const filterVal = ['create_time','longitude','latitude','speed','direction','locate_mode','address'];
+                const tHeader = ['车牌号','时间','经度','纬度','速度','方向','定位','地理位置']
+                const filterVal = ['plateNumber','create_time','longitude','latitude','speed','direction','locate_mode','address'];
                 const data = that.formatJson(filterVal, that.exportData);
                 excel.export_json_to_excel({
                   header: tHeader,
                   data,
-                  filename: '车辆行驶轨迹数据列表'
+                  filename: '车辆行驶轨迹数据_'+that.selectPlate
                 });
                 that.downloadLoading = false;
               });
@@ -719,14 +805,6 @@ export default {
         });
       }
     },
-    // getLocationDetail(row){
-    //   var point = new BMap.Point(row.lng, row.lat);
-    //   var myGeo = new BMap.Geocoder();
-    //   // 根据坐标得到地址描述
-    //   myGeo.getLocation(point, function (result) {
-    //     row.locationDetail=result.address;
-    //   });
-    // },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {
         if (j === 'timestamp') {
@@ -841,8 +919,6 @@ export default {
             var treeData=[];
             treeData=[{
               id:0,
-              //icon:"el-icon-delete",
-              //icon:'node-icon-park',
               label:'全部',
               children:[
                 {
@@ -860,6 +936,7 @@ export default {
             this.carOptions=[];
             this.onlineCount=0;
             this.outlineCount=0;
+            this.parkCount=0;
             for(var i=0;i<result.length;i++){
               var obj = {
                 key: result[i].entity_name,
@@ -869,38 +946,39 @@ export default {
               var onlineStatus = 0; //在线状态 0在线 1离线
               var lastTime = this.GetUnixTime(result[i].modify_time);
               onlineStatus = this.getOnlineStatus(lastTime);
-             
-              if(onlineStatus==0){
-                this.onlineCount++;
-              }else{
-                this.outlineCount++;
-              }
               //判断是否静止
               var speed=result[i].latest_location.speed?result[i].latest_location.speed:0;
               var isMove = this.getSpeed(speed);
-              var icon = "";
+              var className = "";
               var statusName="";
               if (onlineStatus == 1) {
-                icon = "node-icon-outline";
                 statusName="离线";
               }
               else if (onlineStatus == 0) {
                 if (isMove == "静止") {
-                  // icon = "node-icon-park";
-                  icon = "node-icon-online";
+                  className = "park";
                   statusName="停车";
                 } else {
-                  icon = "node-icon-online";
+                  className = "online";
                   statusName="在线";
                 }
               }
+              if(onlineStatus==0){
+                if (isMove == "静止") {
+                  this.parkCount++;
+                }else{
+                  this.onlineCount++;
+                }
+              }else{
+                this.outlineCount++;
+              }
               if(result[i].entityType == "公务用车组"){
-                treeData[0].children[0].children.push({id:1+'_'+i,icon:icon,desc:result[i].entity_desc,lat:result[i].latest_location.latitude,lng:result[i].latest_location.longitude,label:result[i].entity_desc+" ( "+statusName+" )"});
+                treeData[0].children[0].children.push({id:1+'_'+i,className:className,desc:result[i].entity_desc,lat:result[i].latest_location.latitude,lng:result[i].latest_location.longitude,label:result[i].entity_desc+" ( "+statusName+" )"});
               }else if(result[i].entityType == "应急执法组") {
-                treeData[0].children[1].children.push({id:2+'_'+i,icon:icon,desc:result[i].entity_desc,lat:result[i].latest_location.latitude,lng:result[i].latest_location.longitude,label:result[i].entity_desc+" ( "+statusName+" )"});
+                treeData[0].children[1].children.push({id:2+'_'+i,className:className,desc:result[i].entity_desc,lat:result[i].latest_location.latitude,lng:result[i].latest_location.longitude,label:result[i].entity_desc+" ( "+statusName+" )"});
               }
             }
-            this.onlinePercent=(this.onlineCount/result.length)*100;
+            this.onlinePercent=((this.onlineCount+this.parkCount)/result.length)*100;
 
             var count0=treeData[0].children[0].children.length;
             var count1=treeData[0].children[1].children.length;
@@ -924,11 +1002,22 @@ export default {
 
       for (var x = 0; x < data.length; x++) {
         var lastTime = this.GetUnixTime(data[x].modify_time);
-        var onlineStatus = this.getOnlineStatus(lastTime);//在线状态 0在线 1离线
         //判断是否静止
         var speed=data[x].latest_location.speed?data[x].latest_location.speed:0;
         var isMove = this.getSpeed(speed);
-
+        var onlineStatus = this.getOnlineStatus(lastTime);//在线状态 0在线 1离线
+        if(onlineStatus==0 && speed==0){
+          onlineStatus=2;
+        }
+        var statusName = null;
+        if(onlineStatus==0){
+          statusName="在线";
+        }else if(onlineStatus==1){
+          statusName="离线";
+        }
+        else if(onlineStatus==2){
+          statusName="停车";
+        }
         var imgName = this.getDirection(data[x].latest_location.direction, onlineStatus);
         // var imgUrl = "../../../../src/icons/imgs/" + imgName;//根据方向选择图片
         var obj={
@@ -943,7 +1032,7 @@ export default {
           location:'',
           deviceNumber:data[x].deviceNumber,
           vinCode:data[x].vinCode,
-          status:onlineStatus==0?'在线':'离线',
+          status:statusName,
           // locationDetail:'查看详细位置',
         };
         that.markList.push(obj);
@@ -968,7 +1057,7 @@ export default {
     //判断当前设备是否在线，规则是最后上传的轨迹点
     //时间在当前系统时间十分钟内判断为在线，否则为离线
     //param {number} time UNIX时间戳
-    //return {number} 在线状态 0在线 1离线
+    //return {number} 在线状态 0在线 1离线 2停车
     getOnlineStatus(time) {
       var status = 0;
       var timestamp = new Date().getTime() / 1000;
@@ -1051,8 +1140,89 @@ export default {
             break;
         }
       }
+      else if (onlineStatus == 2) {//停车
+        switch (Math.floor((direction) / 22.5)) {
+          case 0:
+          case 15:
+            directionImg = park0;
+            break;
+          case 1:
+          case 2:
+            directionImg = park45;
+            break;
+          case 3:
+          case 4:
+            directionImg = park90;
+            break;
+          case 5:
+          case 6:
+            directionImg = park135;
+            break;
+          case 7:
+          case 8:
+            directionImg = park180;
+            break;
+          case 9:
+          case 10:
+            directionImg = park225;
+            break;
+          case 11:
+          case 12:
+            directionImg = park270;
+            break;
+          case 13:
+          case 14:
+            directionImg = park315;
+            break;
+        }
+      }
       return directionImg;
     },
+    /**
+     * 返回当前设备运动方向描述，一共分为8种，45度一个
+     *
+     * @param {number} direction 方向数据
+     * @return {string} 方向描述
+     */
+    getDirectionDesc: function(direction) {
+        var directionDesc = '';
+        direction = direction || 0;
+        switch (Math.floor((direction) / 22.5)) {
+            case 0:
+            case 15:
+                directionDesc = '(北)';
+            break;
+            case 1:
+            case 2:
+                directionDesc = '(东北)';
+            break;
+            case 3:
+            case 4:
+                directionDesc = '(东)';
+            break;
+            case 5:
+            case 6:
+                directionDesc = '(东南)';
+            break;
+            case 7:
+            case 8:
+                directionDesc = '(南)';
+            break;
+            case 9:
+            case 10:
+                directionDesc = '(西南)';
+            break;
+            case 11:
+            case 12:
+                directionDesc = '(西)';
+            break;
+            case 13:
+            case 14:
+                directionDesc = '(西北)';
+            break;
+        }
+        return directionDesc;
+     },
     //判断当前设备是否为静止，规则是速度小于1km/h返回静止，
     //否则返回速度
     //param {number} speed 速度 单位为 km/h
@@ -1162,7 +1332,7 @@ export default {
     height: 12px;
     background-position: center;
     display: inline-block;
-    /*padding-right: 10px;*/
+     /*padding-right: 10px;*/
   }
   .bm-view {
     position: absolute;
