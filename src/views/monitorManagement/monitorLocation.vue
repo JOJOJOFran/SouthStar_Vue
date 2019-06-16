@@ -11,7 +11,7 @@
         <bml-marker-clusterer :averageCenter="true">
           <bm-marker v-for="(marker,index) of markList" :key="index" @click="infoWindowOpen(index)" :position="{lng: markList[index].lng, lat: markList[index].lat}" :icon="{url:markList[index].icon, size: {width: 40, height: 50}}">
             <bm-label :content="markList[index].plateNumber+'('+markList[index].status+')'" :position="{lng: markList[index].lng, lat: markList[index].lat}" :offset="labelOffset" :labelStyle="{background:'#FFFF00', fontSize : '12px'}"/>
-        </bm-marker>
+          </bm-marker>
         </bml-marker-clusterer>
 
         <!-- <bm-traffic :predictDate="{weekday: 7, hour: 12}"></bm-traffic> -->
@@ -169,8 +169,8 @@
         </el-row>
         <div style="width: 100%;height: 500px;margin-top: 20px;">
           <baidu-map class="bm-dialog" :center="{lng: 114.32, lat: 30.38}" :zoom="14" :scroll-wheel-zoom="true" @ready="handler">
-            <bm-map-type :map-types="['BMAP_NORMAL_MAP', 'BMAP_HYBRID_MAP']" anchor="BMAP_ANCHOR_TOP_LEFT"></bm-map-type>
-            <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
+            <!-- <bm-map-type :map-types="['BMAP_NORMAL_MAP', 'BMAP_HYBRID_MAP']" anchor="BMAP_ANCHOR_TOP_LEFT"></bm-map-type> -->
+            <bm-navigation anchor="BMAP_ANCHOR_TOP_LEFT"></bm-navigation>
             <bm-polyline :path="trackPoints" stroke-color="blue" :stroke-opacity="1" :stroke-weight="5" :editing="false" :strokeStyle="'solid'" ></bm-polyline>
             <bm-marker v-show="showStartAndEnd" @click="startWindowOpen()" :position="{lng:startMarker.lng,lat:startMarker.lat}"  :icon="{url:startMarker.icon, size: {width: 32, height: 32}}"></bm-marker>
             <bm-marker v-show="showStartAndEnd" @click="endWindowOpen()" :position="{lng:endMarker.lng,lat:endMarker.lat}" :icon="{url:endMarker.icon, size: {width: 32, height: 32}}"></bm-marker>
@@ -181,7 +181,32 @@
               <span style="font-weight:bold">时间：</span><span style="color:#0A8CFF;">{{infoWindowData.time}}</span><br/>
               <span style="font-weight:bold">地址：</span><span style="color:#0A8CFF;">{{infoWindowData.location}}</span><br/>
             </bm-info-window>
+
+            <bm-marker v-for="(item0,index0) of speeding" @click="openLabel(index0,0)" :key="index0" :position="{lng: speeding[index0].lng, lat: speeding[index0].lat}" :icon="{url:speeding[index0].icon, size: {width: 32, height: 32}}">
+            </bm-marker>
+            <bm-marker v-for="(item1,index1) of harsh_acceleration" @click="openLabel(index1,1)" :key="index1" :position="{lng: harsh_acceleration[index1].lng, lat: harsh_acceleration[index1].lat}" :icon="{url:harsh_acceleration[index1].icon, size: {width: 32, height: 32}}">
+            </bm-marker>
+            <bm-marker v-for="(item2,index2) of harsh_steering" :key="index2" @click="openLabel(index2,2)" :position="{lng: harsh_steering[index2].lng, lat: harsh_steering[index2].lat}" :icon="{url:harsh_steering[index2].icon, size: {width: 32, height: 32}}">
+            </bm-marker>
+            <bm-marker v-for="(item3,index3) of stay_points" :key="index3" @click="openLabel(index3,3)" :position="{lng: stay_points[index3].lng, lat: stay_points[index3].lat}" :icon="{url:stay_points[index3].icon, size: {width: 32, height: 32}}">
+            </bm-marker>
+            <bm-info-window :show="showLabel" :position="{lng:labelObj.lng,lat:labelObj.lat}" @close="startAndEndWindowClose" style="line-height:30px;padding:2px;">
+              <span style="color:#0A8CFF;">{{labelObj.label}}</span><br/>
+            </bm-info-window>
+
           </baidu-map>
+        </div>
+        <div v-show="showBehavior" style="width:300px;height:70px;border:1px solid lightgray;z-index:100;position:absolute;top:200px;right:30px;background:white;">
+          <div style="height:70px;">
+             <div class="behavior" style="color:black;">超速</div>
+             <div class="behavior" style="color:black;">急加速</div>
+             <div class="behavior" style="color:black;">急转弯</div>
+             <div class="behavior" style="color:black;">停留</div>
+             <div class="behavior">{{speeding.length}}</div>
+             <div class="behavior">{{harsh_acceleration.length}}</div>
+             <div class="behavior">{{harsh_steering.length}}</div>
+             <div class="behavior">{{stay_points.length}}</div>
+          </div>
         </div>
       </el-form>
       </div>
@@ -360,6 +385,11 @@ import park315 from '@/assets/park/park_315度.png'
 import start from '@/assets/起点.png'
 import end from '@/assets/终点.png'
 
+import speed from '@/assets/behavior/超速.png'
+import acceleration from '@/assets/behavior/急加速.png'
+import steering from '@/assets/behavior/急转弯.png'
+import stay from '@/assets/behavior/停留.png'
+
 Vue.use(BaiduMap, {
   // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
   ak: 'zGObvGv0ofXzW7TpsYCtwTgCp8OGtfTw'
@@ -500,7 +530,21 @@ export default {
       parkCount:0,
       outlineCount:0,
       onlinePercent:0,
-
+      //驾驶员行为分析
+      drivingbehaviors:['超速','急变速','急转弯','停留'],
+      checkedBehavior:[],
+      speeding:[],//超速
+      harsh_acceleration:[],//急加速
+      harsh_breaking:[],//急刹车
+      harsh_steering:[],//急转弯
+      stay_points:[],//停留点
+      showLabel:false,
+      labelObj:{
+        lng:0,
+        lat:0,
+        label:''
+      },
+      showBehavior:false,
     };
   },
   mounted() {
@@ -560,6 +604,32 @@ export default {
         that.isShow = true;
         that.selectPlate=e.plateNumber;
       });
+    },
+    openLabel(index,type){
+      var that = this;
+      if(type==0){
+        that.labelObj={
+          lng:that.speeding[index].lng,
+          lat:that.speeding[index].lat,
+          label:that.speeding[index].label
+        }
+      }
+      else if(type==1){
+        that.labelObj.lng=that.harsh_acceleration[index].lng;
+        that.labelObj.lat=that.harsh_acceleration[index].lat;
+        that.labelObj.label=that.harsh_acceleration[index].label;
+      }
+      else if(type==2){
+        that.labelObj.lng=that.harsh_steering[index].lng;
+        that.labelObj.lat=that.harsh_steering[index].lat;
+        that.labelObj.label=that.harsh_steering[index].label;
+      }
+      else if(type==3){
+        that.labelObj.lng=that.stay_points[index].lng;
+        that.labelObj.lat=that.stay_points[index].lat;
+        that.labelObj.label=that.stay_points[index].label;
+      }
+      that.showLabel=true;
     },
     selectPlateChange(event, item){
       this.selectPlate = item.display_name;
@@ -716,6 +786,18 @@ export default {
       this.exportData=[];
       this.dialogFormVisible = true;
       this.showStartAndEnd=false;
+      this.speeding = [];//超速
+      this.harsh_acceleration = [];//急加速
+      this.harsh_breaking=[];//急刹车
+      this.harsh_steering=[],//急转弯
+      this.stay_points=[];//停留点
+      this.showLabel=false;
+      this.labelObj={
+        lng:0,
+        lat:0,
+        label:''
+      };
+      this.showBehavior=false;
     },
     //查询轨迹
     searchTrajectory(){
@@ -744,28 +826,108 @@ export default {
             duration: 5 * 1000
           })
         } else {
-          var res = response;
-          var data=res.points;
-          if(data.length>0)
-          {
-              for (var i = 0; i < data.length; i++) {
-                that.trackPoints.push({lng:data[i].longitude, lat:data[i].latitude});
-                that.exportData.push(data[i]);
-              }
-              // that.startMarker={lng:data[0].longitude, lat:data[0].latitude,icon:start,loc_time:loc_time};
-              // var last=data.length-1;
-              // that.endMarker={lng:data[last].longitude, lat:data[last].latitude,icon:end,loc_time:loc_time};
-              // that.showStartAndEnd=true;
-          }
-          var startPoint = res.start_point;
-          var endPoint = res.end_point;
-          that.startMarker={lng:startPoint.longitude, lat:startPoint.latitude,icon:start,loc_time:startPoint.loc_time,plateNumber:'',location:''};
-          that.endMarker={lng:endPoint.longitude, lat:endPoint.latitude,icon:end,loc_time:endPoint.loc_time,plateNumber:'',location:''};
-          that.showStartAndEnd=true;
-          // this.exportData = data;
-          // this.GetLocation();
+          var stime=that.GetUnixTime(this.trajectoryParam.start_time);
+          var etime=that.GetUnixTime(this.trajectoryParam.end_time);
+          var behaviorParam='ak=zGObvGv0ofXzW7TpsYCtwTgCp8OGtfTw&service_id=200846&entity_name='+that.trajectoryParam.entity_name;
+              behaviorParam+='&process_option=need_denoise=1,radius_threshold='+that.trajectoryParam.radius_threshold+',need_vacuate=1,need_mapmatch=1,transport_mode=driving';
+              behaviorParam +='&start_time='+stime+'&end_time='+etime+'&is_processed=1';
+          jsonp('http://yingyan.baidu.com/api/v3/analysis/drivingbehavior?'+behaviorParam, {}, (error, resp) =>{
+            if (error) {
+              Message({
+                message: error.message,
+                type: 'error',
+                duration: 5 * 1000
+              })
+            }else{
+              jsonp('http://yingyan.baidu.com/api/v3/analysis/staypoint?'+behaviorParam, {}, (ex, result) =>{
+                if (ex) {
+                  Message({
+                    message: error.message,
+                    type: 'error',
+                    duration: 5 * 1000
+                  })
+                }else{
+                  //轨迹数据
+                  var data=response.points;
+                  if(data.length>0)
+                  {
+                      for (var i = 0; i < data.length; i++) {
+                        that.trackPoints.push({lng:data[i].longitude, lat:data[i].latitude});
+                        that.exportData.push(data[i]);
+                      }
+                  }
+                  var startPoint = response.start_point;
+                  var endPoint = response.end_point;
+                  that.startMarker={lng:startPoint.longitude, lat:startPoint.latitude,icon:start,loc_time:startPoint.loc_time,plateNumber:'',location:''};
+                  that.endMarker={lng:endPoint.longitude, lat:endPoint.latitude,icon:end,loc_time:endPoint.loc_time,plateNumber:'',location:''};
+                  that.showStartAndEnd=true;
+                  //驾驶员行为数据
+                  for(var j=0;j<resp.speeding.length;j++){
+                    var obj={
+                      distance:resp.speeding[j].speeding_distance,
+                      lng:resp.speeding[j].speeding_points[0].longitude,
+                      lat:resp.speeding[j].speeding_points[0].latitude,
+                      limit_speed:resp.speeding[j].speeding_points[0].limit_speed,
+                      actual_speed:resp.speeding[j].speeding_points[0].actual_speed,
+                      loc_time:that.timestampToTime(resp.speeding[j].speeding_points[0].loc_time),
+                      icon:speed,
+                      label:'时速：'+resp.speeding[j].speeding_points[0].actual_speed+'km/h，限速：'+resp.speeding[j].speeding_points[0].limit_speed+'km/h'
+                    }
+                    that.speeding.push(obj);
+                  }
+                  for(var k=0;k<resp.harsh_acceleration.length;k++){
+                    var obj={
+                      lng:resp.harsh_acceleration[k].longitude,
+                      lat:resp.harsh_acceleration[k].latitude,
+                      loc_time:that.timestampToTime(resp.harsh_acceleration[k].loc_time),
+                      icon:acceleration,
+                      label:'加速前：'+resp.harsh_acceleration[k].initial_speed+'km/h，加速后：'+resp.harsh_acceleration[k].end_speed+'km/h'
+                    }
+                    that.harsh_acceleration.push(obj);
+                  }
+                  for(var m=0;m<resp.harsh_steering.length;m++){
+                    var type='';
+                    if(resp.harsh_steering[m].turn_type=="left"){
+                      type='左转弯';
+                    }
+                    else if(resp.harsh_steering[m].turn_type=="right"){
+                      type='右转弯';
+                    }
+                    else{
+                      type='方向未知';
+                    }
+                    var obj={
+                      lng:resp.harsh_steering[m].longitude,
+                      lat:resp.harsh_steering[m].latitude,
+                      loc_time:that.timestampToTime(resp.harsh_steering[m].loc_time),
+                      speed:resp.harsh_steering[m].speed,
+                      icon:steering,
+                      label:'转向：'+type+'，时速：'+resp.harsh_steering[m].speed+'km/h'
+                    }
+                    that.harsh_steering.push(obj);
+                  }
+                  //停留点
+                  if(result.staypoint_num>0){
+                    for(var n=0;n<result.stay_points.length;n++){
+                      var obj={
+                        lng:result.stay_points[n].stay_point.longitude,
+                        lat:result.stay_points[n].stay_point.latitude,
+                        startTime:that.timestampToTime(result.stay_points[n].start_time),
+                        endTime:that.timestampToTime(result.stay_points[n].end_time),
+                        duration:result.stay_points[n].duration/60,
+                        icon:stay,
+                        label:'开始时间：'+that.timestampToTime(result.stay_points[n].start_time)+'，时长：'+ (result.stay_points[n].duration/60).toFixed(0)+'分钟'
+                      }
+                      that.stay_points.push(obj);
+                    }
+                  }
+                  this.showBehavior=true;
+                }
+              });
+            }
+          });
         }
-      })
+      });
     },
     //轨迹数据导出
     exportTrajectory(){
@@ -1358,5 +1520,8 @@ export default {
   }
   .label{
     height:20px;line-height:20px;margin-top:5px;margin-left:5px;float:left
+  }
+  .behavior{
+    width:74px;height:35px;float:left;line-height:35px;text-align:center;color:#0A8CFF;font-weight:bold;font-size:15px;
   }
 </style>
