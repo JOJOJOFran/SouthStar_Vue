@@ -801,6 +801,18 @@ export default {
     },
     //查询轨迹
     searchTrajectory(){
+      this.speeding = [];//超速
+      this.harsh_acceleration = [];//急加速
+      this.harsh_breaking=[];//急刹车
+      this.harsh_steering=[],//急转弯
+      this.stay_points=[];//停留点
+      this.showLabel=false;
+      this.labelObj={
+        lng:0,
+        lat:0,
+        label:''
+      };
+
       this.trackPoints=[];
       this.exportData=[];
       this.startMarker = {lng:0,lat:0,icon:start};//轨迹起点
