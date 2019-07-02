@@ -1018,6 +1018,7 @@ export default {
       //     }
       //   }
       // }
+      this.checkKey=[];
       this.checkData = checked.checkedNodes;
       for(var i=0;i<this.checkData.length;i++){
         this.checkKey.push(this.checkData[i].id);
