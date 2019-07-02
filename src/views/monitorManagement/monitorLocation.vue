@@ -46,8 +46,8 @@
         :render-content="renderContent"
         @node-expand="handleExpand"
         @node-collapse="handleCollapse"
-        @check-change="handleCheckChange">
-            <span class="custom-tree-node" slot-scope="{ node, data }">
+        @check="handleCheckChange">
+            <span class="custom-tree-node" slot-scope="{ node }">
             <span> <i :class="node.icon"></i>{{ node.label }}</span>
             </span>
       </el-tree>
@@ -444,6 +444,7 @@ export default {
       polygonPath:[],
       trackPoints:[],
       list: null,
+      commentList:[],
       markList:[],
       fenceList:null,
       checkFenceOne:[],
@@ -1003,35 +1004,24 @@ export default {
       this.expandedKeys.push(id);
     },
     //树节点点击事件
-    handleCheckChange(data, checked, indeterminate) {
-      this.center={lng: data.lng, lat: data.lat};
-      if(!data.children && checked){
-        this.checkData.push(data.desc);
-        this.checkKey.push(data.id);
-        //this.GetCheckEntities(this.checkData);
-      }
-      else if(!data.children && !checked){
-        // var newList = [];
-        // var  newIds=[];
-        for(var k=0;k<this.checkData.length;k++){
-          if(data.desc == this.checkData[k]){
-            // newList.push(this.checkData[i]);
-            // newIds.push(this.checkKey[i]);
-            this.checkData.splice(k, 1);
-            this.checkKey.splice(k, 1)
-          }
-        }
-        // this.checkData=[];
-        // this.checkKey=[];
-        // this.checkData=newList;
-        // this.checkKey=newIds;
-
-      }
-      // else if(data.children && checked){
-      //
-      // }else{
-      //
+    handleCheckChange(data, checked) {
+      // this.center={lng: data.lng, lat: data.lat};
+      // if(!data.children && checked){
+      //   this.checkData.push(data.desc);
+      //   this.checkKey.push(data.id);
       // }
+      // else if(!data.children && !checked){
+      //   for(var k=0;k<this.checkData.length;k++){
+      //     if(data.desc == this.checkData[k]){
+      //       this.checkData.splice(k, 1);
+      //       this.checkKey.splice(k, 1)
+      //     }
+      //   }
+      // }
+      this.checkData = checked.checkedNodes;
+      for(var i=0;i<this.checkData.length;i++){
+        this.checkKey.push(this.checkData[i].id);
+      }
       this.GetCheckEntities(this.checkData);
     },
     //请求选中车辆的位置
@@ -1042,7 +1032,7 @@ export default {
           newData.push(this.list[f]);
         }else {
           for (var j = 0; j < data.length; j++) {
-            if (this.list[f].entity_desc == data[j]) {
+            if (this.list[f].entity_desc == data[j].desc) {
               newData.push(this.list[f]);
             }
           }
@@ -1112,6 +1102,26 @@ export default {
             this.outlineCount=0;
             this.parkCount=0;
             for(var i=0;i<result.length;i++){
+              //过滤精确度大于20米的数据，存入历史表
+              if(result[i].latest_location.radius!=undefined && result[i].latest_location.radius < 20){
+                if(this.commentList.length == 0){
+                  this.commentList.push(result[i]);
+                }else{
+                  var flag=false;
+                  var index=0;
+                  for(var j=0;j<this.commentList.length;j++){
+                    if(this.commentList[j].entity_name == result[i].entity_name){
+                      flag = true;
+                      index = j;
+                    }
+                  }
+                  if(flag){
+                    this.commentList.splice(index,1,result[i])
+                  }else{
+                    this.commentList.push(result[i]);
+                  }
+                }
+              }
               var obj = {
                 key: result[i].entity_name,
                 display_name: result[i].entity_desc
@@ -1166,6 +1176,7 @@ export default {
             }else {
               this.GetCheckEntities(this.checkData);
             }
+            console.log(this.commentList);
           }
         }
       })
@@ -1175,6 +1186,8 @@ export default {
       that.markList=[];
 
       for (var x = 0; x < data.length; x++) {
+        var lng = data[x].latest_location.longitude;
+        var lat = data[x].latest_location.latitude;
         var lastTime = this.GetUnixTime(data[x].modify_time);
         //判断是否静止
         var speed=data[x].latest_location.speed?data[x].latest_location.speed:0;
@@ -1192,16 +1205,41 @@ export default {
         else if(onlineStatus==2){
           statusName="停车";
         }
+        //解决定位在纸坊东站的问题
+        if(onlineStatus !=0 && lng.toFixed(2)==114.35){
+            lng = 114.34506991838;
+        }
+        if(speed > 200){
+          lng=114.34426197814;
+          lat=30.360739347049;
+          speed=60;
+        }
+        
+        var radius = data[x].latest_location.radius;
+        if(radius != undefined && radius>=20){
+          for(var i=0;i<this.commentList.length;i++){
+            if(this.commentList[i].entity_name==data[x].entity_name){
+              lng=this.commentList[i].latest_location.longitude;
+              lat=this.commentList[i].latest_location.latitude;
+              break;
+            }
+          }
+        }
+        //解决初始化定位在坐标(0,0)的问题，初始化位置在车库
+        if(lng==0 && lat==0){
+          lng=114.34424057114;
+          lat=30.360944120379;
+        }
+        
         var imgName = this.getDirection(data[x].latest_location.direction, onlineStatus);
-        // var imgUrl = "../../../../src/icons/imgs/" + imgName;//根据方向选择图片
         var obj={
-          lng:data[x].latest_location.longitude,
-          lat:data[x].latest_location.latitude,
+          lng:lng,
+          lat:lat,
           icon:imgName,
           entityName:data[x].entity_name,
           plateNumber:data[x].entity_desc,
           entityType:data[x].entityType,
-          speed:data[x].latest_location.speed?data[x].latest_location.speed:0,
+          speed:speed,
           time:this.timestampToTime(data[x].latest_location.loc_time),
           location:'',
           deviceNumber:data[x].deviceNumber,

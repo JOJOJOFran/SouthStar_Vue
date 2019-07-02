@@ -99,8 +99,10 @@
           <span style="color: green;">{{ scope.row.checkStatus }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('applyTable.caozuo')" align="center" width="220">
+      <el-table-column :label="$t('applyTable.caozuo')" align="center" width="300">
         <template slot-scope="scope">
+          <!-- <el-button type="primary" size="mini" v-if="scope.row.checkStatus =='已完成'"  plain disabled>{{ scope.row.edit }}</el-button>
+          <el-button type="primary" size="mini" v-else @click="handleEdit(scope.row)">{{ scope.row.edit }}</el-button> -->
           <el-button type="primary" size="mini" style="background-color:#42b983" @click="handleCalculation(scope.row)">{{ scope.row.calculation }}</el-button>
           <el-button type="primary" size="mini"  @click="handlePrint(scope.row)">{{ scope.row.print }}</el-button>
           <el-button type="danger" size="mini" v-if="scope.row.checkStatus =='已完成'"  plain disabled>{{ scope.row.cancel }}</el-button>
@@ -475,39 +477,49 @@
               <td rowspan="3" style="text-align:center;">用车单位申请信息</td>
               <td style="text-align:center;">用车单位</td>
               <td id="userDepartment" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                  {{addParam.userDepartment}}
+                  <el-col :span="24" v-if="dialogStatus=='edit'"><el-input v-model="addParam.userDepartment" style="width: 100%;"/></el-col>
+                  <label v-else>{{addParam.userDepartment}}</label>
               </td>
               <td style="text-align:center;">用车事由</td>
               <td style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                {{addParam.applyReson}}
+                <el-col :span="24" v-if="dialogStatus=='edit'"><el-input v-model="addParam.applyReson" style="width: 100%;"/></el-col>
+                <label v-else>{{addParam.applyReson}}</label>
               </td>
               <td style="text-align:center;">出发地点</td>
               <td id="startPoint" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                {{addParam.startPoint}}
+                <el-col :span="24" v-if="dialogStatus=='edit'"><el-input v-model="addParam.startPoint" style="width: 100%;"/></el-col>
+                <label v-else>{{addParam.startPoint}}</label>
               </td>
             </tr>
             <tr>
               <td style="text-align:center;">用车人</td>
               <td id="userName" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-               {{addParam.userName}}
+                <el-col :span="24" v-if="dialogStatus=='edit'"><el-input v-model="addParam.userName" style="width: 100%;"/></el-col>
+                <label v-else>{{addParam.userName}}</label>
               </td>
               <td style="text-align:center;">联系电话</td>
               <td id="userMobile" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                {{addParam.userMobile}}
+                <el-col :span="24" v-if="dialogStatus=='edit'"><el-input v-model="addParam.userMobile" style="width: 100%;"/></el-col>
+                <label v-else>{{addParam.userMobile}}</label>
               </td>
               <td style="text-align:center;">目的地</td>
               <td id="destination" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                {{addParam.destination}}
+                <el-col :span="24" v-if="dialogStatus=='edit'"><el-input v-model="addParam.destination" style="width: 100%;"/></el-col>
+                <label v-else>{{addParam.destination}}</label>
               </td>
             </tr>
             <tr>
               <td style="text-align:center;">计划出车时间</td>
               <td id="startPlanTime" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                  {{addParam.startPlanTime}}
+                <el-col :span="24" v-if="dialogStatus=='edit'">
+                  <el-date-picker  v-model="addParam.startPlanTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss"  style="width: 100%;"/>
+                </el-col>
+                <label v-else>{{addParam.startPlanTime}}</label>
               </td>
               <td style="text-align:center;">搭车人数</td>
               <td id="userCount" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                {{addParam.userCount}}
+                <el-col :span="24" v-if="dialogStatus=='edit'"><el-input v-model="addParam.userCount" style="width: 100%;"/></el-col>
+                <label v-else>{{addParam.userCount}}</label>
               </td>
               <td style="text-align:center;">用车性质</td>
               <td id="userProperty" style="text-align:center;font-weight:bold;font-family:'STKaiti'">
@@ -521,21 +533,51 @@
               <td rowspan="2" style="text-align:center;">公用平台出车信息</td>
               <td style="text-align:center;">派用车种类</td>
               <td id="carType" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                {{addParam.carType}}
+                <el-col :span="24" v-if="dialogStatus=='edit'">
+                  <el-select v-model="addParam.carType" class="filter-item" placeholder="选择派车种类" style="width: 100%;">
+                    <el-option v-for="item in carTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
+                  </el-select>
+                </el-col>
+                <label v-else>{{addParam.carType}}</label>
               </td>
               <td style="text-align:center;">调度车辆</td>
               <td id="plateNumber" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                {{addParam.plateNumber}}
+                <el-col :span="24" v-if="dialogStatus=='edit'">
+                  <el-autocomplete
+                    class="inline-input"
+                    v-model="addParam.plateNumber"
+                    :fetch-suggestions="querySearchVehicle"
+                    suffix-icon="el-icon-search"
+                    placeholder="请输入内容"
+                    @select="handleSelectVehicle"
+                    style="width: 100%;"
+                  ></el-autocomplete>
+                </el-col>
+                <label v-else>{{addParam.plateNumber}}</label>
               </td>
               <td style="text-align:center;">调度驾驶员</td>
               <td id="driverName" style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                {{addParam.driverName}}
+                <el-col :span="24" v-if="dialogStatus=='edit'">
+                  <el-autocomplete
+                    class="inline-input"
+                    v-model="addParam.driverName"
+                    :fetch-suggestions="querySearchDriver"
+                    suffix-icon="el-icon-search"
+                    placeholder="请输入内容"
+                    @select="handleSelectDriver"
+                    style="width: 100%;"
+                  ></el-autocomplete>
+                </el-col>
+                <label v-else>{{addParam.driverName}}</label>
               </td>
             </tr>
             <tr>
               <td style="text-align:center;">出车时间</td>
               <td  style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                {{addParam.startPlanTime}}
+                <el-col :span="24" v-if="dialogStatus=='edit'">
+                  <el-date-picker v-model="addParam.departureTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%;"/>
+                </el-col>
+                <label v-else>{{addParam.departureTime}}</label>
               </td>
               <td style="text-align:center;">归队时间</td>
               <td  style="text-align:center;font-weight:bold;font-family:'STKaiti';">
@@ -619,7 +661,8 @@
         </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="businessPrintVisible = false">{{ $t('applyTable.cancel') }}</el-button>
-        <el-button type="primary" @click="printData()">打印</el-button>
+        <el-button type="primary" v-if="dialogStatus=='edit'" @click="editData()">保存</el-button>
+        <el-button type="primary" v-else @click="printData()">打印</el-button>
       </div>
     </el-dialog>
 
@@ -651,39 +694,59 @@
                   <td rowspan="3" style="text-align:center;">用车单位申请信息</td>
                   <td style="text-align:center;">用车单位</td>
                   <td style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                    {{addParam.userDepartment}}
+                    <el-col :span="24" v-if="dialogStatus=='edit'">
+                      <el-autocomplete 
+                        class="inline-input"
+                        v-model="addParam.userDepartment"
+                        :fetch-suggestions="querySearchDept"
+                        suffix-icon="el-icon-search"
+                        placeholder="请输入内容"
+                        @select="handleSelectDept"
+                        style="width: 205px;"
+                      ></el-autocomplete>
+                    </el-col>
+                    <label v-else>{{addParam.userDepartment}}</label>
                   </td>
                   <td style="text-align:center;">用车事由</td>
                   <td style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                    {{addParam.applyReson}}
+                    <el-col :span="24" v-if="dialogStatus=='edit'"><el-input v-model="addParam.applyReson" style="width: 100%;"/></el-col>
+                    <label v-else>{{addParam.applyReson}}</label>
                   </td>
                   <td style="text-align:center;">出发地点</td>
                   <td style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                    {{addParam.startPoint}}
+                    <el-col :span="24" v-if="dialogStatus=='edit'"><el-input v-model="addParam.startPoint" style="width: 100%;"/></el-col>
+                    <label v-else>{{addParam.startPoint}}</label>
                   </td>
                 </tr>
                 <tr>
                   <td style="text-align:center;">用车人</td>
                   <td style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                    {{addParam.userName}}
+                    <el-col :span="24" v-if="dialogStatus=='edit'"><el-input v-model="addParam.userName" style="width: 100%;"/></el-col>
+                    <label v-else>{{addParam.userName}}</label>
                   </td>
                   <td style="text-align:center;">联系电话</td>
                   <td  style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                    {{addParam.userMobile}}
+                    <el-col :span="24" v-if="dialogStatus=='edit'"><el-input v-model="addParam.userMobile" style="width: 100%;"/></el-col>
+                    <label v-else>{{addParam.userMobile}}</label>
                   </td>
                   <td style="text-align:center;">目的地</td>
                   <td  style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                    {{addParam.destination}}
+                    <el-col :span="24" v-if="dialogStatus=='edit'"><el-input v-model="addParam.destination" style="width: 100%;"/></el-col>
+                    <label v-else>{{addParam.destination}}</label>
                   </td>
                 </tr>
                 <tr>
                   <td style="text-align:center;">计划出车时间</td>
                   <td  style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                    {{addParam.startPlanTime}}
+                    <el-col :span="24" v-if="dialogStatus=='edit'">
+                        <el-date-picker v-model="addParam.startPlanTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%;"/>
+                    </el-col>
+                    <label v-else>{{addParam.startPlanTime}}</label>
                   </td>
                   <td style="text-align:center;">搭车人数</td>
                   <td style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                    {{addParam.userCount}}
+                    <el-col :span="24" v-if="dialogStatus=='edit'"><el-input v-model="addParam.userCount" style="width: 100%;"/></el-col>
+                    <label v-else>{{addParam.userCount}}</label>
                   </td>
                   <td style="text-align:center;">用车性质</td>
                   <td style="text-align:center;font-weight:bold;font-family:'STKaiti';">
@@ -694,21 +757,51 @@
                   <td rowspan="2" style="text-align:center;">公用平台出车信息</td>
                   <td style="text-align:center;">派用车种类</td>
                   <td style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                    {{addParam.carType}}
+                    <el-col :span="24" v-if="dialogStatus=='edit'">
+                      <el-select v-model="addParam.carType" class="filter-item" placeholder="选择派车种类" style="width: 100%;">
+                        <el-option v-for="item in carTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
+                      </el-select>
+                    </el-col>
+                    <label v-else>{{addParam.carType}}</label>
                   </td>
                   <td style="text-align:center;">调度车辆</td>
                   <td  style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                    {{addParam.plateNumber}}
+                    <el-col :span="24" v-if="dialogStatus=='edit'">
+                      <el-autocomplete
+                        class="inline-input"
+                        v-model="addParam.plateNumber"
+                        :fetch-suggestions="querySearchVehicle"
+                        suffix-icon="el-icon-search"
+                        placeholder="请输入内容"
+                        @select="handleSelectVehicle"
+                        style="width: 100%;"
+                      ></el-autocomplete>
+                    </el-col>
+                    <label v-else>{{addParam.plateNumber}}</label>
                   </td>
                   <td style="text-align:center;">调度驾驶员</td>
                   <td style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                    {{addParam.driverName}}
+                     <el-col :span="24" v-if="dialogStatus=='edit'">
+                      <el-autocomplete
+                        class="inline-input"
+                        v-model="addParam.driverName"
+                        :fetch-suggestions="querySearchDriver"
+                        suffix-icon="el-icon-search"
+                        placeholder="请输入内容"
+                        @select="handleSelectDriver"
+                        style="width: 100%;"
+                      ></el-autocomplete>
+                    </el-col>
+                    <label v-else>{{addParam.driverName}}</label>
                   </td>
                 </tr>
                 <tr>
                   <td style="text-align:center;">出车时间</td>
                   <td  style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                    {{addParam.startPlanTime}}
+                      <el-col :span="24" v-if="dialogStatus=='edit'">
+                        <el-date-picker v-model="addParam.departureTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%;"/>
+                      </el-col>
+                      <label v-else>{{addParam.departureTime}}</label>
                   </td>
                   <td style="text-align:center;">归队时间</td>
                   <td  style="text-align:center;font-weight:bold;font-family:'STKaiti';">
@@ -783,7 +876,8 @@
         </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="emergencyPrintVisible = false">{{ $t('applyTable.cancel') }}</el-button>
-        <el-button type="primary" @click="printData()">打印</el-button>
+        <el-button type="primary" v-if="dialogStatus=='edit'" @click="editData()">保存</el-button>
+        <el-button type="primary" v-else @click="printData()">打印</el-button>
       </div>
     </el-dialog>
   </div>
@@ -792,7 +886,7 @@
 
 <script>
   // import { fetchList } from '@/api/article'
-  import { dispatchList, deptList,dispatchItem,applyDetail,recieptSet,recieptGet,cancelOrder,deleteOrder} from '@/api/applyCar'
+  import { dispatchList, deptList,dispatchItem,applyDetail,recieptSet,recieptGet,cancelOrder,deleteOrder,driverEnableList,vehicleEnableList} from '@/api/applyCar'
   import { setNewToken,getNewToken} from '@/utils/auth'
   import waves from '@/directive/waves' // Waves directive
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -844,7 +938,7 @@
         printFormVisible: false,
         dialogStatus: '',
         textMap: {
-          detail:'派车单详情',
+          edit:'修改派车单',
           print:'打印派车单'
         },
         dialogPvVisible: false,
@@ -870,7 +964,8 @@
           driverName: "",
           driverPhone: "",
           vehicleId: "",
-          plateNumber:""
+          plateNumber:"",
+          departureTime:""//出车时间
         },
         applyDepartmentId:'',
         localDate:'',
@@ -935,6 +1030,8 @@
               this.list[i].detail = "详情";
               this.list[i].print = "打印";
               this.list[i].calculation = "回执";
+              this.list[i].edit = "修改";
+              
               if(this.list[i].sourceType==0)
               {
                 this.list[i].cancel="取消";
@@ -950,13 +1047,57 @@
           this.listLoading = false;
         })
       },
-      handleSelectVehicle(){},
-      handleSelectDriver(){},
-      querySearchVehicle(){},
-      querySearchDriver(){},
+      //选择车辆
+      querySearchVehicle(queryString, cb){
+        vehicleEnableList().then(response => {
+          var data = response.data.datas;
+          var count=0;
+          if(data) {
+            this.vehicleList = response.data.datas;
+            count = response.data.datas.length;
+          }
+          var carData=[];
+          for(var i=0;i< count;i++){
+            if(this.vehicleList[i].desc.toLowerCase().indexOf(queryString.toLowerCase()) !=-1){
+              if(this.vehicleList[i].vehicleProperties==0)//公务用车
+              {
+                carData.push({value:this.vehicleList[i].plateNumber,plateNumber:this.vehicleList[i].plateNumber,vehicleId:this.vehicleList[i].id});
+              }
+            }
+          }
+          cb(carData);
+        });
+      },
+      handleSelectVehicle(item){
+        this.addParam.vehicleId=item.vehicleId;
+        this.addParam.plateNumber=item.plateNumber;
+      },
+      //选择司机
+      querySearchDriver(queryString, cb){
+        driverEnableList().then(response => {
+          var data = response.data.datas;
+          var count=0;
+          if(data) {
+            this.driverList = response.data.datas;
+            count = response.data.datas.length;
+          }
+          var carData=[];
+          for(var i=0;i<count;i++){
+            var dataStr = this.driverList[i].desc;
+            if(dataStr.indexOf(queryString.toLowerCase()) !=-1){
+              carData.push({value:this.driverList[i].desc,name:this.driverList[i].name,driverId:this.driverList[i].id,driverPhone:this.driverList[i].mobileNum});
+            }
+          }
+          cb(carData);
+        });
+      },
+      handleSelectDriver(item){
+        this.addParam.driverId=item.driverId;
+        this.addParam.driverName = item.name+'('+item.driverPhone+')'
+      },
       querySearchDept(){},
       handleSelectDept(){},
-
+      //详情
       handleDetail(row){
         applyDetail(row.applyId).then(resp => {
           this.dispatchId=row.id;
@@ -973,6 +1114,56 @@
           });
         });
       },
+      //修改
+      handleEdit(row){
+        this.dispatchId=row.id;
+        //详情
+        dispatchItem(row.id).then(response => {
+          //核算
+          this.clearRecieptModel();
+          recieptGet(row.id).then(res => {
+            this.addParam = response.data.datas;
+            for(var i=0;i<this.deptList.length;i++){
+                if(this.deptList[i].id==this.addParam.departmentId){
+                    this.addParam.departmentName=this.deptList[i].departmentName;
+                }
+            }
+            if(res.data.datas){
+              this.recieptModel = res.data.datas;
+              this.checkClean=[];
+              this.checkDegree=[];
+              if(this.recieptModel.isClean){
+                this.checkClean.push("是");
+              }else{
+                this.checkClean.push("否");
+              }
+              if(this.recieptModel.evaluation==1){
+                this.checkDegree.push("准时到达");
+              }else if(this.recieptModel.evaluation==16){
+                this.checkDegree.push("满意");
+              }
+              else if(this.recieptModel.evaluation==32){
+                this.checkDegree.push("一般");
+              }
+              else if(this.recieptModel.evaluation==48){
+                this.checkDegree.push("不满意");
+              }
+            }
+            this.dialogStatus = 'edit';
+            if(row.carProperty !="公务用车"){
+              this.emergencyPrintVisible=true;
+            }else{
+              this.businessPrintVisible = true;
+            }
+            this.$nextTick(() => {
+              this.$refs['dataForm'].clearValidate();
+            })
+          });
+        });
+      },
+      //修改提交
+      editData(){},
+      //打印
       handlePrint(row){
         this.dispatchId=row.id;
         //详情
@@ -1006,7 +1197,6 @@
               else if(this.recieptModel.evaluation==48){
                 this.checkDegree.push("不满意");
               }
-              
             }
             this.dialogStatus = 'print';
             if(row.carProperty !="公务用车"){
