@@ -1005,7 +1005,7 @@ export default {
     },
     //树节点点击事件
     handleCheckChange(data, checked) {
-      // this.center={lng: data.lng, lat: data.lat};
+      this.center={lng: data.lng, lat: data.lat};
       // if(!data.children && checked){
       //   this.checkData.push(data.desc);
       //   this.checkKey.push(data.id);
@@ -1315,6 +1315,9 @@ export default {
           case 14:
             directionImg = online315;
             break;
+          default:
+            directionImg = online0;
+            break;
         }
       }
       else if (onlineStatus == 1) {//离线
@@ -1351,6 +1354,9 @@ export default {
           case 14:
             directionImg = outline315;
             break;
+          default:
+            directionImg = outline0;
+            break;
         }
       }
       else if (onlineStatus == 2) {//停车
@@ -1386,6 +1392,9 @@ export default {
           case 13:
           case 14:
             directionImg = park315;
+            break;
+          default:
+            directionImg = park0;
             break;
         }
       }
