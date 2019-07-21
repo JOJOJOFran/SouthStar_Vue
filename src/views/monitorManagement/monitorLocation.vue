@@ -132,42 +132,40 @@
       </el-table>
     </div>
     <!--轨迹查询弹窗-->
-    <el-dialog :title="$t('userAndCarTable.queryTrajectory')" :visible.sync="dialogFormVisible" id="" width="90%">
+    <el-dialog :title="$t('userAndCarTable.queryTrajectory')" :visible.sync="dialogFormVisible" id="" width="90%" :fullscreen="true">
       <div class="filter-container">
       <el-form ref="dataForm"   label-position="left" label-width="100px">
         <el-row style="margin-top: -25px !important;">
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item :label="$t('userAndCarTable.plateNumber')">
-              <el-select v-model="trajectoryParam.entity_name" @change="selectPlateChange()" :placeholder="$t('userAndCarTable.plateNumber')" class="filter-item">
+              <el-select v-model="trajectoryParam.entity_name" @change="selectPlateChange()" :placeholder="$t('userAndCarTable.plateNumber')" style="width:150px">
                 <el-option v-for="item in carOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item label-width="80px" :label="$t('applyTable.beginTime')">
               <el-date-picker v-model="trajectoryParam.start_time" type="datetime"  :placeholder="$t('applyTable.beginTime')"/>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item label-width="80px" :label="$t('applyTable.endTime')">
               <el-date-picker v-model="trajectoryParam.end_time" type="datetime"  :placeholder="$t('applyTable.endTime')"/>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item :label="$t('userAndCarTable.minLong')">
-              <el-select v-model="trajectoryParam.radius_threshold" :placeholder="$t('userAndCarTable.minLong')" style="width: 230px">
+              <el-select v-model="trajectoryParam.radius_threshold" :placeholder="$t('userAndCarTable.minLong')" style="width:150px">
                 <el-option v-for="item in longOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
+          <el-col :span="4">
             <el-button type="primary" icon="el-icon-search" @click="searchTrajectory()">{{ $t('table.search') }}</el-button>
             <el-button :loading="downloadLoading" type="primary" icon="el-icon-download" @click="exportTrajectory">{{ $t('table.export') }}</el-button>
           </el-col>
         </el-row>
-        <div style="width: 100%;height: 500px;margin-top: 20px;">
+        <div style="width: 100%;height: 600px;">
           <baidu-map class="bm-dialog" :center="{lng: 114.32, lat: 30.38}" :zoom="14" :scroll-wheel-zoom="true" @ready="handler">
             <!-- <bm-map-type :map-types="['BMAP_NORMAL_MAP', 'BMAP_HYBRID_MAP']" anchor="BMAP_ANCHOR_TOP_LEFT"></bm-map-type> -->
             <bm-navigation anchor="BMAP_ANCHOR_TOP_LEFT"></bm-navigation>
@@ -181,7 +179,6 @@
               <span style="font-weight:bold">时间：</span><span style="color:#0A8CFF;">{{infoWindowData.time}}</span><br/>
               <span style="font-weight:bold">地址：</span><span style="color:#0A8CFF;">{{infoWindowData.location}}</span><br/>
             </bm-info-window>
-
             <bm-marker v-for="(item0,index0) of speeding" @click="openLabel(index0,0)" :key="index0" :position="{lng: speeding[index0].lng, lat: speeding[index0].lat}" :icon="{url:speeding[index0].icon, size: {width: 32, height: 32}}">
             </bm-marker>
             <bm-marker v-for="(item1,index1) of harsh_acceleration" @click="openLabel(index1,1)" :key="index1" :position="{lng: harsh_acceleration[index1].lng, lat: harsh_acceleration[index1].lat}" :icon="{url:harsh_acceleration[index1].icon, size: {width: 32, height: 32}}">
@@ -193,15 +190,16 @@
             <bm-info-window :show="showLabel" :position="{lng:labelObj.lng,lat:labelObj.lat}" @close="startAndEndWindowClose" style="line-height:30px;padding:2px;">
               <span style="color:#0A8CFF;">{{labelObj.label}}</span><br/>
             </bm-info-window>
-
           </baidu-map>
         </div>
-        <div v-show="showBehavior" style="width:300px;height:70px;border:1px solid lightgray;z-index:100;position:absolute;top:200px;right:30px;background:white;">
+        <div v-show="showBehavior" style="width:375px;height:70px;border:1px solid lightgray;z-index:100;position:absolute;top:200px;right:30px;background:white;">
           <div style="height:70px;">
+             <div class="behavior" style="color:black;">总里程</div>
              <div class="behavior" style="color:black;">超速</div>
              <div class="behavior" style="color:black;">急加速</div>
              <div class="behavior" style="color:black;">急转弯</div>
              <div class="behavior" style="color:black;">停留</div>
+             <div class="behavior">{{distance}}</div>
              <div class="behavior">{{speeding.length}}</div>
              <div class="behavior">{{harsh_acceleration.length}}</div>
              <div class="behavior">{{harsh_steering.length}}</div>
@@ -534,6 +532,7 @@ export default {
       //驾驶员行为分析
       drivingbehaviors:['超速','急变速','急转弯','停留'],
       checkedBehavior:[],
+      distance:0.00,
       speeding:[],//超速
       harsh_acceleration:[],//急加速
       harsh_breaking:[],//急刹车
@@ -871,6 +870,7 @@ export default {
                   }
                   var startPoint = response.start_point;
                   var endPoint = response.end_point;
+                  that.distance=(response.distance/1000).toFixed(2);//总里程
                   that.startMarker={lng:startPoint.longitude, lat:startPoint.latitude,icon:start,loc_time:startPoint.loc_time,plateNumber:'',location:''};
                   that.endMarker={lng:endPoint.longitude, lat:endPoint.latitude,icon:end,loc_time:endPoint.loc_time,plateNumber:'',location:''};
                   that.showStartAndEnd=true;
@@ -886,7 +886,12 @@ export default {
                       icon:speed,
                       label:'时速：'+resp.speeding[j].speeding_points[0].actual_speed+'km/h，限速：'+resp.speeding[j].speeding_points[0].limit_speed+'km/h'
                     }
-                    that.speeding.push(obj);
+                    var actual_speed = resp.speeding[j].speeding_points[0].actual_speed;
+                    var limit_speed = resp.speeding[j].speeding_points[0].limit_speed;
+                    //超速20%记录超速点
+                    if(actual_speed*(1+0.2)>limit_speed){
+                      that.speeding.push(obj);
+                    }
                   }
                   for(var k=0;k<resp.harsh_acceleration.length;k++){
                     var obj={

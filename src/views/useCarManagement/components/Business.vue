@@ -216,7 +216,7 @@
                     <el-checkbox label="准时到达" name="type"></el-checkbox>
                     <el-checkbox label="满意" name="type"></el-checkbox>
                     <el-checkbox label="一般" name="type"></el-checkbox>
-                    <el-checkbox label="不满意" name="type"></el-checkbox>
+                    <el-checkbox label="迟到" name="type"></el-checkbox>
                   </el-checkbox-group>
                 </el-col>
                 <span style="margin-left:30px;">用车人签字：</span>
@@ -376,7 +376,7 @@
                     <el-checkbox label="准时到达" name="type"></el-checkbox>
                     <el-checkbox label="满意" name="type"></el-checkbox>
                     <el-checkbox label="一般" name="type"></el-checkbox>
-                    <el-checkbox label="不满意" name="type"></el-checkbox>
+                    <el-checkbox label="迟到" name="type"></el-checkbox>
                   </el-checkbox-group>
                 </el-col>
                 <span style="margin-left:30px;">用车人签字：</span>
@@ -412,7 +412,7 @@ import { validateURL } from '@/utils/validate'
 import { fetchArticle } from '@/api/article'
 import { userSearch } from '@/api/remoteSearch'
 import { setNewToken,getNewToken,removeNewToken} from '@/utils/auth'
-import { deptList,driverEnableList,vehicleEnableList,quickDispatch,getQuickDispatchCache,setQuickDispatchCache,setTemplate,getTemplate,getTemplateKeys} from '@/api/applyCar'
+import { deptList,driverEnableList,vehicleEnableList,driverAllList,vehicleAllList,quickDispatch,getQuickDispatchCache,setQuickDispatchCache,setTemplate,getTemplate,getTemplateKeys} from '@/api/applyCar'
 import Warning from './Warning'
 import { CommentForBusiness, PlatformDropdown, SourceUrlDropdown } from './Dropdown'
 
@@ -633,7 +633,7 @@ export default {
     },
     //选择车辆
     querySearchVehicle(queryString, cb){
-      vehicleEnableList().then(response => {
+      vehicleAllList(0).then(response => {
         var data = response.data.datas;
         var count=0;
         if(data) {
@@ -658,7 +658,7 @@ export default {
     },
     //选择司机
     querySearchDriver(queryString, cb){
-      driverEnableList().then(response => {
+      driverAllList().then(response => {
         var data = response.data.datas;
         var count=0;
         if(data) {

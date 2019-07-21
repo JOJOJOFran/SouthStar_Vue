@@ -101,8 +101,8 @@
       </el-table-column>
       <el-table-column :label="$t('applyTable.caozuo')" align="center" width="300">
         <template slot-scope="scope">
-          <!-- <el-button type="primary" size="mini" v-if="scope.row.checkStatus =='已完成'"  plain disabled>{{ scope.row.edit }}</el-button>
-          <el-button type="primary" size="mini" v-else @click="handleEdit(scope.row)">{{ scope.row.edit }}</el-button> -->
+          <el-button type="primary" size="mini" v-if="scope.row.checkStatus =='已完成'"  plain disabled>{{ scope.row.edit }}</el-button>
+          <el-button type="primary" size="mini" v-else @click="handleEdit(scope.row)">{{ scope.row.edit }}</el-button>
           <el-button type="primary" size="mini" style="background-color:#42b983" @click="handleCalculation(scope.row)">{{ scope.row.calculation }}</el-button>
           <el-button type="primary" size="mini"  @click="handlePrint(scope.row)">{{ scope.row.print }}</el-button>
           <el-button type="danger" size="mini" v-if="scope.row.checkStatus =='已完成'"  plain disabled>{{ scope.row.cancel }}</el-button>
@@ -283,12 +283,12 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('applyTable.startMileage')">
-                <el-input v-model="recieptModel.startKm"  class="filter-item"  style="width: 205px;"/>
+                <el-input v-model="recieptModel.startKm" @change="getDistance1"  class="filter-item"  style="width: 205px;"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('applyTable.endMileage')">
-              <el-input v-model="recieptModel.endKm"  class="filter-item"  style="width: 205px;"/>
+              <el-input v-model="recieptModel.endKm" @change="getDistance1"  class="filter-item"  style="width: 205px;"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -375,12 +375,12 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('applyTable.startMileage')">
-                <el-input v-model="recieptModel.startKm"  class="filter-item"  style="width: 205px;"/>
+                <el-input v-model="recieptModel.startKm" @change="getDistance1"  class="filter-item"  style="width: 205px;"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('applyTable.endMileage')">
-              <el-input v-model="recieptModel.endKm"  class="filter-item"  style="width: 205px;"/>
+              <el-input v-model="recieptModel.endKm" @change="getDistance2"  class="filter-item"  style="width: 205px;"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -638,7 +638,7 @@
                         <el-checkbox label="准时到达" name="type"></el-checkbox>
                         <el-checkbox label="满意" name="type"></el-checkbox>
                         <el-checkbox label="一般" name="type"></el-checkbox>
-                        <el-checkbox label="不满意" name="type"></el-checkbox>
+                        <el-checkbox label="迟到" name="type"></el-checkbox>
                       </el-checkbox-group>
                 </el-col>
                 <span style="margin-left:20px;">用车人签字：</span>
@@ -852,7 +852,7 @@
                         <el-checkbox label="准时到达" name="type"></el-checkbox>
                         <el-checkbox label="满意" name="type" ></el-checkbox>
                         <el-checkbox label="一般" name="type" ></el-checkbox>
-                        <el-checkbox label="不满意" name="type" ></el-checkbox>
+                        <el-checkbox label="迟到" name="type" ></el-checkbox>
                       </el-checkbox-group>
                       
                     </el-col>
@@ -886,7 +886,7 @@
 
 <script>
   // import { fetchList } from '@/api/article'
-  import { dispatchList, deptList,dispatchItem,applyDetail,recieptSet,recieptGet,cancelOrder,deleteOrder,driverEnableList,vehicleEnableList} from '@/api/applyCar'
+  import { dispatchList, deptList,dispatchItem,applyDetail,recieptSet,recieptGet,cancelOrder,deleteOrder,driverEnableList,vehicleEnableList,vehicleAllList,driverAllList,updateDispatch} from '@/api/applyCar'
   import { setNewToken,getNewToken} from '@/utils/auth'
   import waves from '@/directive/waves' // Waves directive
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -930,7 +930,7 @@
         carPropertyOptions:[{key:0,display_name:'公务用车组'},{key:1,display_name:'执法用车组'}],
         carTypeOptions:[{key:'轿车',display_name:'轿车'},{key:'商务车',display_name:'商务车'},{key:'小型客车',display_name:'小型客车'},{key:'客车',display_name:'客车'}],
         cleanOptions:[{key:true,display_name:'是'},{key:false,display_name:'否'}],
-        degreeOptions:[{key:1,display_name:'准时到达'},{key:16,display_name:'满意'},{key:32,display_name:'一般'},{key:48,display_name:'不满意'}],
+        degreeOptions:[{key:1,display_name:'准时到达'},{key:16,display_name:'满意'},{key:32,display_name:'一般'},{key:48,display_name:'迟到'}],
         temp: {},
         showPrintContent:true,
         dispatchId:'',
@@ -1049,7 +1049,11 @@
       },
       //选择车辆
       querySearchVehicle(queryString, cb){
-        vehicleEnableList().then(response => {
+        var carProperty=0;
+        if(this.addParam.carProperty==1){
+          carProperty=1;
+        }
+        vehicleAllList(carProperty).then(response => {
           var data = response.data.datas;
           var count=0;
           if(data) {
@@ -1059,10 +1063,7 @@
           var carData=[];
           for(var i=0;i< count;i++){
             if(this.vehicleList[i].desc.toLowerCase().indexOf(queryString.toLowerCase()) !=-1){
-              if(this.vehicleList[i].vehicleProperties==0)//公务用车
-              {
-                carData.push({value:this.vehicleList[i].plateNumber,plateNumber:this.vehicleList[i].plateNumber,vehicleId:this.vehicleList[i].id});
-              }
+              carData.push({value:this.vehicleList[i].plateNumber,plateNumber:this.vehicleList[i].plateNumber,vehicleId:this.vehicleList[i].id});
             }
           }
           cb(carData);
@@ -1074,7 +1075,7 @@
       },
       //选择司机
       querySearchDriver(queryString, cb){
-        driverEnableList().then(response => {
+        driverAllList().then(response => {
           var data = response.data.datas;
           var count=0;
           if(data) {
@@ -1116,38 +1117,14 @@
       },
       //修改
       handleEdit(row){
-        this.dispatchId=row.id;
+        this.recieptApplyId=row.applyId;
         //详情
         dispatchItem(row.id).then(response => {
-          //核算
-          this.clearRecieptModel();
-          recieptGet(row.id).then(res => {
             this.addParam = response.data.datas;
             for(var i=0;i<this.deptList.length;i++){
                 if(this.deptList[i].id==this.addParam.departmentId){
                     this.addParam.departmentName=this.deptList[i].departmentName;
                 }
-            }
-            if(res.data.datas){
-              this.recieptModel = res.data.datas;
-              this.checkClean=[];
-              this.checkDegree=[];
-              if(this.recieptModel.isClean){
-                this.checkClean.push("是");
-              }else{
-                this.checkClean.push("否");
-              }
-              if(this.recieptModel.evaluation==1){
-                this.checkDegree.push("准时到达");
-              }else if(this.recieptModel.evaluation==16){
-                this.checkDegree.push("满意");
-              }
-              else if(this.recieptModel.evaluation==32){
-                this.checkDegree.push("一般");
-              }
-              else if(this.recieptModel.evaluation==48){
-                this.checkDegree.push("不满意");
-              }
             }
             this.dialogStatus = 'edit';
             if(row.carProperty !="公务用车"){
@@ -1158,11 +1135,53 @@
             this.$nextTick(() => {
               this.$refs['dataForm'].clearValidate();
             })
-          });
         });
       },
       //修改提交
-      editData(){},
+      editData(){
+        var model={
+          driverId: this.addParam.driverId,
+          driverName: this.addParam.driverName,
+          driverPhone: this.addParam.driverPhone,
+          vehicleId: this.addParam.vehcileId,
+          plateNumber: this.addParam.plateNumber,
+          departureTime: this.addParam.departureTime,
+          dispatchType: this.addParam.dispatchType,
+          applicantId: this.addParam.applicantId,
+          applicantName: this.addParam.applicantName,
+          applicantPhone: this.addParam.applicantPhone,
+          departmentId: this.addParam.departmentId,
+          departmentName: this.addParam.departmentName,
+          userName: this.addParam.userName,
+          userMobile:this.addParam.userMobile,
+          applyReson: this.addParam.applyReson,
+          userCount: this.addParam.userCount,
+          carType: this.addParam.carType,
+          startPoint: this.addParam.startPoint,
+          destination: this.addParam.destination,
+          carProperty: this.addParam.carProperty,
+          startPlanTime: this.addParam.startPlanTime,
+          backPlanTime: this.addParam.backPlanTime,
+          remark: this.addParam.remark,
+          queueNo: 0,
+          queueId: ""
+        }
+        updateDispatch(this.recieptApplyId,model).then(response => {
+          if(response.data.code==0){
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            });
+            this.emergencyPrintVisible=false;
+            this.businessPrintVisible=false;
+          }else{
+            this.$message({
+              message: '修改失败',
+              type: 'error'
+            })
+          }
+        });
+      },
       //打印
       handlePrint(row){
         this.dispatchId=row.id;
@@ -1195,7 +1214,7 @@
                 this.checkDegree.push("一般");
               }
               else if(this.recieptModel.evaluation==48){
-                this.checkDegree.push("不满意");
+                this.checkDegree.push("迟到");
               }
             }
             this.dialogStatus = 'print';
@@ -1323,6 +1342,25 @@
         var startTime=this.GetUnixTime(this.addParam.startPlanTime);
         var endTime=this.GetUnixTime(value);
         this.recieptModel.useTime=(endTime-startTime)/60;
+      },
+      getDistance1(value){
+        var endKM=this.recieptModel.endKm;
+        if(endKM!='' && value!=''){
+          this.recieptModel.currentKm = parseInt(endKM)-parseInt(value);
+        }
+        if(isNaN(this.recieptModel.currentKm)){
+          this.recieptModel.currentKm='';
+        }
+      },
+      getDistance2(value){
+        debugger
+        var startKM=this.recieptModel.startKm;
+        if(startKM!=''&& value!=''){
+          this.recieptModel.currentKm = parseInt(value)-parseInt(startKM);
+        }
+        if(isNaN(this.recieptModel.currentKm)){
+          this.recieptModel.currentKm='';
+        }
       },
       //获取Unix时间戳
       GetUnixTime (timeStr) {

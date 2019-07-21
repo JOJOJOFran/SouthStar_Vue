@@ -129,6 +129,23 @@ export function dispatchItem(dispatchId) {
   })
 }
 
+// 获取所有司机
+export function driverAllList() {
+  return request({
+    url: '/Driver/AllList',
+    method: 'get'
+  })
+}
+
+// 获取所有车辆
+export function vehicleAllList(query) {
+  return request({
+    url: '/Vehicle/AllList',
+    method: 'get',
+    params: query
+  })
+}
+
 // 获取可用司机
 export function driverEnableList() {
   return request({
@@ -148,6 +165,15 @@ export function vehicleEnableList() {
 export function quickDispatch(data) {
   return request({
     url: '/Dispatch/QuickDispatch',
+    method: 'post',
+    data
+  })
+}
+
+//修改派车单
+export function updateDispatch(applyId,data) {
+  return request({
+    url: '/Dispatch/UpdateDispatch/'+applyId,
     method: 'post',
     data
   })
