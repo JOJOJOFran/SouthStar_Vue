@@ -702,7 +702,7 @@
                         suffix-icon="el-icon-search"
                         placeholder="请输入内容"
                         @select="handleSelectDept"
-                        style="width: 205px;"
+                        style="width: 100%;"
                       ></el-autocomplete>
                     </el-col>
                     <label v-else>{{addParam.userDepartment}}</label>
@@ -1047,6 +1047,22 @@
           this.listLoading = false;
         })
       },
+      querySearchDept(queryString, cb){
+        deptList().then(response => {
+          var result = response.data.datas;
+          var deptList=[];
+          for(var i=0;i<result.length;i++){
+            if(result[i].departmentName.toLowerCase().indexOf(queryString.toLowerCase()) !=-1){
+              deptList.push({value:result[i].departmentName,deptId:result[i].id});
+            }
+          }
+          cb(deptList);
+        });
+      },
+      handleSelectDept(item){
+        this.addParam.departmentId=item.deptId;
+        this.addParam.departmentName=item.value;
+      },
       //选择车辆
       querySearchVehicle(queryString, cb){
         var carProperty=0;
@@ -1096,8 +1112,6 @@
         this.addParam.driverId=item.driverId;
         this.addParam.driverName = item.name+'('+item.driverPhone+')'
       },
-      querySearchDept(){},
-      handleSelectDept(){},
       //详情
       handleDetail(row){
         applyDetail(row.applyId).then(resp => {
