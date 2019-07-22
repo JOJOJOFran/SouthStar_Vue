@@ -1,11 +1,10 @@
 /**
  * Created by wangjunfeng on 19/07/22.
  */
-
-function getUserList() {
+export function getUserList() {
   var userList=[
     {
-      departmentName:'环保',
+      departmentName:'区环境监察大队',
       users:[
         {
           userName:'吴维波',
@@ -82,7 +81,7 @@ function getUserList() {
       ],
     },
     {
-      departmentName:'水政',
+      departmentName:'区水政监察大队',
       users:[
         {
           userName:'田辉',
@@ -256,7 +255,7 @@ function getUserList() {
       ],
     },///
     {
-      departmentName:'劳动',
+      departmentName:'区劳动监察大队',
       users:[
         {
           userName:'邓思敏',
@@ -309,7 +308,7 @@ function getUserList() {
       ],
     },///
     {
-      departmentName:'国土',
+      departmentName:'区国土和规划监察大队',
       users:[
         {
           userName:'刘敦武',
@@ -362,7 +361,7 @@ function getUserList() {
       ],
     },
     {
-      departmentName:'文化',
+      departmentName:'区文化综合执法大队',
       users:[
         {
           userName:'王小丹',
@@ -375,7 +374,7 @@ function getUserList() {
       ],
     },
     {
-      departmentName:'卫生',
+      departmentName:'区卫生监督所',
       users:[
         {
           userName:'严晚华',

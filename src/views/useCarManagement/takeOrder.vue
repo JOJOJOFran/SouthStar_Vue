@@ -709,7 +709,11 @@
                   </td>
                   <td style="text-align:center;">用车事由</td>
                   <td style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                    <el-col :span="24" v-if="dialogStatus=='edit'"><el-input v-model="addParam.applyReson" style="width: 100%;"/></el-col>
+                    <el-col :span="24" v-if="dialogStatus=='edit'">
+                      <el-select v-model="addParam.applyReson" placeholder="请选择" style="width: 100%;">
+                        <el-option v-for="item in applyReasonOptions" :key="item.key" :label="item.value" :value="item.key"/>
+                      </el-select>
+                    </el-col>
                     <label v-else>{{addParam.applyReson}}</label>
                   </td>
                   <td style="text-align:center;">出发地点</td>
@@ -721,7 +725,18 @@
                 <tr>
                   <td style="text-align:center;">用车人</td>
                   <td style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                    <el-col :span="24" v-if="dialogStatus=='edit'"><el-input v-model="addParam.userName" style="width: 100%;"/></el-col>
+                    <!-- <el-col :span="24" v-if="dialogStatus=='edit'"><el-input v-model="addParam.userName" style="width: 100%;"/></el-col> -->
+                    <el-col :span="24" v-if="dialogStatus=='edit'">
+                      <el-autocomplete 
+                        class="inline-input"
+                        v-model="addParam.userName"
+                        :fetch-suggestions="querySearchUser"
+                        suffix-icon="el-icon-search"
+                        placeholder="请输入内容"
+                        @select="handleSelectUser"
+                        style="width:100%;"
+                      ></el-autocomplete>
+                    </el-col>
                     <label v-else>{{addParam.userName}}</label>
                   </td>
                   <td style="text-align:center;">联系电话</td>
@@ -888,6 +903,7 @@
   // import { fetchList } from '@/api/article'
   import { dispatchList, deptList,dispatchItem,applyDetail,recieptSet,recieptGet,cancelOrder,deleteOrder,driverEnableList,vehicleEnableList,vehicleAllList,driverAllList,updateDispatch} from '@/api/applyCar'
   import { setNewToken,getNewToken} from '@/utils/auth'
+  import { getUserList} from '@/utils/userList'
   import waves from '@/directive/waves' // Waves directive
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import Vue from 'vue'
@@ -931,6 +947,7 @@
         carTypeOptions:[{key:'轿车',display_name:'轿车'},{key:'商务车',display_name:'商务车'},{key:'小型客车',display_name:'小型客车'},{key:'客车',display_name:'客车'}],
         cleanOptions:[{key:true,display_name:'是'},{key:false,display_name:'否'}],
         degreeOptions:[{key:1,display_name:'准时到达'},{key:16,display_name:'满意'},{key:32,display_name:'一般'},{key:48,display_name:'迟到'}],
+        applyReasonOptions:[{key:'执法',value:'执法'},{key:'检查',value:'检查'}],
         temp: {},
         showPrintContent:true,
         dispatchId:'',
@@ -989,6 +1006,7 @@
         checkClean:[],
         checkDegree:[],
         recieptApplyId:'',
+        userList:[]
       }
     },
     created() {
@@ -1060,8 +1078,28 @@
         });
       },
       handleSelectDept(item){
+        this.userList=[];
         this.addParam.departmentId=item.deptId;
         this.addParam.departmentName=item.value;
+        var users = getUserList();
+        for(var i=0;i<users.length;i++){
+          if(users[i].departmentName == item.value){
+            this.userList=users[i].users;
+          }
+        }
+      },
+      querySearchUser(queryString, cb){
+        var list=[];
+        for(var i=0;i<this.userList.length;i++){
+          if(this.userList[i].userName.toLowerCase().indexOf(queryString.toLowerCase()) !=-1){
+            list.push({value:this.userList[i].userName,userMobile:this.userList[i].userMobile});
+          }
+        }
+        cb(list);
+      },
+      handleSelectUser(item){
+        this.addParam.userName=item.value;
+        this.addParam.userMobile=item.userMobile;
       },
       //选择车辆
       querySearchVehicle(queryString, cb){
@@ -1367,7 +1405,6 @@
         }
       },
       getDistance2(value){
-        debugger
         var startKM=this.recieptModel.startKm;
         if(startKM!=''&& value!=''){
           this.recieptModel.currentKm = parseInt(value)-parseInt(startKM);

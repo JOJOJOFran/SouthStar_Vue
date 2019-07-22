@@ -59,40 +59,62 @@
                         suffix-icon="el-icon-search"
                         placeholder="请输入内容"
                         @select="handleSelectDept"
-                        style="width: 205px;"
+                        style="width:100%;"
                       ></el-autocomplete>
                     </el-col>
                   </td>
                   <td style="text-align:center;">用车事由</td>
                   <td style="text-align:center;font-weight:bold;font-family:'STKaiti';">
                     <el-col :span="24">
-                      <el-input v-model="addParam.applyReson"  style="width: 205px;"/>
+                      <!-- <el-autocomplete 
+                          class="inline-input"
+                          v-model="addParam.applyReson"
+                          :fetch-suggestions="querySearchReason"
+                          suffix-icon="el-icon-search"
+                          placeholder="请输入内容"
+                          @select="handleSelectReason"
+                          style="width:100%;"
+                      ></el-autocomplete> -->
+                      <el-select v-model="addParam.applyReson" class="filter-item" placeholder="请选择" style="width: 100%;">
+                        <el-option v-for="item in applyReasonOptions" :key="item.key" :label="item.value" :value="item.key"/>
+                      </el-select>
                     </el-col>
                   </td>
                   <td style="text-align:center;">出发地点</td>
                   <td style="text-align:center;font-weight:bold;font-family:'STKaiti';">
                     <el-col :span="24">
-                      <el-input v-model="addParam.startPoint"  style="width: 205px;"/>
+                      <el-input v-model="addParam.startPoint"  style="width:100%;"/>
                     </el-col>
                   </td>
                 </tr>
                 <tr>
                   <td style="text-align:center;">用车人</td>
                   <td style="text-align:center;font-weight:bold;font-family:'STKaiti';">
-                    <el-col :span="24">
+                    <!-- <el-col :span="24">
                       <el-input v-model="addParam.userName"  style="width: 205px;"/>
+                    </el-col> -->
+                    <el-col :span="24">
+                      <el-autocomplete 
+                        class="inline-input"
+                        v-model="addParam.userName"
+                        :fetch-suggestions="querySearchUser"
+                        suffix-icon="el-icon-search"
+                        placeholder="请输入内容"
+                        @select="handleSelectUser"
+                        style="width:100%;"
+                      ></el-autocomplete>
                     </el-col>
                   </td>
                   <td style="text-align:center;">联系电话</td>
                   <td  style="text-align:center;font-weight:bold;font-family:'STKaiti';">
                     <el-col :span="24">
-                      <el-input v-model="addParam.userMobile"  style="width: 205px;"/>
+                      <el-input v-model="addParam.userMobile"  style="width:100%;"/>
                     </el-col>
                   </td>
                   <td style="text-align:center;">目的地</td>
                   <td  style="text-align:center;font-weight:bold;font-family:'STKaiti';">
                     <el-col :span="24">
-                      <el-input v-model="addParam.destination"  style="width: 205px;"/>
+                      <el-input v-model="addParam.destination"  style="width:100%;"/>
                     </el-col>
                   </td>
                 </tr>
@@ -100,13 +122,13 @@
                   <td style="text-align:center;">计划用车时间</td>
                   <td  style="text-align:center;font-weight:bold;font-family:'STKaiti';">
                     <el-col :span="24">
-                      <el-date-picker v-model="addParam.startPlanTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="计划用车时间" style="width: 205px;"/>
+                      <el-date-picker v-model="addParam.startPlanTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="计划用车时间" style="width:100%;"/>
                     </el-col>
                   </td>
                   <td style="text-align:center;">搭车人数</td>
                   <td style="text-align:center;font-weight:bold;font-family:'STKaiti';">
                     <el-col :span="24">
-                      <el-input v-model="addParam.userCount"  style="width: 205px;"/>
+                      <el-input v-model="addParam.userCount"  style="width:100%;"/>
                     </el-col>
                   </td>
                   <td style="text-align:center;">用车性质</td>
@@ -122,7 +144,7 @@
                   <td style="text-align:center;">派用车种类</td>
                   <td style="text-align:center;font-weight:bold;font-family:'STKaiti';">
                     <el-col :span="24">
-                      <el-select v-model="addParam.carType" class="filter-item" placeholder="选择派车种类"  style="width:205px;">
+                      <el-select v-model="addParam.carType" class="filter-item" placeholder="选择派车种类"  style="width:100%;">
                         <el-option v-for="item in carTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
                       </el-select>
                     </el-col>
@@ -137,7 +159,7 @@
                         suffix-icon="el-icon-search"
                         placeholder="请输入内容"
                         @select="handleSelectVehicle"
-                        style="width: 205px;"
+                        style="width:100%;"
                       ></el-autocomplete>
                     </el-col>
                   </td>
@@ -151,7 +173,7 @@
                         suffix-icon="el-icon-search"
                         placeholder="请输入内容"
                         @select="handleSelectDriver"
-                        style="width: 205px;"
+                        style="width:100%;"
                       ></el-autocomplete>
                     </el-col>
                   </td>
@@ -160,7 +182,7 @@
                   <td style="text-align:center;">出车时间</td>
                   <td  style="text-align:center;font-weight:bold;font-family:'STKaiti';">
                     <el-col :span="24">
-                      <el-date-picker v-model="addParam.departureTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss"  placeholder="出车时间" style="width:205px;"/>
+                      <el-date-picker v-model="addParam.departureTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss"  placeholder="出车时间" style="width:100%;"/>
                     </el-col>
                   </td>
                   <td style="text-align:center;">归队时间</td>
@@ -189,7 +211,7 @@
                   <td style="text-align:center;">是否清洗</td>
                   <td>
                     <el-col :span="24" style="margin-left: 20px;">
-                      <el-checkbox-group v-model="addParam.achievement">
+                      <el-checkbox-group v-model="addParam.achievement" :disabled="true">
                         <el-checkbox label="是" name="type"></el-checkbox>
                         <el-checkbox label="否" name="type"></el-checkbox>
                       </el-checkbox-group>
@@ -204,7 +226,7 @@
                   <td style="text-align:center;" colspan="2"><span>对此次出行的评价</span></td>
                   <td style="text-align:center;" colspan="5">
                     <el-col :span="10">
-                      <el-checkbox-group v-model="addParam.achievement">
+                      <el-checkbox-group v-model="addParam.achievement" :disabled="true">
                         <el-checkbox label="准时到达" name="type"></el-checkbox>
                         <el-checkbox label="满意" name="type" style="margin-left:-10px;"></el-checkbox>
                         <el-checkbox label="一般" name="type" style="margin-left:-10px;"></el-checkbox>
@@ -339,7 +361,7 @@
                 <tr>
                   <td style="text-align:center;">是否清洗</td>
                   <td>
-                    <el-col :span="24" style="margin-left: 20px;">
+                    <el-col :span="24" style="margin-left: 20px;" :disabled="true">
                       <el-checkbox-group v-model="addParam.achievement">
                         <el-checkbox label="是" name="type"></el-checkbox>
                         <el-checkbox label="否" name="type"></el-checkbox>
@@ -355,7 +377,7 @@
                   <td style="text-align:center;" colspan="2"><span>对此次出行的评价</span></td>
                   <td style="text-align:center;" colspan="5">
                     <el-col :span="10">
-                      <el-checkbox-group v-model="addParam.achievement" style="width:400px">
+                      <el-checkbox-group v-model="addParam.achievement" style="width:400px" :disabled="true">
                         <el-checkbox label="准时到达" name="type"></el-checkbox>
                         <el-checkbox label="满意" name="type"></el-checkbox>
                         <el-checkbox label="一般" name="type"></el-checkbox>
@@ -396,6 +418,7 @@ import { validateURL } from '@/utils/validate'
 import { fetchArticle } from '@/api/article'
 import { userSearch } from '@/api/remoteSearch'
 import { setNewToken,getNewToken,removeNewToken} from '@/utils/auth'
+import { getUserList} from '@/utils/userList'
 import { deptList,driverEnableList,vehicleEnableList,driverAllList,vehicleAllList,quickDispatch,getQuickDispatchCache,setQuickDispatchCache,setTemplate,getTemplate,getTemplateKeys} from '@/api/applyCar'
 import Warning from './Warning'
 import { CommentForEmergency, PlatformDropdown, SourceUrlDropdown } from './Dropdown'
@@ -496,6 +519,7 @@ export default {
       useAreaOptions:[{key:'县区内',display_name:'县区内'},{key:'市内',display_name:'市内'},{key:'市外',display_name:'市外'},{key:'省外',display_name:'省外'}],
       // carPropertyOptions:[{key:0,display_name:'公务用车组'},{key:1,display_name:'应急执法组'}],
       carTypeOptions:[{key:'轿车',display_name:'轿车'},{key:'商务车',display_name:'商务车'},{key:'小型客车',display_name:'小型客车'},{key:'客车',display_name:'客车'}],
+      applyReasonOptions:[{key:'执法',value:'执法'},{key:'检查',value:'检查'}],
       deptOptions:[],
       vehicleOptions:[],
       driverOptions:[],
@@ -532,6 +556,7 @@ export default {
       btnStatus:'submit',
       checkTemplate:'',
       templateList:[],
+      userList:[]
     }
   },
   computed: {
@@ -613,8 +638,42 @@ export default {
       });
     },
     handleSelectDept(item){
+      this.userList=[];
       this.addParam.departmentId=item.deptId;
+      this.addParam.departmentName=item.value;
+      var users = getUserList();
+      for(var i=0;i<users.length;i++){
+        if(users[i].departmentName == item.value){
+          this.userList=users[i].users;
+        }
+      }
     },
+    //根据单位选择用车人
+    querySearchUser(queryString, cb){
+      var list=[];
+      for(var i=0;i<this.userList.length;i++){
+        if(this.userList[i].userName.toLowerCase().indexOf(queryString.toLowerCase()) !=-1){
+          list.push({value:this.userList[i].userName,userMobile:this.userList[i].userMobile});
+        }
+      }
+      cb(list);
+    },
+    handleSelectUser(item){
+      this.addParam.userName=item.value;
+      this.addParam.userMobile=item.userMobile;
+    },
+    // querySearchReason(queryString, cb){
+    //   var list=[];
+    //   for(var i=0;i<this.applyReasonOptions.length;i++){
+    //     if(this.applyReasonOptions[i].key.toLowerCase().indexOf(queryString.toLowerCase()) !=-1){
+    //       list.push({value:this.applyReasonOptions[i].value,key:this.applyReasonOptions[i].key});
+    //     }
+    //   }
+    //   cb(list);
+    // },
+    // handleSelectReason(item){
+    //   this.addParam.applyReson=item.value;
+    // },
     //选择车辆
     querySearchVehicle(queryString, cb){
       vehicleAllList(1).then(response => {
