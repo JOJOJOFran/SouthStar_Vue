@@ -65,15 +65,15 @@
         <div class="sign" style="background-color:#EB7201">{{onlineCount+outlineCount+parkCount}}</div>
         <div class="label">全部</div>
         <div class="sign" style="background-color:#0ED152">{{onlineCount}}</div>
-        <div class="label">在线</div>
+        <div class="label">行程</div>
         <div class="sign" style="background-color:#409EFF">{{parkCount}}</div>
         <div class="label">停车</div>
         <div class="sign" style="background-color:#616161">{{outlineCount}}</div>
-        <div class="label">离线</div>
+        <div class="label">入库</div>
         <div class="sign" style="background-color:#EA1313">0</div>
         <div class="label">报警</div>
         <div class="sign" style="background-color:#1FB223">{{onlinePercent.toFixed(2)}}%</div>
-        <div class="label">在线率</div>
+        <div class="label">出勤率</div>
       </div>
       <el-table
         :data="markList"
@@ -1138,30 +1138,82 @@ export default {
               onlineStatus = this.getOnlineStatus(lastTime);
               //判断是否静止
               var speed=result[i].latest_location.speed?result[i].latest_location.speed:0;
+              var radius = result[i].latest_location.radius;
               var isMove = this.getSpeed(speed);
               var className = "";
               var statusName="";
-              if (onlineStatus == 1) {
-                statusName="离线";
+              ////***调整状态 */
+              var lat = result[i].latest_location.latitude;
+              var lng = result[i].latest_location.longitude;
+              //解决定位在纸坊东站的问题
+              if(onlineStatus !=0 && lng.toFixed(2)==114.35){
+                  lng = 114.34506991838;
               }
-              else if (onlineStatus == 0) {
-                if (isMove == "静止") {
-                  className = "park";
-                  statusName="停车";
-                } else {
-                  className = "online";
-                  statusName="在线";
-                }
+              if(speed > 200 || radius>100){
+                lng=114.34426197814;
+                lat=30.360739347049;
+                speed=0;
               }
+              //解决初始化定位在坐标(0,0)的问题，初始化位置在车库
+              if(lng==0 && lat==0){
+                lng=114.34424057114;
+                lat=30.360944120379;
+              }
+              if(onlineStatus==0 && speed==0){
+                onlineStatus=2;
+              }
+              var isOnGarage = this.getStatusName(lng,lat);//坐标是否在车库指定范围
               if(onlineStatus==0){
-                if (isMove == "静止") {
-                  this.parkCount++;
+                if(isOnGarage){
+                  statusName="入库";
+                  this.outlineCount++;
                 }else{
+                  statusName="行程";
+                  className = "online";
                   this.onlineCount++;
                 }
-              }else{
-                this.outlineCount++;
               }
+              else if(onlineStatus==1){
+                if(isOnGarage){
+                  statusName="入库";
+                  this.outlineCount++;
+                }else{
+                  this.parkCount++;
+                  statusName="停车";
+                  className = "park";
+                }
+              }
+              else if(onlineStatus==2){
+                if(isOnGarage){
+                  statusName="入库";
+                  this.outlineCount++;
+                }else{
+                  this.parkCount++;
+                  statusName="停车";
+                  className = "park";
+                }
+              }
+              // if (onlineStatus == 1) {
+              //   statusName="离线";
+              // }
+              // else if (onlineStatus == 0) {
+              //   if (isMove == "静止") {
+              //     className = "park";
+              //     statusName="停车";
+              //   } else {
+              //     className = "online";
+              //     statusName="在线";
+              //   }
+              // }
+              // if(onlineStatus==0){
+              //   if (isMove == "静止") {
+              //     this.parkCount++;
+              //   }else{
+              //     this.onlineCount++;
+              //   }
+              // }else{
+              //   this.outlineCount++;
+              // }
               if(result[i].entityType == "公务用车组"){
                 treeData[0].children[0].children.push({id:1+'_'+i,className:className,desc:result[i].entity_desc,lat:result[i].latest_location.latitude,lng:result[i].latest_location.longitude,label:result[i].entity_desc+" ( "+statusName+" )"});
               }else if(result[i].entityType == "应急执法组") {
@@ -1195,49 +1247,71 @@ export default {
         var lng = data[x].latest_location.longitude;
         var lat = data[x].latest_location.latitude;
         var lastTime = this.GetUnixTime(data[x].modify_time);
-        //判断是否静止
         var speed=data[x].latest_location.speed?data[x].latest_location.speed:0;
-        var isMove = this.getSpeed(speed);
-        var onlineStatus = this.getOnlineStatus(lastTime);//在线状态 0在线 1离线
-        if(onlineStatus==0 && speed==0){
-          onlineStatus=2;
-        }
-        var statusName = null;
-        if(onlineStatus==0){
-          statusName="在线";
-        }else if(onlineStatus==1){
-          statusName="离线";
-        }
-        else if(onlineStatus==2){
-          statusName="停车";
-        }
+        var radius = data[x].latest_location.radius;
         //解决定位在纸坊东站的问题
         if(onlineStatus !=0 && lng.toFixed(2)==114.35){
             lng = 114.34506991838;
         }
-        if(speed > 200){
+        if(speed > 200 || radius>100){
           lng=114.34426197814;
           lat=30.360739347049;
-          speed=60;
-        }
-        
-        var radius = data[x].latest_location.radius;
-        if(radius != undefined && radius>=20){
-          for(var i=0;i<this.commentList.length;i++){
-            if(this.commentList[i].entity_name==data[x].entity_name){
-              lng=this.commentList[i].latest_location.longitude;
-              lat=this.commentList[i].latest_location.latitude;
-              break;
-            }
-          }
+          speed=0;
         }
         //解决初始化定位在坐标(0,0)的问题，初始化位置在车库
         if(lng==0 && lat==0){
           lng=114.34424057114;
           lat=30.360944120379;
         }
+         //判断是否静止
+        var isMove = this.getSpeed(speed);
+        var onlineStatus = this.getOnlineStatus(lastTime);//在线状态 0在线 1离线
+        if(onlineStatus==0 && speed==0){
+          onlineStatus=2;
+        }
+        var isOnGarage = this.getStatusName(lng,lat);//坐标是否在车库指定范围
+        var statusName = null;
+        if(onlineStatus==0){
+          if(isOnGarage){
+            statusName="入库";
+          }else{
+            statusName="行程";
+          }
+        }
+        else if(onlineStatus==1){
+          if(isOnGarage){
+            statusName="入库";
+          }else{
+            statusName="停车";
+          }
+        }
+        else if(onlineStatus==2){
+          if(isOnGarage){
+            statusName="入库";
+          }else{
+            statusName="停车";
+          }
+        }
+        // if(onlineStatus==0){
+        //   statusName="在线";
+        // }else if(onlineStatus==1){
+        //   statusName="离线";
+        // }
+        // else if(onlineStatus==2){
+        //   statusName="停车";
+        // }
         
-        var imgName = this.getDirection(data[x].latest_location.direction, onlineStatus);
+        // var radius = data[x].latest_location.radius;
+        // if(radius != undefined && radius>=20){
+        //   for(var i=0;i<this.commentList.length;i++){
+        //     if(this.commentList[i].entity_name==data[x].entity_name){
+        //       lng=this.commentList[i].latest_location.longitude;
+        //       lat=this.commentList[i].latest_location.latitude;
+        //       break;
+        //     }
+        //   }
+        // }
+        var imgName = this.getDirection(data[x].latest_location.direction, onlineStatus,isOnGarage);
         var obj={
           lng:lng,
           lat:lat,
@@ -1283,10 +1357,22 @@ export default {
       status = timeDiff >= 10 ? 1 : 0;
       return status;
     },
-    getDirection(direction, onlineStatus) {
+    getStatusName(lng,lat){
+      var isOnGarage=false;
+      //车库坐标范围
+      var top_left={lng:114.34271,lat:30.361739};
+      var top_right={lng:114.348046,lat:30.361739};
+      var bottom_left={lng:114.34271,lat:30.35719};
+      var bottom_right={lng:114.348046,lat:30.35719};
+      if(lng>top_left.lng && lng<top_right.lng && lat>bottom_left.lat && lat < top_left.lat){
+        isOnGarage=true;
+      }
+      return isOnGarage;
+    },
+    getDirection(direction, onlineStatus,isOnGarage) {
       var directionImg = '';
       direction = direction || 0;
-      if (onlineStatus == 0) {//在线
+      if (onlineStatus == 0 && !isOnGarage) {//在线-行程中
         switch (Math.floor((direction) / 22.5)) {
           case 0:
           case 15:
@@ -1325,46 +1411,7 @@ export default {
             break;
         }
       }
-      else if (onlineStatus == 1) {//离线
-        switch (Math.floor((direction) / 22.5)) {
-          case 0:
-          case 15:
-            directionImg = outline0;
-            break;
-          case 1:
-          case 2:
-            directionImg = outline45;
-            break;
-          case 3:
-          case 4:
-            directionImg = outline90;
-            break;
-          case 5:
-          case 6:
-            directionImg = outline135;
-            break;
-          case 7:
-          case 8:
-            directionImg = outline180;
-            break;
-          case 9:
-          case 10:
-            directionImg = outline225;
-            break;
-          case 11:
-          case 12:
-            directionImg = outline270;
-            break;
-          case 13:
-          case 14:
-            directionImg = outline315;
-            break;
-          default:
-            directionImg = outline0;
-            break;
-        }
-      }
-      else if (onlineStatus == 2) {//停车
+      else if ((onlineStatus == 1 || onlineStatus == 2) && !isOnGarage) {//停车--行程中停车
         switch (Math.floor((direction) / 22.5)) {
           case 0:
           case 15:
@@ -1400,6 +1447,45 @@ export default {
             break;
           default:
             directionImg = park0;
+            break;
+        }
+      }
+      else{//离线--入库
+        switch (Math.floor((direction) / 22.5)) {
+          case 0:
+          case 15:
+            directionImg = outline0;
+            break;
+          case 1:
+          case 2:
+            directionImg = outline45;
+            break;
+          case 3:
+          case 4:
+            directionImg = outline90;
+            break;
+          case 5:
+          case 6:
+            directionImg = outline135;
+            break;
+          case 7:
+          case 8:
+            directionImg = outline180;
+            break;
+          case 9:
+          case 10:
+            directionImg = outline225;
+            break;
+          case 11:
+          case 12:
+            directionImg = outline270;
+            break;
+          case 13:
+          case 14:
+            directionImg = outline315;
+            break;
+          default:
+            directionImg = outline0;
             break;
         }
       }
