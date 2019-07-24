@@ -228,9 +228,10 @@
                     <el-col :span="10">
                       <el-checkbox-group v-model="addParam.achievement" :disabled="true">
                         <el-checkbox label="准时到达" name="type"></el-checkbox>
-                        <el-checkbox label="满意" name="type" style="margin-left:-10px;"></el-checkbox>
-                        <el-checkbox label="一般" name="type" style="margin-left:-10px;"></el-checkbox>
-                        <el-checkbox label="迟到" name="type" style="margin-left:-10px;"></el-checkbox>
+                        <el-checkbox label="满意" name="type"></el-checkbox>
+                        <el-checkbox label="一般" name="type"></el-checkbox>
+                        <el-checkbox label="迟到" name="type"></el-checkbox>
+                        <el-checkbox label="取消订单" name="type"></el-checkbox>
                       </el-checkbox-group>
                     </el-col>
                     <span style="margin-left:30px;">用车人签字：</span>
@@ -377,11 +378,12 @@
                   <td style="text-align:center;" colspan="2"><span>对此次出行的评价</span></td>
                   <td style="text-align:center;" colspan="5">
                     <el-col :span="10">
-                      <el-checkbox-group v-model="addParam.achievement" style="width:400px" :disabled="true">
+                      <el-checkbox-group v-model="checkDegree" :disabled="true" style="width:450px">
                         <el-checkbox label="准时到达" name="type"></el-checkbox>
-                        <el-checkbox label="满意" name="type"></el-checkbox>
-                        <el-checkbox label="一般" name="type"></el-checkbox>
-                        <el-checkbox label="迟到" name="type"></el-checkbox>
+                        <el-checkbox label="满意" name="type" ></el-checkbox>
+                        <el-checkbox label="一般" name="type" ></el-checkbox>
+                        <el-checkbox label="迟到" name="type" ></el-checkbox>
+                        <el-checkbox label="取消订单" name="type" ></el-checkbox>
                       </el-checkbox-group>
                     </el-col>
                     <span style="margin-left:30px;">用车人签字：</span>
@@ -945,4 +947,7 @@ export default {
     top: 0px;
   }
 }
+  .el-checkbox{
+    margin-right: 10px !important;
+  }
 </style>

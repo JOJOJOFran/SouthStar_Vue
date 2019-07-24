@@ -288,7 +288,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('applyTable.endMileage')">
-              <el-input v-model="recieptModel.endKm" @change="getDistance1"  class="filter-item"  style="width: 205px;"/>
+              <el-input v-model="recieptModel.endKm" @change="getDistance2"  class="filter-item"  style="width: 205px;"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -319,11 +319,18 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="24">
             <el-form-item  :label="$t('applyTable.satisfactionDegree')" class="postInfo-container-item" >
-               <el-select v-model="recieptModel.evaluation" class="filter-item" placeholder="请选择"  style="width: 205px;">
+              <!-- <el-select v-model="recieptModel.evaluation" class="filter-item" placeholder="请选择"  style="width: 205px;">
                 <el-option v-for="item in degreeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
-              </el-select>
+              </el-select> -->
+              <el-checkbox-group v-model="checkDegree" @change="handleDegreeChange" :min="checkMin" :max="checkMax">
+                <el-checkbox label="准时到达" name="type" :disabled="checkFlag1"></el-checkbox>
+                <el-checkbox label="满意" name="type" :disabled="checkFlag1"></el-checkbox>
+                <el-checkbox label="一般" name="type" :disabled="checkFlag2"></el-checkbox>
+                <el-checkbox label="迟到" name="type" :disabled="checkFlag2"></el-checkbox>
+                <el-checkbox label="取消订单" name="type" :disabled="checkFlag2"></el-checkbox>
+              </el-checkbox-group>
             </el-form-item>
           </el-col>
         </el-row>
@@ -413,7 +420,7 @@
         <el-row>
          
           <el-col :span="12">
-            <el-form-item  :label="$t('applyTable.warehousingTime')" class="postInfo-container-item" >
+            <el-form-item  :label="$t('applyTable.warehousingTime')">
               <el-date-picker v-model="recieptModel.backTime" type="datetime" @change="getCountTime" value-format="yyyy-MM-dd HH:mm:ss" :placeholder="$t('applyTable.warehousingTime')" style="width: 205px;"/>
             </el-form-item>
           </el-col>
@@ -424,11 +431,18 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="24">
             <el-form-item  :label="$t('applyTable.satisfactionDegree')" class="postInfo-container-item" >
-               <el-select v-model="recieptModel.evaluation" class="filter-item" placeholder="请选择" style="width: 205px;">
+              <!-- <el-select v-model="recieptModel.evaluation" class="filter-item" placeholder="请选择" style="width: 205px;">
                 <el-option v-for="item in degreeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-              </el-select>
+              </el-select> -->
+              <el-checkbox-group v-model="checkDegree" @change="handleDegreeChange" :min="checkMin" :max="checkMax">
+                <el-checkbox label="准时到达" name="type" :disabled="checkFlag1"></el-checkbox>
+                <el-checkbox label="满意" name="type" :disabled="checkFlag1"></el-checkbox>
+                <el-checkbox label="一般" name="type" :disabled="checkFlag2"></el-checkbox>
+                <el-checkbox label="迟到" name="type" :disabled="checkFlag2"></el-checkbox>
+                <el-checkbox label="取消订单" name="type" :disabled="checkFlag2"></el-checkbox>
+              </el-checkbox-group>
             </el-form-item>
           </el-col>
         </el-row>
@@ -634,12 +648,13 @@
               <td style="text-align:center;" colspan="2"><span>对此次出行的评价</span></td>
               <td style="text-align:center;" colspan="5">
                 <el-col :span="10">
-                  <el-checkbox-group v-model="checkDegree" style="width:400px" :disabled="true">
-                        <el-checkbox label="准时到达" name="type"></el-checkbox>
-                        <el-checkbox label="满意" name="type"></el-checkbox>
-                        <el-checkbox label="一般" name="type"></el-checkbox>
-                        <el-checkbox label="迟到" name="type"></el-checkbox>
-                      </el-checkbox-group>
+                  <el-checkbox-group v-model="checkDegree" :disabled="true" style="width:450px">
+                    <el-checkbox label="准时到达" name="type"></el-checkbox>
+                    <el-checkbox label="满意" name="type" ></el-checkbox>
+                    <el-checkbox label="一般" name="type" ></el-checkbox>
+                    <el-checkbox label="迟到" name="type" ></el-checkbox>
+                    <el-checkbox label="取消订单" name="type" ></el-checkbox>
+                  </el-checkbox-group>
                 </el-col>
                 <span style="margin-left:20px;">用车人签字：</span>
                 <span style="margin-left:100px;">电话：</span>
@@ -845,7 +860,7 @@
                 <tr>
                   <td style="text-align:center;">是否清洗</td>
                   <td>
-                    <el-col :span="24" style="margin-left: 20px;">
+                    <el-col :span="24" style="margin-left:20px;">
                       <el-checkbox-group v-model="checkClean" :disabled="true">
                         <el-checkbox label="是" name="type"></el-checkbox>
                         <el-checkbox label="否" name="type"></el-checkbox>
@@ -863,13 +878,13 @@
                   <td style="text-align:center;" colspan="2"><span>对此次出行的评价</span></td>
                   <td style="text-align:center;" colspan="5">
                     <el-col :span="10">
-                      <el-checkbox-group v-model="checkDegree" :disabled="true" style="width:400px">
+                      <el-checkbox-group v-model="checkDegree" :disabled="true" style="width:450px">
                         <el-checkbox label="准时到达" name="type"></el-checkbox>
                         <el-checkbox label="满意" name="type" ></el-checkbox>
                         <el-checkbox label="一般" name="type" ></el-checkbox>
                         <el-checkbox label="迟到" name="type" ></el-checkbox>
+                        <el-checkbox label="取消订单" name="type" ></el-checkbox>
                       </el-checkbox-group>
-                      
                     </el-col>
                     <span style="margin-left:30px;">用车人签字：</span>
                     <span style="margin-left:100px;">电话：</span>
@@ -946,7 +961,7 @@
         carPropertyOptions:[{key:0,display_name:'公务用车组'},{key:1,display_name:'执法用车组'}],
         carTypeOptions:[{key:'轿车',display_name:'轿车'},{key:'商务车',display_name:'商务车'},{key:'小型客车',display_name:'小型客车'},{key:'客车',display_name:'客车'}],
         cleanOptions:[{key:true,display_name:'是'},{key:false,display_name:'否'}],
-        degreeOptions:[{key:1,display_name:'准时到达'},{key:16,display_name:'满意'},{key:32,display_name:'一般'},{key:48,display_name:'迟到'}],
+        degreeOptions:[{key:1,display_name:'准时到达'},{key:16,display_name:'满意'},{key:32,display_name:'一般'},{key:48,display_name:'迟到'},{key:256,display_name:'取消订单'}],
         applyReasonOptions:[{key:'执法',value:'执法'},{key:'检查',value:'检查'}],
         temp: {},
         showPrintContent:true,
@@ -1005,6 +1020,10 @@
         },
         checkClean:[],
         checkDegree:[],
+        checkMin:0,
+        checkMax:1,
+        checkFlag1:false,
+        checkFlag2:false,
         recieptApplyId:'',
         userList:[]
       }
@@ -1032,6 +1051,40 @@
       handleFilter() {
         this.listQuery.page = 1;
         this.getList();
+      },
+      handleDegreeChange(value){
+        if(value=="准时到达" || value=="满意" || value=="准时到达,满意"|| value=="满意,准时到达"){
+          this.checkMax=2;
+          this.checkFlag2=true;
+        }else{
+          this.checkFlag2=false;
+        }
+        if(value=="一般" || value=="迟到" || value=="取消订单"){
+          this.checkMax=1;
+          this.checkFlag1=true;
+        }else{
+          this.checkFlag1=false;
+        }
+        if(value.length==1){
+          for(var i=0;i<this.degreeOptions.length;i++){
+            if(this.degreeOptions[i].display_name==value[0]){
+              this.recieptModel.evaluation = this.degreeOptions[i].key;
+              break;
+            }
+          }
+        }else if(value.length==2){
+          var a = null;
+          var b = null;
+          for(var i=0;i<this.degreeOptions.length;i++){
+            if(this.degreeOptions[i].display_name==value[0]){
+              a = this.degreeOptions[i].key;
+            }
+            if(this.degreeOptions[i].display_name==value[1]){
+              b = this.degreeOptions[i].key;
+            }
+          }
+          this.recieptModel.evaluation = a + b;
+        }
       },
       getList() {
         // this.list=[];
@@ -1262,11 +1315,18 @@
               }else if(this.recieptModel.evaluation==16){
                 this.checkDegree.push("满意");
               }
+              else if(this.recieptModel.evaluation==17){
+                this.checkDegree.push("准时到达");
+                this.checkDegree.push("满意");
+              }
               else if(this.recieptModel.evaluation==32){
                 this.checkDegree.push("一般");
               }
               else if(this.recieptModel.evaluation==48){
                 this.checkDegree.push("迟到");
+              }
+              else if(this.recieptModel.evaluation==256){
+                this.checkDegree.push("取消订单");
               }
             }
             this.dialogStatus = 'print';
@@ -1312,11 +1372,29 @@
         this.clearRecieptModel();
 
         this.recieptModel.dispatchId= row.id;
-        // this.recieptModel.applyId= row.applyId;
         this.recieptApplyId=row.applyId;
         recieptGet(row.id).then(response => {
           if(response.data.datas){
             this.recieptModel = response.data.datas;
+          }
+          this.checkDegree=[];
+          if(this.recieptModel.evaluation==1){
+            this.checkDegree.push("准时到达");
+          }else if(this.recieptModel.evaluation==16){
+            this.checkDegree.push("满意");
+          }
+          else if(this.recieptModel.evaluation==17){
+            this.checkDegree.push("准时到达");
+            this.checkDegree.push("满意");
+          }
+          else if(this.recieptModel.evaluation==32){
+            this.checkDegree.push("一般");
+          }
+          else if(this.recieptModel.evaluation==48){
+            this.checkDegree.push("迟到");
+          }
+          else if(this.recieptModel.evaluation==256){
+            this.checkDegree.push("取消订单");
           }
           if(row.carProperty=="公务用车"){
             this.businessFormVisible=true;
@@ -1396,8 +1474,8 @@
         this.recieptModel.useTime=(endTime-startTime)/60;
       },
       getDistance1(value){
-        var endKM=this.recieptModel.endKm;
-        if(endKM!='' && value!=''){
+        var endKM=this.recieptModel.endKm.trim();
+        if(endKM!='' && value.trim()!=''){
           this.recieptModel.currentKm = parseInt(endKM)-parseInt(value);
         }
         if(isNaN(this.recieptModel.currentKm)){
@@ -1405,8 +1483,8 @@
         }
       },
       getDistance2(value){
-        var startKM=this.recieptModel.startKm;
-        if(startKM!=''&& value!=''){
+        var startKM=this.recieptModel.startKm.trim();
+        if(startKM!=''&& value.trim()!=''){
           this.recieptModel.currentKm = parseInt(value)-parseInt(startKM);
         }
         if(isNaN(this.recieptModel.currentKm)){
@@ -1499,5 +1577,8 @@
     position: absolute;
     right: 15px;
     top: 10px;
+  }
+  .el-checkbox{
+    margin-right: 10px !important;
   }
 </style>
