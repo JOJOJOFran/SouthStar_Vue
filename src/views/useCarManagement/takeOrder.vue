@@ -43,7 +43,7 @@
       fit
       highlight-current-row
       style="width: 100%;">
-      <el-table-column align="center" :label="$t('applyTable.applyNum')" width="115">
+      <el-table-column align="center" :label="$t('applyTable.applyNum')" width="115" fixed="left">
         <template slot-scope="scope">
           <span style="color:#409EFF">{{ scope.row.applyNum }}</span>
         </template>
@@ -53,7 +53,7 @@
           <span>{{ scope.row.carProperty }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="auto" align="center" :label="$t('applyTable.userName')">
+      <el-table-column width="80" align="center" :label="$t('applyTable.userName')">
         <template slot-scope="scope">
           <span>{{ scope.row.userName }}</span>
         </template>
@@ -63,9 +63,19 @@
           <span>{{ scope.row.userMobile }}</span>
         </template>
       </el-table-column>
-        <el-table-column :label="'类型'" width="70" align="center">
+      <el-table-column :label="'类型'" width="50" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.carType }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="'调度车辆'" width="90" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.plateNumber }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="'驾驶员'" width="100" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.driverName }}</span>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" :label="$t('applyTable.startPlanTime')" width="155">
@@ -99,7 +109,7 @@
           <span style="color: green;">{{ scope.row.checkStatus }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('applyTable.caozuo')" align="center" width="300">
+      <el-table-column :label="$t('applyTable.caozuo')" align="center" width="300" fixed="right">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" v-if="scope.row.checkStatus =='已完成'"  plain disabled>{{ scope.row.edit }}</el-button>
           <el-button type="primary" size="mini" v-else @click="handleEdit(scope.row)">{{ scope.row.edit }}</el-button>
@@ -467,23 +477,23 @@
        <el-form ref="dataForm"  label-position="left" label-width="80px" style="margin-left:20px;">
           <div ref="print" style="width:100%;height:100%;" id="printContent">
             <div class="postInfo-container">
-              <table width="100%" height="100%" border="1" cellspacing="0">
+            <table width="100%" height="100%" border="0" cellspacing="0" class="printTable">
             <tr>
-              <td colspan="7"><h1 style="text-align:center;font-weight:bold;font-family:'STKaiti';">武汉市江夏新城通汽车服务有限公司</h1></td>
+              <td colspan="7" style="border:none"><h1 style="text-align:center;font-weight:bold;font-family:'STKaiti';margin:0px">武汉市江夏新城通汽车服务有限公司</h1></td>
             </tr>
             <tr>
-              <td colspan="7"><h2 style="text-align:center;font-family:'STKaiti';">公务用车派车单</h2></td>
+              <td colspan="7" style="border:none"><h2 style="text-align:center;font-family:'STKaiti';">公务用车派车单</h2></td>
             </tr>
             <tr>
               <td style="text-align:center;border-right: none">编号:</td>
-              <td style="text-align:center;font-weight:bold;font-family:'STKaiti';border-left: none;border-right: none">
+              <td style="text-align:center;font-weight:bold;font-family:'STKaiti';border-left:none;border-right:none;border-top: none;">
                 {{addParam.applyNum}}
               </td>
-              <td style="border-right: none;border-left: none"></td>
-              <td style="border-left: none;border-right: none"></td>
-              <td style="border-left: none;border-right: none"></td>
-              <td style="text-align:center;border-left: none;border-right: none">日期:</td>
-              <td style="border-left: none;text-align:center;font-weight:bold;font-family:'STKaiti';">
+              <td style="border-right: none;border-left: none;border-top: none"></td>
+              <td style="border-left: none;border-right: none;border-top: none"></td>
+              <td style="border-left: none;border-right: none;border-top: none"></td>
+              <td style="text-align:center;border-left: none;border-right: none;border-top: none">日期:</td>
+              <td style="border-left: none;border-top: none;font-family:'STKaiti';text-align:center;font-weight:bold;">
                 {{localDate}}
               </td>
             </tr>
@@ -633,7 +643,7 @@
               <td style="text-align:center;">是否清洗</td>
               <td>
                 <el-col :span="24" style="margin-left: 20px;">
-                  <el-checkbox-group v-model="checkClean" :disabled="true">
+                  <el-checkbox-group v-model="checkClean">
                     <el-checkbox label="是" name="type"></el-checkbox>
                     <el-checkbox label="否" name="type"></el-checkbox>
                   </el-checkbox-group>
@@ -648,7 +658,7 @@
               <td style="text-align:center;" colspan="2"><span>对此次出行的评价</span></td>
               <td style="text-align:center;" colspan="5">
                 <el-col :span="10">
-                  <el-checkbox-group v-model="checkDegree" :disabled="true" style="width:450px">
+                  <el-checkbox-group v-model="checkDegree" style="width:450px">
                     <el-checkbox label="准时到达" name="type"></el-checkbox>
                     <el-checkbox label="满意" name="type" ></el-checkbox>
                     <el-checkbox label="一般" name="type" ></el-checkbox>
@@ -685,23 +695,23 @@
         <el-form ref="dataForm" label-position="left" label-width="80px" style="margin-left:20px;">
           <div ref="print" style="width:100%;height:100%;">
             <div class="postInfo-container">
-              <table width="100%" height="100%" border="1" cellspacing="0">
+              <table width="100%" height="100%" border="0" cellspacing="0" class="printTable">
                 <tr>
-                  <td colspan="7"><h1 style="text-align:center;font-weight:bold;font-family:'STKaiti';">武汉市江夏新城通汽车服务有限公司</h1></td>
+                  <td colspan="7" style="border:none"><h1 style="text-align:center;font-weight:bold;font-family:'STKaiti';margin:0px">武汉市江夏新城通汽车服务有限公司</h1></td>
                 </tr>
                 <tr>
-                  <td colspan="7"><h2 style="text-align:center;font-family:'STKaiti';">执法保障用车派车单</h2></td>
+                  <td colspan="7" style="border:none"><h2 style="text-align:center;font-family:'STKaiti';">执法保障用车派车单</h2></td>
                 </tr>
                 <tr>
                   <td style="text-align:center;border-right: none">编号:</td>
-                  <td style="text-align:center;font-weight:bold;font-family:'STKaiti';border-left: none;border-right: none">
+                  <td style="text-align:center;font-weight:bold;font-family:'STKaiti';border-left:none;border-right:none;border-top: none;">
                     {{addParam.applyNum}}
                   </td>
-                  <td style="border-right: none;border-left: none"></td>
-                  <td style="border-left: none;border-right: none"></td>
-                  <td style="border-left: none;border-right: none"></td>
-                  <td style="text-align:center;border-left: none;border-right: none">日期:</td>
-                  <td style="border-left: none;border-right: none;font-family:'STKaiti';text-align:center;font-weight:bold;">
+                  <td style="border-right: none;border-left: none;border-top: none"></td>
+                  <td style="border-left: none;border-right: none;border-top: none"></td>
+                  <td style="border-left: none;border-right: none;border-top: none"></td>
+                  <td style="text-align:center;border-left: none;border-right: none;border-top: none">日期:</td>
+                  <td style="border-left: none;border-top: none;font-family:'STKaiti';text-align:center;font-weight:bold;">
                     {{localDate}}
                   </td>
                 </tr>
@@ -861,7 +871,7 @@
                   <td style="text-align:center;">是否清洗</td>
                   <td>
                     <el-col :span="24" style="margin-left:20px;">
-                      <el-checkbox-group v-model="checkClean" :disabled="true">
+                      <el-checkbox-group v-model="checkClean">
                         <el-checkbox label="是" name="type"></el-checkbox>
                         <el-checkbox label="否" name="type"></el-checkbox>
                       </el-checkbox-group>
@@ -878,7 +888,7 @@
                   <td style="text-align:center;" colspan="2"><span>对此次出行的评价</span></td>
                   <td style="text-align:center;" colspan="5">
                     <el-col :span="10">
-                      <el-checkbox-group v-model="checkDegree" :disabled="true" style="width:450px">
+                      <el-checkbox-group v-model="checkDegree" style="width:450px">
                         <el-checkbox label="准时到达" name="type"></el-checkbox>
                         <el-checkbox label="满意" name="type" ></el-checkbox>
                         <el-checkbox label="一般" name="type" ></el-checkbox>
@@ -1580,5 +1590,11 @@
   }
   .el-checkbox{
     margin-right: 10px !important;
+  }
+  .printTable{
+    border-collapse:collapse;
+  }
+  .printTable tr td{
+    border: 1px solid black;
   }
 </style>

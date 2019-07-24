@@ -26,27 +26,25 @@
         <el-form ref="dataForm"  label-position="left" label-width="80px" style="margin-left:20px;">
           <div ref="print" style="width:100%;height:100%;" id="printContent">
             <div class="postInfo-container">
-              <table width="100%" height="100%" border="1" cellspacing="0">
+              <table width="100%" height="100%" border="0" cellspacing="0" class="printTable">
             <tr>
-              <td colspan="7"><h1 style="text-align:center;font-weight:bold;font-family:'STKaiti';">武汉市江夏新城通汽车服务有限公司</h1></td>
+              <td colspan="7" style="border:none"><h1 style="text-align:center;font-weight:bold;font-family:'STKaiti';margin:0px;">武汉市江夏新城通汽车服务有限公司</h1></td>
             </tr>
             <tr>
-              <td colspan="7"><h2 style="text-align:center;font-family:'STKaiti';">公务用车派车单</h2></td>
+              <td colspan="7" style="border:none"><h2 style="text-align:center;font-family:'STKaiti';">公务用车派车单</h2></td>
             </tr>
             <tr>
-              <!--<td style="text-align:center;border-right: none">编号:</td>-->
-              <!--<td style="text-align:center;font-weight:bold;font-family:'STKaiti';border-left: none;border-right: none">-->
-                <!--<el-col :span="24">-->
-                  <!--<el-input v-model="addParam.applyReason"  style="width: 205px;"/>-->
-                <!--</el-col>-->
-              <!--</td>-->
-              <td colspan="3" style="border-right: none"></td>
-              <td style="border-left: none;border-right: none"></td>
-              <td style="border-left: none;border-right: none"></td>
-              <td style="text-align:center;border-left: none;border-right: none;">日期:</td>
-              <td style="border-left: none;border-right: none;font-family:'STKaiti';text-align:center;font-weight:bold;">
-                    {{localDate}}
-              </td>
+              <td style="text-align:center;border-right: none">编号:</td>
+                <td style="text-align:center;font-weight:bold;font-family:'STKaiti';border-left:none;border-right:none;border-top: none;">
+                  {{addParam.applyNum}}
+                </td>
+                <td style="border-right: none;border-left: none;border-top: none"></td>
+                <td style="border-left: none;border-right: none;border-top: none"></td>
+                <td style="border-left: none;border-right: none;border-top: none"></td>
+                <td style="text-align:center;border-left: none;border-right: none;border-top: none">日期:</td>
+                <td style="border-left: none;border-top: none;font-family:'STKaiti';text-align:center;font-weight:bold;">
+                  {{localDate}}
+                </td>
             </tr>
             <tr>
               <td rowspan="3" style="text-align:center;">用车单位申请信息</td>
@@ -199,7 +197,7 @@
               <td style="text-align:center;">是否清洗</td>
               <td>
                 <el-col :span="24" style="margin-left: 20px;">
-                  <el-checkbox-group v-model="addParam.achievement" :disabled="true">
+                  <el-checkbox-group v-model="addParam.achievement" :min="0" :max="0">
                     <el-checkbox label="是" name="type"></el-checkbox>
                     <el-checkbox label="否" name="type"></el-checkbox>
                   </el-checkbox-group>
@@ -212,7 +210,7 @@
               <td style="text-align:center;" colspan="2"><span>对此次出行的评价</span></td>
               <td style="text-align:center;" colspan="5">
                 <el-col :span="10">
-                  <el-checkbox-group v-model="addParam.achievement" :disabled="true">
+                  <el-checkbox-group v-model="addParam.achievement" :min="0" :max="0">
                     <el-checkbox label="准时到达" name="type"></el-checkbox>
                     <el-checkbox label="满意" name="type"></el-checkbox>
                     <el-checkbox label="一般" name="type"></el-checkbox>
@@ -244,12 +242,12 @@
         <el-form ref="dataForm"  label-position="left" label-width="80px" style="margin-left:20px;">
           <div ref="printBusiness" style="width:100%;height:100%;" id="printContent">
             <div class="postInfo-container">
-              <table width="100%" height="100%" border="1" cellspacing="0">
+              <table width="100%" height="100%" border="0" cellspacing="0" class="printTable">
             <tr>
-              <td colspan="7"><h1 style="text-align:center;font-weight:bold;font-family:'STKaiti';">武汉市江夏新城通汽车服务有限公司</h1></td>
+              <td colspan="7" style="border:none"><h1 style="text-align:center;font-weight:bold;font-family:'STKaiti';margin:0px">武汉市江夏新城通汽车服务有限公司</h1></td>
             </tr>
             <tr>
-              <td colspan="7"><h2 style="text-align:center;font-family:'STKaiti';">公务用车派车单</h2></td>
+              <td colspan="7" style="border:none"><h2 style="text-align:center;font-family:'STKaiti';">公务用车派车单</h2></td>
             </tr>
             <tr>
               <td style="text-align:center;border-right: none">编号:</td>
@@ -360,7 +358,7 @@
               <td style="text-align:center;">是否清洗</td>
               <td>
                 <el-col :span="24" style="margin-left: 20px;">
-                  <el-checkbox-group v-model="addParam.achievement" :disabled="true">
+                  <el-checkbox-group v-model="addParam.achievement" :max="0">
                     <el-checkbox label="是" name="type"></el-checkbox>
                     <el-checkbox label="否" name="type"></el-checkbox>
                   </el-checkbox-group>
@@ -373,7 +371,7 @@
               <td style="text-align:center;" colspan="2"><span>对此次出行的评价</span></td>
               <td style="text-align:center;" colspan="5">
                 <el-col :span="10">
-                  <el-checkbox-group v-model="checkDegree" :disabled="true" style="width:450px">
+                  <el-checkbox-group style="width:450px" :max="0">
                     <el-checkbox label="准时到达" name="type"></el-checkbox>
                     <el-checkbox label="满意" name="type" ></el-checkbox>
                     <el-checkbox label="一般" name="type" ></el-checkbox>
@@ -905,5 +903,11 @@ export default {
 }
   .el-checkbox{
     margin-right: 10px !important;
+  }
+  .printTable{
+    border-collapse:collapse;
+  }
+  .printTable tr td{
+    border: 1px solid black;
   }
 </style>
