@@ -1235,6 +1235,7 @@
         this.recieptApplyId=row.applyId;
         //详情
         dispatchItem(row.id).then(response => {
+          debugger
             this.addParam = response.data.datas;
             for(var i=0;i<this.deptList.length;i++){
                 if(this.deptList[i].id==this.addParam.departmentId){
@@ -1266,7 +1267,7 @@
           applicantName: this.addParam.applicantName,
           applicantPhone: this.addParam.applicantPhone,
           departmentId: this.addParam.departmentId,
-          departmentName: this.addParam.departmentName,
+          departmentName: this.addParam.userDepartment,
           userName: this.addParam.userName,
           userMobile:this.addParam.userMobile,
           applyReson: this.addParam.applyReson,
