@@ -908,7 +908,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td colspan="7" style="height:30px;border:none"><span style="margin-left:20px;">备注：本派车单由申请用车部门确认签字后，交给驾驶员作为出车凭证</span></td>
+                  <td colspan="7" style="height:30px;border:none"><span style="margin-left:20px;">备注：请将此单与《执勤执法用车审批单》同时使用，方可出车；本派车单由申请用车部门确认签字后，交给驾驶员作为出车凭证</span></td>
                 </tr>
               </table>
             </div>
