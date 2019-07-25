@@ -209,7 +209,7 @@
                   <td style="text-align:center;">是否清洗</td>
                   <td>
                     <el-col :span="24" style="margin-left: 20px;">
-                      <el-checkbox-group v-model="addParam.achievement">
+                      <el-checkbox-group v-model="addParam.achievement" :disabled="true">
                         <el-checkbox label="是" name="type"></el-checkbox>
                         <el-checkbox label="否" name="type"></el-checkbox>
                       </el-checkbox-group>
@@ -224,7 +224,7 @@
                   <td style="text-align:center;" colspan="2"><span>对此次出行的评价</span></td>
                   <td style="text-align:center;" colspan="5">
                     <el-col :span="10">
-                      <el-checkbox-group v-model="addParam.achievement">
+                      <el-checkbox-group v-model="addParam.achievement" :disabled="true">
                         <el-checkbox label="准时到达" name="type"></el-checkbox>
                         <el-checkbox label="满意" name="type"></el-checkbox>
                         <el-checkbox label="一般" name="type"></el-checkbox>
@@ -376,7 +376,7 @@
                   <td style="text-align:center;" colspan="2"><span>对此次出行的评价</span></td>
                   <td style="text-align:center;" colspan="5">
                     <el-col :span="10">
-                      <el-checkbox-group style="width:450px">
+                      <el-checkbox-group style="width:450px" :disabled="true">
                         <el-checkbox label="准时到达" name="type"></el-checkbox>
                         <el-checkbox label="满意" name="type" ></el-checkbox>
                         <el-checkbox label="一般" name="type" ></el-checkbox>
@@ -396,7 +396,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td colspan="7"><span style="margin-left:20px;">备注：请将此单与《执勤执法用车审批单》同时使用，方可出车；本派车单由申请用车部门确认签字后，交给驾驶员作为出车凭证</span></td>
+                  <td colspan="7"  style="height:30px;"><span style="margin-left:20px;">备注：请将此单与《执勤执法用车审批单》同时使用，方可出车；本派车单由申请用车部门确认签字后，交给驾驶员作为出车凭证</span></td>
                 </tr>
               </table>
             </div>
