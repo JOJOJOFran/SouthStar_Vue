@@ -479,10 +479,10 @@
             <div class="postInfo-container">
             <table width="100%" height="100%" border="0" cellspacing="0" class="printTable">
             <tr>
-              <td colspan="7" style="border:none"><h1 style="text-align:center;font-weight:bold;font-family:'STKaiti';margin-top:10px;margin-bottom:0px;">武汉市江夏新城通汽车服务有限公司</h1></td>
+              <td colspan="7" style="border:none"><h1 style="text-align:center;font-weight:bold;font-family:'STKaiti';margin-top:0px;margin-bottom:0px;">武汉市江夏新城通汽车服务有限公司</h1></td>
             </tr>
             <tr>
-              <td colspan="7" style="border:none"><h2 style="text-align:center;font-family:'STKaiti';">公务用车派车单</h2></td>
+              <td colspan="7" style="border:none"><h2 style="text-align:center;font-family:'STKaiti';margin-top:0px;margin-bottom:0px;">公务用车派车单</h2></td>
             </tr>
             <tr>
               <td style="text-align:center;border-right: none">编号:</td>
@@ -700,7 +700,7 @@
                   <td colspan="7" style="border:none"><h1 style="text-align:center;font-weight:bold;font-family:'STKaiti';margin-top:10px;margin-bottom:0px;">武汉市江夏新城通汽车服务有限公司</h1></td>
                 </tr>
                 <tr>
-                  <td colspan="7" style="border:none"><h2 style="text-align:center;font-family:'STKaiti';">执法保障用车派车单</h2></td>
+                  <td colspan="7" style="border:none"><h2 style="text-align:center;font-family:'STKaiti';margin-top:0px;margin-bottom:0px;">执法保障用车派车单</h2></td>
                 </tr>
                 <tr>
                   <td style="text-align:center;border-right: none">编号:</td>
@@ -1577,9 +1577,6 @@
 </script>
 
 <style scoped>
-  td{
-    height: 40px;
-  }
   .edit-input {
     padding-right: 100px;
   }
@@ -1599,3 +1596,4 @@
     height: 35px;
   }
 </style>
+
