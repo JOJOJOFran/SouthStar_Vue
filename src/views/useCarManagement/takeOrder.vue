@@ -475,7 +475,7 @@
 
     <el-dialog  :title="textMap[dialogStatus]" :visible.sync="businessPrintVisible" width="90%">
        <el-form ref="dataForm"  label-position="left" label-width="80px" style="margin-left:20px;">
-          <div ref="print" style="width:100%;height:100%;" id="printContent">
+          <div ref="print" style="width:100%;height:98%;" id="printContent">
             <div class="postInfo-container">
             <table width="100%" height="100%" border="0" cellspacing="0" class="printTable">
             <tr>
@@ -693,7 +693,7 @@
 
     <el-dialog  :title="textMap[dialogStatus]" :visible.sync="emergencyPrintVisible" width="90%">
         <el-form ref="dataForm" label-position="left" label-width="80px" style="margin-left:20px;">
-          <div ref="print" style="width:100%;height:100%;">
+          <div ref="print" style="width:100%;height:98%;">
             <div class="postInfo-container">
               <table width="100%" height="100%" border="0" cellspacing="0" class="printTable">
                 <tr>
@@ -908,7 +908,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td colspan="7" style="height:30px;border:none"><span style="margin-left:20px;">备注：请将此单与《执勤执法用车审批单》同时使用，方可出车；本派车单由申请用车部门确认签字后，交给驾驶员作为出车凭证</span></td>
+                  <td colspan="7" style="height:30px;border:none"><span style="margin-left:20px;">备注：本派车单由申请用车部门确认签字后，交给驾驶员作为出车凭证</span></td>
                 </tr>
               </table>
             </div>

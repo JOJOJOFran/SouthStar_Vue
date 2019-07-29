@@ -254,7 +254,7 @@
       <!-- 应急执法打印 -->
       <div class="createPost-main-container" v-show="!postForm.comment_disabled && showPrintDetail">
         <el-form ref="dataForm" label-position="left" label-width="80px" style="margin-left:20px;">
-          <div ref="printEmergency" style="width:100%;height:100%;">
+          <div ref="printEmergency" style="width:100%;height:98%;">
             <div class="postInfo-container">
               <table width="100%" height="100%" border="0" cellspacing="0" class="printTable">
                 <tr>
