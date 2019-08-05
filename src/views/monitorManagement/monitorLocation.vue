@@ -165,7 +165,7 @@
             <el-button :loading="downloadLoading" type="primary" icon="el-icon-download" @click="exportTrajectory">{{ $t('table.export') }}</el-button>
           </el-col>
         </el-row>
-        <div style="width: 100%;height: 600px;">
+        <div style="position:absolute;top:120px;bottom:0px;left:0px;right:0px;">
           <baidu-map class="bm-dialog" :center="{lng: 114.32, lat: 30.38}" :zoom="14" :scroll-wheel-zoom="true" @ready="handler">
             <!-- <bm-map-type :map-types="['BMAP_NORMAL_MAP', 'BMAP_HYBRID_MAP']" anchor="BMAP_ANCHOR_TOP_LEFT"></bm-map-type> -->
             <bm-navigation anchor="BMAP_ANCHOR_TOP_LEFT"></bm-navigation>
