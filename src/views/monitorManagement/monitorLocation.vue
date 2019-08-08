@@ -169,7 +169,11 @@
           <baidu-map class="bm-dialog" :center="{lng: 114.32, lat: 30.38}" :zoom="14" :scroll-wheel-zoom="true" @ready="handler">
             <!-- <bm-map-type :map-types="['BMAP_NORMAL_MAP', 'BMAP_HYBRID_MAP']" anchor="BMAP_ANCHOR_TOP_LEFT"></bm-map-type> -->
             <bm-navigation anchor="BMAP_ANCHOR_TOP_LEFT"></bm-navigation>
-            <bm-polyline :path="trackPoints" stroke-color="blue" :stroke-opacity="1" :stroke-weight="5" :editing="false" :strokeStyle="'solid'" ></bm-polyline>
+            <bm-polyline :path="trackPoints" stroke-color="blue" :stroke-opacity="1" :stroke-weight="8" :editing="false" :strokeStyle="'solid'" ></bm-polyline>
+           
+            <bm-marker v-for="(marker,index) of rowMarkList" :key="index" :position="{lng: rowMarkList[index].lng, lat: rowMarkList[index].lat}" :rotation="rowMarkList[index].rotation" :icon="{url:rowIcon,size:{width:8,height:8}}">
+            </bm-marker>
+
             <bm-marker v-show="showStartAndEnd" @click="startWindowOpen()" :position="{lng:startMarker.lng,lat:startMarker.lat}"  :icon="{url:startMarker.icon, size: {width: 32, height: 32}}"></bm-marker>
             <bm-marker v-show="showStartAndEnd" @click="endWindowOpen()" :position="{lng:endMarker.lng,lat:endMarker.lat}" :icon="{url:endMarker.icon, size: {width: 32, height: 32}}"></bm-marker>
             <bm-info-window :show="isStartAndEndWindow" :position="{lng:infoWindowData.lng,lat:infoWindowData.lat}" @close="startAndEndWindowClose" title="实时位置详情" style="line-height:30px;padding:2px;">
@@ -380,6 +384,7 @@ import park225 from '@/assets/park/park_225度.png'
 import park270 from '@/assets/park/park_270度.png'
 import park315 from '@/assets/park/park_315度.png'
 
+import row from '@/assets/row.png'
 import start from '@/assets/起点.png'
 import end from '@/assets/终点.png'
 
@@ -441,6 +446,7 @@ export default {
       },
       polygonPath:[],
       trackPoints:[],
+      rowMarkList:[],//轨迹方向箭头
       list: null,
       commentList:[],
       markList:[],
@@ -538,6 +544,7 @@ export default {
       harsh_breaking:[],//急刹车
       harsh_steering:[],//急转弯
       stay_points:[],//停留点
+      rowIcon:row,
       showLabel:false,
       labelObj:{
         lng:0,
@@ -783,6 +790,7 @@ export default {
     //轨迹查询
     handleTrajectory(){
       this.trackPoints=[];
+      this.rowMarkList=[];
       this.exportData=[];
       this.dialogFormVisible = true;
       this.showStartAndEnd=false;
@@ -814,6 +822,7 @@ export default {
       };
 
       this.trackPoints=[];
+      this.rowMarkList=[];
       this.exportData=[];
       this.startMarker = {lng:0,lat:0,icon:start};//轨迹起点
       this.endMarker = {lng:0,lat:0,icon:end};//轨迹终点
@@ -865,6 +874,7 @@ export default {
                   {
                       for (var i = 0; i < data.length; i++) {
                         that.trackPoints.push({lng:data[i].longitude, lat:data[i].latitude});
+                        this.rowMarkList.push({lng:data[i].longitude, lat:data[i].latitude,rotation:data[i].direction});
                         that.exportData.push(data[i]);
                       }
                   }
@@ -889,7 +899,7 @@ export default {
                     var actual_speed = resp.speeding[j].speeding_points[0].actual_speed;
                     var limit_speed = resp.speeding[j].speeding_points[0].limit_speed;
                     //超速20%记录超速点
-                    if(actual_speed*(1+0.2)>limit_speed){
+                    if(actual_speed*(1+0.3)>limit_speed){
                       that.speeding.push(obj);
                     }
                   }
