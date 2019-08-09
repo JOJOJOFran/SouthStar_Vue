@@ -132,7 +132,7 @@
       </el-table>
     </div>
     <!--轨迹查询弹窗-->
-    <el-dialog :title="$t('userAndCarTable.queryTrajectory')" :visible.sync="dialogFormVisible" id="" width="90%" :fullscreen="true">
+    <el-dialog :title="$t('userAndCarTable.queryTrajectory')" @close="closeDialog" :visible.sync="dialogFormVisible" id="" width="90%" :fullscreen="true">
       <div class="filter-container">
       <el-form ref="dataForm"   label-position="left" label-width="100px">
         <el-row style="margin-top: -25px !important;">
@@ -196,7 +196,7 @@
             </bm-info-window>
           </baidu-map>
         </div>
-        <div v-show="showBehavior" style="width:375px;height:70px;border:1px solid lightgray;z-index:100;position:absolute;top:200px;right:30px;background:white;">
+        <div v-show="showBehavior" style="width:375px;height:70px;border:1px solid lightgray;z-index:100;position:absolute;top:130px;right:20px;background:white;">
           <div style="height:70px;">
              <div class="behavior" style="color:black;">总里程</div>
              <div class="behavior" style="color:black;">超速</div>
@@ -870,13 +870,17 @@ export default {
                 }else{
                   //轨迹数据
                   var data=response.points;
-                  if(data.length>0)
-                  {
-                      for (var i = 0; i < data.length; i++) {
-                        that.trackPoints.push({lng:data[i].longitude, lat:data[i].latitude});
-                        this.rowMarkList.push({lng:data[i].longitude, lat:data[i].latitude,rotation:data[i].direction});
-                        that.exportData.push(data[i]);
-                      }
+                  if(data.length==0){
+                    this.$message({
+                      message: '当前时段无数据',
+                      type: 'warning'
+                    })
+                    return;
+                  }
+                  for (var i = 0; i < data.length; i++) {
+                    that.trackPoints.push({lng:data[i].longitude, lat:data[i].latitude});
+                    this.rowMarkList.push({lng:data[i].longitude, lat:data[i].latitude,rotation:data[i].direction});
+                    that.exportData.push(data[i]);
                   }
                   var startPoint = response.start_point;
                   var endPoint = response.end_point;
@@ -957,8 +961,18 @@ export default {
         }
       });
     },
+    closeDialog(){
+      this.downloadLoading = false;
+    },
     //轨迹数据导出
     exportTrajectory(){
+      if(this.exportData.length==0){
+        this.$message({
+          message: '请先查询轨迹，再导出数据',
+          type: 'warning'
+        })
+        return;
+      }
       this.downloadLoading = true;
       this.GetLocation();
     },
