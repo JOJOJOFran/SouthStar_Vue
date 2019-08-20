@@ -4,18 +4,11 @@
         <bm-map-type :map-types="['BMAP_NORMAL_MAP', 'BMAP_HYBRID_MAP']" anchor="BMAP_ANCHOR_TOP_LEFT"></bm-map-type>
         <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
 
-        <!-- <bm-marker v-for="(marker,index) of markList" :key="index" @click="infoWindowOpen(index)" :position="{lng: markList[index].lng, lat: markList[index].lat}" :icon="{url:markList[index].icon, size: {width: 40, height: 50}}">
-            <bm-label :content="markList[index].plateNumber" :position="{lng: markList[index].lng, lat: markList[index].lat}" :offset="labelOffset" :labelStyle="{background:'#FFFF00', fontSize : '12px'}"/>
-        </bm-marker> -->
-
         <bml-marker-clusterer :averageCenter="true">
           <bm-marker v-for="(marker,index) of markList" :key="index" @click="infoWindowOpen(index)" :position="{lng: markList[index].lng, lat: markList[index].lat}" :icon="{url:markList[index].icon, size: {width: 40, height: 50}}">
             <bm-label :content="markList[index].plateNumber+'('+markList[index].status+')'" :position="{lng: markList[index].lng, lat: markList[index].lat}" :offset="labelOffset" :labelStyle="{background:'#FFFF00', fontSize : '12px'}"/>
           </bm-marker>
         </bml-marker-clusterer>
-
-        <!-- <bm-traffic :predictDate="{weekday: 7, hour: 12}"></bm-traffic> -->
-
         <bm-info-window :show="isShow" :position="infoPoints" @close="infoWindowClose" title="实时位置详情" style="line-height:30px;padding:2px;">
           <span style="font-weight:bold">车辆：</span><span style="color:#0A8CFF;">{{infoData.plateNumber}}</span><br/>
           <span style="font-weight:bold">车架号：</span><span style="color:#0A8CFF;">{{infoData.vinCode}}</span><br/>
@@ -170,7 +163,16 @@
             <!-- <bm-map-type :map-types="['BMAP_NORMAL_MAP', 'BMAP_HYBRID_MAP']" anchor="BMAP_ANCHOR_TOP_LEFT"></bm-map-type> -->
             <bm-navigation anchor="BMAP_ANCHOR_TOP_LEFT"></bm-navigation>
             <bm-polyline :path="trackPoints" stroke-color="blue" :stroke-opacity="1" :stroke-weight="8" :editing="false" :strokeStyle="'solid'" ></bm-polyline>
-           
+            
+            <bml-lushu
+              @stop="reset"
+              :path="trackPoints"
+              :icon="icon"
+              :play="play"
+              :speed="1000"
+              :rotation="true">
+            </bml-lushu>
+
             <bm-marker v-for="(marker,index) of rowMarkList" :key="index" :position="{lng: rowMarkList[index].lng, lat: rowMarkList[index].lat}" :rotation="rowMarkList[index].rotation" :icon="{url:rowIcon,size:{width:8,height:8}}">
             </bm-marker>
 
@@ -183,12 +185,12 @@
               <span style="font-weight:bold">时间：</span><span style="color:#0A8CFF;">{{infoWindowData.time}}</span><br/>
               <span style="font-weight:bold">地址：</span><span style="color:#0A8CFF;">{{infoWindowData.location}}</span><br/>
             </bm-info-window>
-            <bm-marker v-for="(item0,index0) of speeding" @click="openLabel(index0,0)" :key="index0" :position="{lng: speeding[index0].lng, lat: speeding[index0].lat}" :icon="{url:speeding[index0].icon, size: {width: 32, height: 32}}">
-            </bm-marker>
-            <bm-marker v-for="(item1,index1) of harsh_acceleration" @click="openLabel(index1,1)" :key="index1" :position="{lng: harsh_acceleration[index1].lng, lat: harsh_acceleration[index1].lat}" :icon="{url:harsh_acceleration[index1].icon, size: {width: 32, height: 32}}">
+            <!-- <bm-marker v-for="(item0,index0) of speeding" @click="openLabel(index0,0)" :key="index0" :position="{lng: speeding[index0].lng, lat: speeding[index0].lat}" :icon="{url:speeding[index0].icon, size: {width: 32, height: 32}}">
+            </bm-marker> -->
+            <!-- <bm-marker v-for="(item1,index1) of harsh_acceleration" @click="openLabel(index1,1)" :key="index1" :position="{lng: harsh_acceleration[index1].lng, lat: harsh_acceleration[index1].lat}" :icon="{url:harsh_acceleration[index1].icon, size: {width: 32, height: 32}}">
             </bm-marker>
             <bm-marker v-for="(item2,index2) of harsh_steering" :key="index2" @click="openLabel(index2,2)" :position="{lng: harsh_steering[index2].lng, lat: harsh_steering[index2].lat}" :icon="{url:harsh_steering[index2].icon, size: {width: 32, height: 32}}">
-            </bm-marker>
+            </bm-marker> -->
             <bm-marker v-for="(item3,index3) of stay_points" :key="index3" @click="openLabel(index3,3)" :position="{lng: stay_points[index3].lng, lat: stay_points[index3].lat}" :icon="{url:stay_points[index3].icon, size: {width: 32, height: 32}}">
             </bm-marker>
             <bm-info-window :show="showLabel" :position="{lng:labelObj.lng,lat:labelObj.lat}" @close="startAndEndWindowClose" style="line-height:30px;padding:2px;">
@@ -344,7 +346,6 @@
         <el-button type="primary" @click="dialogPvVisible = false">{{ $t('table.confirm') }}</el-button>
       </span>
     </el-dialog>
-
   </div>
 </template>
 
@@ -402,7 +403,8 @@ export default {
   name: 'DashboardAdmin',
   components: {
     GithubCorner,
-    BmlMarkerClusterer
+    BmlMarkerClusterer,
+    BmlLushu
     // 'bm-marker':BmlMarker,
     // 'bm-info-window':InfoWindow,
     // 'bm-label':Label,
@@ -552,6 +554,17 @@ export default {
         label:''
       },
       showBehavior:false,
+      play: true,//轨迹回放开始
+      icon: {
+        url: 'http://api.map.baidu.com/library/LuShu/1.2/examples/car.png',
+        size: {width: 52, height: 26},
+        opts: {anchor: {width: 27, height:13}}
+      }
+      // icon: {
+      //   url: online0,
+      //   size: {width: 40, height: 50},
+      //   opts: {anchor: {width: 20, height:25}}
+      // }
     };
   },
   mounted() {
@@ -574,6 +587,9 @@ export default {
           <span style="font-size:14px">{node.label}</span>
         );
       }
+    },
+    reset () {
+      this.play = false;
     },
     handler ({BMap, map}) {
       this.zoom = 15;
@@ -954,6 +970,7 @@ export default {
                     }
                   }
                   this.showBehavior=true;
+                  this.play = true;
                 }
               });
             }
