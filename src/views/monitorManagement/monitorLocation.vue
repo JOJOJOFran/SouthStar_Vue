@@ -169,7 +169,7 @@
               :path="trackPoints"
               :icon="icon"
               :play="play"
-              :speed="1000"
+              :speed="500"
               :rotation="true">
             </bml-lushu>
 
