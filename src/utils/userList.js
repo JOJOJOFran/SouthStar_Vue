@@ -63,7 +63,7 @@ export function getUserList() {
           userMobile:'15871461852'
         },
         {
-          userName:'刘瑞',
+          userName:'刘睿',
           userMobile:'13476048148'
         },
         {
@@ -96,7 +96,7 @@ export function getUserList() {
           userMobile:'13971622282'
         },
         {
-          userName:'邓青',
+          userName:'邓清',
           userMobile:'13871248851'
         },
         {
