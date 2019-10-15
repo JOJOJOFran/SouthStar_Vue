@@ -7,6 +7,10 @@ export function getUserList() {
       departmentName:'区环境监察大队',
       users:[
         {
+          userName:'吴志坤',
+          userMobile:'13659828266'
+        },
+        {
           userName:'吴维波',
           userMobile:'13517275053'
         },
@@ -387,6 +391,14 @@ export function getUserList() {
           userName:'徐春莲',
           userMobile:'15327114395'
         },
+        {
+          userName:'陈帆',
+          userMobile:'15971492676'
+        },
+        {
+          userName:'胡艺',
+          userMobile:'15342238958'
+        },
       ],
     },
     {
@@ -411,7 +423,15 @@ export function getUserList() {
         {
           userName:'周明祥',
           userMobile:'13971493743'
-        }
+        },
+        {
+          userName:'王婷',
+          userMobile:'18062669325'
+        },
+        {
+          userName:'石华',
+          userMobile:'18062669320'
+        },
       ]
     }
   ];
