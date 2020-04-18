@@ -138,12 +138,12 @@
           </el-col>
           <el-col :span="5">
             <el-form-item label-width="80px" :label="$t('applyTable.beginTime')">
-              <el-date-picker v-model="trajectoryParam.start_time" type="datetime"  :placeholder="$t('applyTable.beginTime')"/>
+              <el-date-picker v-model="trajectoryParam.start_time" type="datetime" value-format="yyyy-MM-dd HH:mm:ss"  :placeholder="$t('applyTable.beginTime')"/>
             </el-form-item>
           </el-col>
           <el-col :span="5">
             <el-form-item label-width="80px" :label="$t('applyTable.endTime')">
-              <el-date-picker v-model="trajectoryParam.end_time" type="datetime"  :placeholder="$t('applyTable.endTime')"/>
+              <el-date-picker v-model="trajectoryParam.end_time" type="datetime" value-format="yyyy-MM-dd HH:mm:ss"  :placeholder="$t('applyTable.endTime')"/>
             </el-form-item>
           </el-col>
           <el-col :span="5">
@@ -155,7 +155,7 @@
           </el-col>
           <el-col :span="4">
             <el-button type="primary" icon="el-icon-search" @click="searchTrajectory()">{{ $t('table.search') }}</el-button>
-            <el-button :loading="downloadLoading" type="primary" icon="el-icon-download" @click="exportTrajectory">{{ $t('table.export') }}</el-button>
+            <el-button :loading="downloadLoading" type="primary" icon="el-icon-download" @click="exportTrajectory()">{{ $t('table.export') }}</el-button>
           </el-col>
         </el-row>
         <div style="position:absolute;top:120px;bottom:0px;left:0px;right:0px;">
@@ -351,9 +351,11 @@
 
 <script>
 import {listByApplyNum,driverEnableList,queryItemByPlateNum,dispatch} from '@/api/applyCar'
+// import {tracelist} from '@/api/searchTrajectory'
 import GithubCorner from '@/components/GithubCorner'
 import jsonp from 'jsonp'
 import Vue from 'vue'
+import axios from 'axios'
 import BaiduMap from 'vue-baidu-map'
 import {BmlMarkerClusterer} from 'vue-baidu-map'
 import {BmlLushu} from 'vue-baidu-map'
@@ -807,7 +809,7 @@ export default {
     handleTrajectory(){
       this.trackPoints=[];
       this.rowMarkList=[];
-      this.exportData=[];
+      // this.exportData=[];//轨迹导出调整
       this.dialogFormVisible = true;
       this.showStartAndEnd=false;
       this.speeding = [];//超速
@@ -839,7 +841,7 @@ export default {
 
       this.trackPoints=[];
       this.rowMarkList=[];
-      this.exportData=[];
+      // this.exportData=[];//轨迹导出调整
       this.startMarker = {lng:0,lat:0,icon:start};//轨迹起点
       this.endMarker = {lng:0,lat:0,icon:end};//轨迹终点
       var start_time=this.GetUnixTime(this.trajectoryParam.start_time);
@@ -896,7 +898,7 @@ export default {
                   for (var i = 0; i < data.length; i++) {
                     that.trackPoints.push({lng:data[i].longitude, lat:data[i].latitude});
                     this.rowMarkList.push({lng:data[i].longitude, lat:data[i].latitude,rotation:data[i].direction});
-                    that.exportData.push(data[i]);
+                    // that.exportData.push(data[i]);//轨迹导出调整
                   }
                   var startPoint = response.start_point;
                   var endPoint = response.end_point;
@@ -983,6 +985,77 @@ export default {
     },
     //轨迹数据导出
     exportTrajectory(){
+      var that=this;
+      if(that.trajectoryParam.start_time==null){
+        this.$message({
+          message: '请选择开始时间',
+          type: 'error'
+        })
+        return
+      }
+      if(that.trajectoryParam.end_time==null){
+        this.$message({
+          message: '请选择结束时间',
+          type: 'error'
+        })
+        return
+      }
+      this.downloadLoading = true;
+     
+      var plateNum = '';
+      for(var i=0;i<that.carOptions.length;i++){
+        if(that.trajectoryParam.entity_name == that.carOptions[i].key){
+          plateNum = that.carOptions[i].display_name;
+          break;
+        }
+      }
+      var query = {
+        plateNum:plateNum,
+        startTime:that.trajectoryParam.start_time,
+        endTime:that.trajectoryParam.end_time
+      }
+      that.exportData=[];
+      var url = 'http://175.24.107.148:5000/tracelist?plateNum='+query.plateNum+'&startTime='+query.startTime+'&endTime='+query.endTime
+      axios({
+        method: 'get',
+        url: url
+      }).then(response=>{
+        if(response.data.length>0){
+          var data = response.data;
+          for(var i=0;i<data.length;i++){
+            for(var j=0;j<data[i].points.length;j++){
+              data[i].points[j].plateNumber = plateNum;
+              data[i].points[j].speed = data[i].points[j].speed.toFixed(2);
+              data[i].points[j].create_time = data[i].points[j].create_time.split('T')[0]+' '+data[i].points[j].create_time.split('T')[1];
+              data[i].points[j].direction=that.getDirectionDesc(data[i].points[j].direction);
+              that.exportData.push(data[i].points[j]);
+            }
+          }
+          import('@/vendor/Export2Excel').then(excel => {
+            const tHeader = ['车牌号','时间','经度','纬度','速度','方向','定位','地理位置']
+            const filterVal = ['plateNumber','create_time','longitude','latitude','speed','direction','locate_mode','formatted_address'];
+            const data = that.formatJson(filterVal, that.exportData);
+            excel.export_json_to_excel({
+              header: tHeader,
+              data,
+              filename: '车辆行驶轨迹数据('+ query.startTime.split(' ')[0]+'至'+query.endTime.split(' ')[0]+')'+ plateNum
+            });
+            that.downloadLoading = false;
+          });
+        }else{
+          this.$message({
+            message: '当前时段无数据',
+            type: 'error'
+          })
+          that.downloadLoading = false;
+          return
+        }
+      }).catch((error) => {
+        console.log(error);//异常
+      });
+    },
+    //轨迹数据导出(备份)
+    exportTrajectory_old(){
       if(this.exportData.length==0){
         this.$message({
           message: '请先查询轨迹，再导出数据',
