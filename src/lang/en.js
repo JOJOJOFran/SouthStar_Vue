@@ -24,7 +24,7 @@ export default {
 
     vehicleManagement: '车务管理',
     checkRemind: '年检提醒',
-    insuranceRemind: '保险提醒',
+    insuranceRemind: '保险管理',
     maintenanceRemind: '保养提醒',
     maintenanceManage: '维修记录',
 

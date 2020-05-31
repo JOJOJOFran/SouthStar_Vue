@@ -232,8 +232,6 @@ export default {
       return false
     },
     handleSuccess({ results, header }) {
-      console.log(results);
-      console.log(header);
       var listData=[];
       for(var i=0;i<results.length;i++){
         var lineObj={

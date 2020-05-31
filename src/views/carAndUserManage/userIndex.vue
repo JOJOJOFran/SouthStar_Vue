@@ -228,13 +228,18 @@ export default {
         limit: 10
       },
       addParam: {
+        // id:'',
         account: '', // 用户ID
         password: '123456', // 密码
         displayName: '', // 用户姓名
         departmentId: '', // 单位ID
         phone: '', // 电话
         email: '', // 邮箱
-        roleId: ''// 用户角色
+        roleId: '',// 用户角色、
+        lockoutEnd: this.getLocalDatetime(),
+        emailConfirmed: false,
+        phoneConfirmed: false,
+        lockoutEnabled: false,
       },
       deptOptions: [],
       roleOptions: [],
@@ -343,7 +348,7 @@ export default {
       if (mm < 10) { mm = '0' + mm }
       var ss = objD.getSeconds()
       if (ss < 10) { ss = '0' + ss }
-      var str = yy + '' + MM + '' + dd + '' + hh + '' + mm + '' + ss
+      var str = yy + '-' + MM + '-' + dd + ' ' + hh + ':' + mm + ':' + ss
       return str
     },
     handleFilter() {
@@ -373,13 +378,18 @@ export default {
     },
     clearParam() {
       this.addParam = {
+        // id:'',
         account: '', // 用户ID
         password: '123456', // 密码
         displayName: '', // 用户姓名
         departmentId: '', // 单位ID
         phone: '', // 电话
         email: '', // 邮箱
-        roleId: ''// 用户角色
+        roleId: '',// 用户角色、
+        lockoutEnd: this.getLocalDatetime(),
+        emailConfirmed: false,
+        phoneConfirmed: false,
+        lockoutEnabled: false,
       }
     },
     handleCreate() {

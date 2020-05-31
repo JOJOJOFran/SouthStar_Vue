@@ -80,12 +80,6 @@
           <span>{{ scope.row.remark }}</span>
         </template>
       </el-table-column>
-
-      <!-- <el-table-column :label="$t('userAndCarTable.edit')" align="center" width="auto">
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleEdit(scope.row)">{{ scope.row.edit }}</el-button>
-        </template>
-      </el-table-column> -->
       <el-table-column :label="$t('userAndCarTable.operation')" align="center" width="200">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleEdit(scope.row)">{{ scope.row.edit }}</el-button>
@@ -158,9 +152,6 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('userAndCarTable.drivingLicType')">
-              <!-- <el-select v-model="addParam.permittedType" class="filter-item" placeholder="请选择">
-                <el-option v-for="item in drivingLicTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" style="width: 205px;"/>
-              </el-select> -->
                <el-input v-model="addParam.permittedType" style="width: 205px;"/>
             </el-form-item>
           </el-col>

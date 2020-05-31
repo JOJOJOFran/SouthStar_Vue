@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import { getNewToken } from '@/utils/auth'
 
 Vue.use(Router)
 
@@ -30,7 +31,498 @@ import nestedRouter from './modules/nested'
     noCache: true                if true ,the page will no be cached(default is false)
   }
 **/
-export const constantRouterMap = [
+
+export const constantRouterMap = getMenuByUserRole()
+
+export function getMenuByUserRole() {
+  var role = getNewToken("RoleName")
+  debugger
+  var menus = [
+    {
+      path: '/redirect',
+      component: Layout,
+      hidden: true,
+      children: [
+        {
+          path: '/redirect/:path*',
+          component: () => import('@/views/redirect/index')
+        }
+      ]
+    },
+    {
+      path: '/login',
+      component: () => import('@/views/login/index'),
+      hidden: true
+    },
+    {
+      path: '/auth-redirect',
+      component: () => import('@/views/login/authredirect'),
+      hidden: true
+    },
+    {
+      path: '/404',
+      component: () => import('@/views/errorPage/404'),
+      hidden: true
+    },
+    {
+      path: '/401',
+      component: () => import('@/views/errorPage/401'),
+      hidden: true
+    }
+  ]
+  if(role !== undefined){
+    if(role === 'admin'){
+      menus = [
+        {
+          path: '/redirect',
+          component: Layout,
+          hidden: true,
+          children: [
+            {
+              path: '/redirect/:path*',
+              component: () => import('@/views/redirect/index')
+            }
+          ]
+        },
+        {
+          path: '/login',
+          component: () => import('@/views/login/index'),
+          hidden: true
+        },
+        {
+          path: '/auth-redirect',
+          component: () => import('@/views/login/authredirect'),
+          hidden: true
+        },
+        {
+          path: '/404',
+          component: () => import('@/views/errorPage/404'),
+          hidden: true
+        },
+        {
+          path: '/401',
+          component: () => import('@/views/errorPage/401'),
+          hidden: true
+        },
+        {
+          path: '',
+          component: Layout,
+          redirect: 'dashboard',
+          children: [
+            {
+              path: 'dashboard',
+              component: () => import('@/views/dashboard/index'),
+              name: 'Dashboard',
+              meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
+            },
+            //  {
+            //    path: 'dashboard',
+            //    component: () => import('@/views/useCarManagement/quickDispatch'),
+            //    name: 'Dashboard',
+            //    meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
+            //  },  
+      
+          ]
+        },
+        {
+          path: '/useCarManagement',
+          component: Layout,
+          redirect: '/useCarManagement/index',
+          meta: {
+            title: 'useCarManagement',
+            icon: 'useCarManagement',
+            noCache: true
+          },
+          children: [
+            // {
+            //   path: 'quickDispatch',
+            //   component: () => import('@/views/useCarManagement/quickDispatch'),
+            //   name: 'quickDispatch',
+            //   meta: { title: 'quickDispatch' }
+            // },
+            {
+              path: 'quickDispatchForBusiness',
+              component: () => import('@/views/useCarManagement/quickDispatchForBusiness'),
+              name: 'quickDispatch',
+              meta: { title: 'quickDispatchForBusiness' }
+            },
+            {
+              path: 'quickDispatchForEmergency',
+              component: () => import('@/views/useCarManagement/quickDispatchForEmergency'),
+              name: 'quickDispatchForEmergency',
+              meta: { title: 'quickDispatchForEmergency' }
+            },
+            {
+              path: 'carApply',
+              component: () => import('@/views/useCarManagement/carApply'),
+              name: 'carApply',
+              meta: { title: 'carApply' }
+            },
+            {
+              path: 'carApproval',
+              component: () => import('@/views/useCarManagement/carApproval'),
+              name: 'carApproval',
+              meta: { title: 'carApproval' }
+            },
+            {
+              path: 'carDispatch',
+              component: () => import('@/views/useCarManagement/carDispatch'),
+              name: 'carDispatch',
+              meta: { title: 'carDispatch' }
+            },
+            {
+              path: 'takeOrder',
+              component: () => import('@/views/useCarManagement/takeOrder'),
+              name: 'takeOrder',
+              meta: { title: 'takeOrder' }
+            }
+          ]
+        },
+        // {
+        //   path: '/dispatchManagement',
+        //   component: Layout,
+        //   redirect: '/dispatchManagement/index',
+        //   meta: {
+        //     title: 'dispatchManagement',
+        //     icon: 'dispatchManagement',
+        //     noCache: true
+        //   },
+        //   children: [
+        //     {
+        //       path: 'dispatchCar',
+        //       component: () => import('@/views/dispatchManagement/dispatchCar'),
+        //       name: 'dispatchCar',
+        //       meta: { title: 'dispatchCar' }
+        //     },
+        //     {
+        //       path: 'dispatchDriver',
+        //       component: () => import('@/views/dispatchManagement/dispatchDriver'),
+        //       name: 'dispatchDriver',
+        //       meta: { title: 'dispatchDriver' }
+        //     },
+        //     {
+        //       path: 'dispatchAlignment',
+        //       component: () => import('@/views/dispatchManagement/dispatchAlignment'),
+        //       name: 'dispatchAlignment',
+        //       meta: { title: 'dispatchAlignment' }
+        //     }
+        //   ]
+        // },
+        {
+          path: '/monitorManagement',
+          component: Layout,
+          redirect: '/monitorManagement/index',
+          meta: {
+            title: 'monitorManagement',
+            icon: 'monitorManagement',
+            noCache: true
+          },
+          children: [
+            {
+              path: 'monitorLocation',
+              component: () => import('@/views/monitorManagement/monitorLocation'),
+              name: 'monitorLocation',
+              meta: { title: 'monitorLocation' }
+            },
+            {
+              path: 'monitorFence',
+              component: () => import('@/views/monitorManagement/monitorFence'),
+              name: 'monitorFence',
+              meta: { title: 'monitorFence' }
+            }
+          ]
+        },
+        // {
+        //   path: '/securityManagement',
+        //   component: Layout,
+        //   redirect: '/securityManagement/index',
+        //   meta: {
+        //     title: 'securityManagement',
+        //     icon: 'securityManagement',
+        //     noCache: true
+        //   },
+        //   children: [
+        //     {
+        //       path: 'vehicleAccident',
+        //       component: () => import('@/views/securityManagement/vehicleAccident'),
+        //       name: 'vehicleAccident',
+        //       meta: { title: 'vehicleAccident' }
+        //     },
+        //     {
+        //       path: 'vehicleViolation',
+        //       component: () => import('@/views/securityManagement/vehicleViolation'),
+        //       name: 'vehicleViolation',
+        //       meta: { title: 'vehicleViolation' }
+        //     }
+        //   ]
+        // },
+        {
+          path: '/vehicleManagement',
+          component: Layout,
+          redirect: '/vehicleManagement/index',
+          meta: {
+            title: 'vehicleManagement',
+            icon: 'vehicleManagement',
+            noCache: true
+          },
+          children: [
+            {
+              path: 'checkRemind',
+              component: () => import('@/views/vehicleManagement/checkRemind'),
+              name: 'checkRemind',
+              meta: { title: 'checkRemind' }
+            },
+            {
+              path: 'insuranceRemind',
+              component: () => import('@/views/vehicleManagement/insuranceRemind'),
+              name: 'insuranceRemind',
+              meta: { title: 'insuranceRemind' }
+            },
+            // {
+            //   path: 'maintenanceRemind',
+            //   component: () => import('@/views/vehicleManagement/maintenanceRemind'),
+            //   name: 'maintenanceRemind',
+            //   meta: { title: 'maintenanceRemind' }
+            // },
+            {
+              path: 'maintenanceManage',
+              component: () => import('@/views/vehicleManagement/maintenanceManage'),
+              name: 'maintenanceManage',
+              meta: { title: 'maintenanceManage' }
+            },
+            {
+              path: 'oilDetail',
+              component: () => import('@/views/vehicleManagement/oilDetail'),
+              name: 'oilDetail',
+              meta: { title: 'oilDetail' }
+            }
+          ]
+        },
+        {
+          path: '/statisticalManagement',
+          component: Layout,
+          redirect: '/statisticalManagement/index',
+          meta: {
+            title: 'statisticalManagement',
+            icon: 'statisticalManagement',
+            noCache: true
+          },
+          children: [
+            // {
+            //   path: 'useCarStatistical',
+            //   component: () => import('@/views/statisticalManagement/useCarStatistical'),
+            //   name: 'useCarStatistical',
+            //   meta: { title: 'useCarStatistical' }
+            // },
+            {
+              path: 'reportAnalysis',
+              component: () => import('@/views/statisticalManagement/reportAnalysis'),
+              name: 'reportAnalysis',
+              meta: { title: 'reportAnalysis' }
+            }
+            // {
+            //   path: 'oilDetail',
+            //   component: () => import('@/views/statisticalManagement/oilDetail'),
+            //   name: 'oilDetail',
+            //   meta: { title: 'oilDetail' }
+            // }
+          ]
+        },
+        {
+          path: '/carAndUserManage',
+          component: Layout,
+          redirect: '/carAndUserManage/index',
+          meta: {
+            title: 'carAndUserManage',
+            icon: 'carAndUserManage',
+            noCache: true
+          },
+          children: [
+            {
+              path: 'carIndex',
+              component: () => import('@/views/carAndUserManage/carIndex'),
+              name: 'carIndex',
+              meta: { title: 'carIndex' }
+            },
+            {
+              path: 'driverIndex',
+              component: () => import('@/views/carAndUserManage/driverIndex'),
+              name: 'driverIndex',
+              meta: { title: 'driverIndex' }
+            },
+            {
+              path: 'userIndex',
+              component: () => import('@/views/carAndUserManage/userIndex'),
+              name: 'userIndex',
+              meta: { title: 'userIndex' }
+            }
+          ]
+        },
+        {
+          path: '/formworkManagement',//模板管理
+          component: Layout,
+          redirect: '/formworkManagement/index',
+          meta: {
+            title: 'formworkManagement',
+            icon: 'formworkManagement',
+            noCache: true
+          },
+          children: [
+            {
+              path: 'tableFormwork',
+              component: () => import('@/views/formworkManagement/tableFormwork'),
+              name: 'tableFormwork',
+              meta: { title: 'tableFormwork' }
+            },
+            {
+              path: 'excelFormwork',
+              component: () => import('@/views/formworkManagement/excelFormwork'),
+              name: 'excelFormwork',
+              meta: { title: 'excelFormwork' }
+            },
+          ]
+        },
+        {
+          path: '/uploadExcelData',//数据导入
+          component: Layout,
+          redirect: '/uploadExcelData/index',
+          meta: {
+            title: 'uploadExcelData',
+            icon: 'uploadExcelData',
+            noCache: true
+          },
+          children: [
+            {
+              path: 'uploadExcelData',
+              component: () => import('@/views/uploadExcelData/uploadExcelData'),
+              name: 'uploadExcelData',
+              meta: { title: 'uploadExcelData' }
+            },
+          ]
+        }
+        // {
+        //   path: '/test',//测试同步页面
+        //   component: Layout,
+        //   redirect: '/test/index',
+        //   meta: {
+        //     title: '数据同步',
+        //     icon: 'uploadExcelData',
+        //     noCache: true
+        //   },
+        //   children: [
+        //     {
+        //       path: 'index',
+        //       component: () => import('@/views/test/index'),
+        //       name: '数据同步',
+        //       meta: { title: '数据同步' }
+        //     },
+        //   ]
+        // }
+      ]
+    }
+    else if(role === 'user')
+    {
+      menus =  [
+        {
+          path: '/redirect',
+          component: Layout,
+          hidden: true,
+          children: [
+            {
+              path: '/redirect/:path*',
+              component: () => import('@/views/redirect/index')
+            }
+          ]
+        },
+        {
+          path: '/login',
+          component: () => import('@/views/login/index'),
+          hidden: true
+        },
+        {
+          path: '/auth-redirect',
+          component: () => import('@/views/login/authredirect'),
+          hidden: true
+        },
+        {
+          path: '/404',
+          component: () => import('@/views/errorPage/404'),
+          hidden: true
+        },
+        {
+          path: '/401',
+          component: () => import('@/views/errorPage/401'),
+          hidden: true
+        },
+        {
+          path: '',
+          component: Layout,
+          redirect: 'dashboard',
+          children: [
+            {
+              path: 'dashboard',
+              component: () => import('@/views/dashboard/index'),
+              name: 'Dashboard',
+              meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
+            },
+          ]
+        },
+        {
+          path: '/useCarManagement',
+          component: Layout,
+          redirect: '/useCarManagement/index',
+          meta: {
+            title: 'useCarManagement',
+            icon: 'useCarManagement',
+            noCache: true
+          },
+          children: [
+            {
+              path: 'quickDispatchForBusiness',
+              component: () => import('@/views/useCarManagement/quickDispatchForBusiness'),
+              name: 'quickDispatch',
+              meta: { title: 'quickDispatchForBusiness' }
+            },
+            {
+              path: 'quickDispatchForEmergency',
+              component: () => import('@/views/useCarManagement/quickDispatchForEmergency'),
+              name: 'quickDispatchForEmergency',
+              meta: { title: 'quickDispatchForEmergency' }
+            },
+            {
+              path: 'carApply',
+              component: () => import('@/views/useCarManagement/carApply'),
+              name: 'carApply',
+              meta: { title: 'carApply' }
+            },
+            {
+              path: 'carApproval',
+              component: () => import('@/views/useCarManagement/carApproval'),
+              name: 'carApproval',
+              meta: { title: 'carApproval' }
+            },
+            {
+              path: 'carDispatch',
+              component: () => import('@/views/useCarManagement/carDispatch'),
+              name: 'carDispatch',
+              meta: { title: 'carDispatch' }
+            },
+            {
+              path: 'takeOrder',
+              component: () => import('@/views/useCarManagement/takeOrder'),
+              name: 'takeOrder',
+              meta: { title: 'takeOrder' }
+            }
+          ]
+        }
+      ]
+    }
+  }
+  return menus
+}
+
+
+export const constantRouterAdminMap = [
   {
     path: '/redirect',
     component: Layout,
@@ -110,18 +602,18 @@ export const constantRouterMap = [
         name: 'quickDispatchForEmergency',
         meta: { title: 'quickDispatchForEmergency' }
       },
-      // {
-      //   path: 'carApply',
-      //   component: () => import('@/views/useCarManagement/carApply'),
-      //   name: 'carApply',
-      //   meta: { title: 'carApply' }
-      // },
-      // {
-      //   path: 'carApproval',
-      //   component: () => import('@/views/useCarManagement/carApproval'),
-      //   name: 'carApproval',
-      //   meta: { title: 'carApproval' }
-      // },
+      {
+        path: 'carApply',
+        component: () => import('@/views/useCarManagement/carApply'),
+        name: 'carApply',
+        meta: { title: 'carApply' }
+      },
+      {
+        path: 'carApproval',
+        component: () => import('@/views/useCarManagement/carApproval'),
+        name: 'carApproval',
+        meta: { title: 'carApproval' }
+      },
       {
         path: 'carDispatch',
         component: () => import('@/views/useCarManagement/carDispatch'),
@@ -224,12 +716,12 @@ export const constantRouterMap = [
       noCache: true
     },
     children: [
-      // {
-      //   path: 'checkRemind',
-      //   component: () => import('@/views/vehicleManagement/checkRemind'),
-      //   name: 'checkRemind',
-      //   meta: { title: 'checkRemind' }
-      // },
+      {
+        path: 'checkRemind',
+        component: () => import('@/views/vehicleManagement/checkRemind'),
+        name: 'checkRemind',
+        meta: { title: 'checkRemind' }
+      },
       {
         path: 'insuranceRemind',
         component: () => import('@/views/vehicleManagement/insuranceRemind'),
@@ -247,6 +739,12 @@ export const constantRouterMap = [
         component: () => import('@/views/vehicleManagement/maintenanceManage'),
         name: 'maintenanceManage',
         meta: { title: 'maintenanceManage' }
+      },
+      {
+        path: 'oilDetail',
+        component: () => import('@/views/vehicleManagement/oilDetail'),
+        name: 'oilDetail',
+        meta: { title: 'oilDetail' }
       }
     ]
   },
@@ -271,13 +769,13 @@ export const constantRouterMap = [
         component: () => import('@/views/statisticalManagement/reportAnalysis'),
         name: 'reportAnalysis',
         meta: { title: 'reportAnalysis' }
-      },
-      {
-        path: 'oilDetail',
-        component: () => import('@/views/statisticalManagement/oilDetail'),
-        name: 'oilDetail',
-        meta: { title: 'oilDetail' }
       }
+      // {
+      //   path: 'oilDetail',
+      //   component: () => import('@/views/statisticalManagement/oilDetail'),
+      //   name: 'oilDetail',
+      //   meta: { title: 'oilDetail' }
+      // }
     ]
   },
   {
@@ -351,6 +849,24 @@ export const constantRouterMap = [
         meta: { title: 'uploadExcelData' }
       },
     ]
+  },
+  {
+    path: '/test',//测试同步页面
+    component: Layout,
+    redirect: '/test/index',
+    meta: {
+      title: '数据同步',
+      icon: 'uploadExcelData',
+      noCache: true
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/test/index'),
+        name: '数据同步',
+        meta: { title: '数据同步' }
+      },
+    ]
   }
   
   // {
@@ -368,11 +884,119 @@ export const constantRouterMap = [
   // }
 ]
 
-export default new Router({
+export const constantRouterUserMap = [
+  {
+    path: '/redirect',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/redirect/:path*',
+        component: () => import('@/views/redirect/index')
+      }
+    ]
+  },
+  {
+    path: '/login',
+    component: () => import('@/views/login/index'),
+    hidden: true
+  },
+  {
+    path: '/auth-redirect',
+    component: () => import('@/views/login/authredirect'),
+    hidden: true
+  },
+  {
+    path: '/404',
+    component: () => import('@/views/errorPage/404'),
+    hidden: true
+  },
+  {
+    path: '/401',
+    component: () => import('@/views/errorPage/401'),
+    hidden: true
+  },
+  {
+    path: '',
+    component: Layout,
+    redirect: 'dashboard',
+    children: [
+      {
+        path: 'dashboard',
+        component: () => import('@/views/dashboard/index'),
+        name: 'Dashboard',
+        meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
+      },
+    ]
+  },
+  {
+    path: '/useCarManagement',
+    component: Layout,
+    redirect: '/useCarManagement/index',
+    meta: {
+      title: 'useCarManagement',
+      icon: 'useCarManagement',
+      noCache: true
+    },
+    children: [
+      {
+        path: 'quickDispatchForBusiness',
+        component: () => import('@/views/useCarManagement/quickDispatchForBusiness'),
+        name: 'quickDispatch',
+        meta: { title: 'quickDispatchForBusiness' }
+      },
+      {
+        path: 'quickDispatchForEmergency',
+        component: () => import('@/views/useCarManagement/quickDispatchForEmergency'),
+        name: 'quickDispatchForEmergency',
+        meta: { title: 'quickDispatchForEmergency' }
+      },
+      {
+        path: 'carApply',
+        component: () => import('@/views/useCarManagement/carApply'),
+        name: 'carApply',
+        meta: { title: 'carApply' }
+      },
+      {
+        path: 'carApproval',
+        component: () => import('@/views/useCarManagement/carApproval'),
+        name: 'carApproval',
+        meta: { title: 'carApproval' }
+      },
+      {
+        path: 'carDispatch',
+        component: () => import('@/views/useCarManagement/carDispatch'),
+        name: 'carDispatch',
+        meta: { title: 'carDispatch' }
+      },
+      {
+        path: 'takeOrder',
+        component: () => import('@/views/useCarManagement/takeOrder'),
+        name: 'takeOrder',
+        meta: { title: 'takeOrder' }
+      }
+    ]
+  }
+]
+
+// export default new Router({
+//   // mode: 'history', // require service support
+//   scrollBehavior: () => ({ y: 0 }),
+//   routes: constantRouterMap
+// })
+
+const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
 })
+
+const router = createRouter()
+
+export function resetRouter() {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // reset router
+}
 
 export const asyncRouterMap = [
   // {
@@ -653,3 +1277,5 @@ export const asyncRouterMap = [
 
   // { path: '*', redirect: '/404', hidden: true }
 ]
+
+export default router

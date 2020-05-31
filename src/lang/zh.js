@@ -26,7 +26,7 @@ export default {
 
     vehicleManagement: '车务管理',
     checkRemind: '年检提醒',
-    insuranceRemind: '保险提醒',
+    insuranceRemind: '保险管理',
     maintenanceRemind: '保养提醒',
     maintenanceManage: '维修记录',
 
@@ -323,12 +323,12 @@ export default {
   },
 
   vehicleManageTable: {
-    // maintenanceFolio: '维修单号',
-    // plateNum: '车牌号码',
-    // repairStartDate: '维修开始时间',
-    // repairEndDate: '维修结束时间',
-    // garage: '维修地点',
-    // dealPerson: '经办人',
+    maintenanceFolio: '维修单号',
+    plateNum: '车牌号码',
+    repairStartDate: '维修开始时间',
+    repairEndDate: '维修结束时间',
+    garage: '维修地点',
+    dealPerson: '经办人',
 
     carProperty: '使用性质',
     startDate: '开始时间',
@@ -350,7 +350,6 @@ export default {
     price:'单价',
     amount: '费用',
     operation:'操作',
-   
     edit: '编辑',
     delete: '删除',
     vehicleType: '车型',

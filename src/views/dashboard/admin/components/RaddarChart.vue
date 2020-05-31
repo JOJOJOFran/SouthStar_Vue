@@ -72,18 +72,17 @@ export default {
             }
           },
           indicator: [
-            { name: 'Sales', max: 10000 },
-            { name: 'Administration', max: 20000 },
-            { name: 'Information Techology', max: 20000 },
-            { name: 'Customer Support', max: 20000 },
-            { name: 'Development', max: 20000 },
-            { name: 'Marketing', max: 20000 }
+            { name: '行程', max: 52 },
+            { name: '停车', max: 52 },
+            { name: '入库', max: 52 },
+            { name: '报警', max: 52 },
+            { name: '维修', max: 52 }
           ]
         },
         legend: {
           left: 'center',
           bottom: '10',
-          data: ['Allocated Budget', 'Expected Spending', 'Actual Spending']
+          data: ['公务用车', '应急执法']
         },
         series: [{
           type: 'radar',
@@ -99,16 +98,12 @@ export default {
           },
           data: [
             {
-              value: [5000, 7000, 12000, 11000, 15000, 14000],
-              name: 'Allocated Budget'
+              value: [2, 1, 15, 0, 0],
+              name: '公务用车'
             },
             {
-              value: [4000, 9000, 15000, 15000, 13000, 11000],
-              name: 'Expected Spending'
-            },
-            {
-              value: [5500, 11000, 12000, 15000, 12000, 12000],
-              name: 'Actual Spending'
+              value: [4, 10, 20, 0, 0],
+              name: '应急执法'
             }
           ],
           animationDuration: animationDuration

@@ -85,7 +85,83 @@ export function vehicleAllList() {
 }
 
 
-// 保险提醒
+// 保险管理
+export function insuranceReminderList(query) {
+  return request({
+    url: '/Insurance/List',
+    method: 'get',
+    params: query
+  })
+}
+
+export function insuranceReminderDelete(query) {
+  return request({
+    url: '/Insurance/Delete/' + query,
+    method: 'delete'
+  })
+}
+
+export function insuranceReminder(query) {
+  return request({
+    url: '/Insurance/Item/' + query,
+    method: 'get'
+  })
+}
+
+export function insuranceReminderUpdate(id, data) {
+  return request({
+    url: '/Insurance/Update/' + id,
+    method: 'post',
+    data
+  })
+}
+
+export function insuranceReminderAdd(data) {
+  return request({
+    url: '/Insurance/Add',
+    method: 'post',
+    data
+  })
+}
+
+// 加油管理
+export function oilCostList(query) {
+  return request({
+    url: '/OilCost/List',
+    method: 'get',
+    params: query
+  })
+}
+
+export function oilCostDelete(query) {
+  return request({
+    url: '/OilCost/Delete/' + query,
+    method: 'delete'
+  })
+}
+
+export function oilCostItem(query) {
+  return request({
+    url: '/OilCost/Item/' + query,
+    method: 'get'
+  })
+}
+
+export function oilCostUpdate(id, data) {
+  return request({
+    url: '/OilCost/Update/' + id,
+    method: 'post',
+    data
+  })
+}
+
+export function oilCostAdd(data) {
+  return request({
+    url: '/OilCost/Add',
+    method: 'post',
+    data
+  })
+}
 // export function insuranceReminderList(query) {
 //   return request({
 //     url: '/InsuranceReminder/List',
