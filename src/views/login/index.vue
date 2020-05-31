@@ -141,6 +141,7 @@ export default {
                 })
             }
             this.loading = false
+             this.$router.go(0) // 登录后刷新router
             this.$router.push({ path: this.redirect || '/' })
           }).catch(() => {
             this.loading = false

@@ -6,7 +6,8 @@
 
         <bml-marker-clusterer :averageCenter="true">
           <bm-marker v-for="(marker,index) of markList" :key="index" @click="infoWindowOpen(index)" :position="{lng: markList[index].lng, lat: markList[index].lat}" :icon="{url:markList[index].icon, size: {width: 40, height: 50}}">
-            <bm-label :content="markList[index].plateNumber+'('+markList[index].status+')'" :position="{lng: markList[index].lng, lat: markList[index].lat}" :offset="labelOffset" :labelStyle="{background:'#FFFF00', fontSize : '12px'}"/>
+            <bm-label v-if="markList[index].entityType==='公务用车组'" :content="'公务用车_'+markList[index].plateNumber+'('+markList[index].status+')'" :position="{lng: markList[index].lng, lat: markList[index].lat}" :offset="labelOffset" :labelStyle="{background:'#FFFF00', fontSize : '12px'}"/>
+            <bm-label v-if="markList[index].entityType==='应急执法组'" :content="'应急执法_'+markList[index].plateNumber+'('+markList[index].status+')'" :position="{lng: markList[index].lng, lat: markList[index].lat}" :offset="labelOffset" :labelStyle="{background:'#FE8417', fontSize : '12px'}"/>
           </bm-marker>
         </bml-marker-clusterer>
         <bm-info-window :show="isShow" :position="infoPoints" @close="infoWindowClose" title="实时位置详情" style="line-height:30px;padding:2px;">
@@ -193,7 +194,7 @@
             </bm-marker> -->
             <bm-marker v-for="(item3,index3) of stay_points" :key="index3" @click="openLabel(index3,3)" :position="{lng: stay_points[index3].lng, lat: stay_points[index3].lat}" :icon="{url:stay_points[index3].icon, size: {width: 32, height: 32}}">
             </bm-marker>
-            <bm-info-window :show="showLabel" :position="{lng:labelObj.lng,lat:labelObj.lat}" @close="startAndEndWindowClose" style="line-height:30px;padding:2px;">
+            <bm-info-window :show="showLabel" :position="{lng:labelObj.lng,lat:labelObj.lat}" @close="showLabelClose" style="line-height:30px;padding:2px;">
               <span style="color:#0A8CFF;">{{labelObj.label}}</span><br/>
             </bm-info-window>
           </baidu-map>
@@ -602,6 +603,9 @@ export default {
     startAndEndWindowClose(e) {
        this.isStartAndEndWindow = false;
     },
+    showLabelClose(e) {
+       this.showLabel = false;
+    },
     infoWindowOpen (index) {
       var that=this;
       var e=that.markList[index];
@@ -638,23 +642,56 @@ export default {
           lat:that.speeding[index].lat,
           label:that.speeding[index].label
         }
+        that.showLabel=true;
       }
       else if(type==1){
         that.labelObj.lng=that.harsh_acceleration[index].lng;
         that.labelObj.lat=that.harsh_acceleration[index].lat;
         that.labelObj.label=that.harsh_acceleration[index].label;
+         that.showLabel=true;
       }
       else if(type==2){
         that.labelObj.lng=that.harsh_steering[index].lng;
         that.labelObj.lat=that.harsh_steering[index].lat;
         that.labelObj.label=that.harsh_steering[index].label;
+        that.showLabel=true;
       }
       else if(type==3){
-        that.labelObj.lng=that.stay_points[index].lng;
-        that.labelObj.lat=that.stay_points[index].lat;
-        that.labelObj.label=that.stay_points[index].label;
+        //停留点
+        // that.labelObj.lng=that.stay_points[index].lng;
+        // that.labelObj.lat=that.stay_points[index].lat;
+        // that.labelObj.label=that.stay_points[index].label;
+        var start_time = '';
+        if(index == 0){
+          start_time = that.startMarker.loc_time //起点时间
+        }else{
+          start_time = that.GetUnixTime(that.stay_points[index-1].startTime) //上个停留点时间
+        }
+        var end_time = that.GetUnixTime(that.stay_points[index].startTime) //停留开始时间
+        var param='ak=zGObvGv0ofXzW7TpsYCtwTgCp8OGtfTw&service_id=200846&entity_name='+this.trajectoryParam.entity_name;
+        param+='&process_option=need_denoise=1,radius_threshold='+this.trajectoryParam.radius_threshold+',need_vacuate=1,need_mapmatch=1,transport_mode=driving';
+        param +='&start_time='+start_time+'&end_time='+end_time+'&is_processed=1&page_size=1000';
+        var that=this;
+        jsonp('http://yingyan.baidu.com/api/v3/track/gettrack?'+param, {}, (err, response) =>{
+          if (err) {
+            Message({
+              message: err.message,
+              type: 'error',
+              duration: 5 * 1000
+            })
+          } 
+          else {
+            that.labelObj.lng=that.stay_points[index].lng;
+            that.labelObj.lat=that.stay_points[index].lat;
+            if(index==0){
+              that.labelObj.label=that.stay_points[index].label+'，距离起点：'+ (response.distance/1000).toFixed(2) + '公里';//总里程;
+            }else{
+              that.labelObj.label=that.stay_points[index].label+'，距离上个停留点：'+ (response.distance/1000).toFixed(2) + '公里';//总里程;
+            }
+            that.showLabel=true;
+          }
+        })
       }
-      that.showLabel=true;
     },
     selectPlateChange(event, item){
       this.selectPlate = item.display_name;
@@ -1027,6 +1064,7 @@ export default {
               data[i].points[j].plateNumber = plateNum;
               data[i].points[j].speed = data[i].points[j].speed.toFixed(2);
               data[i].points[j].create_time = data[i].points[j].create_time.split('T')[0]+' '+data[i].points[j].create_time.split('T')[1];
+              data[i].points[j].create_time = data[i].points[j].create_time.split('Z')[0];
               data[i].points[j].direction=that.getDirectionDesc(data[i].points[j].direction);
               that.exportData.push(data[i].points[j]);
             }
@@ -1276,58 +1314,44 @@ export default {
               if(onlineStatus==0 && speed==0){
                 onlineStatus=2;
               }
+              var entityType = result[i].entityType;
               var isOnGarage = this.getStatusName(lng,lat);//坐标是否在车库指定范围
               if(onlineStatus==0){
+                if(isOnGarage && (entityType==="公务用车组" || entityType==="应急执法组" )){
+                  statusName="入库";
+                  this.outlineCount++;
+                }else{
+                  if(entityType==="公务用车组" || entityType==="应急执法组"){
+                    statusName="行程";
+                    className = "online";
+                    this.onlineCount++;
+                  }
+                }
+              }
+              else if(onlineStatus==1 && (entityType==="公务用车组" || entityType==="应急执法组" )){
                 if(isOnGarage){
                   statusName="入库";
                   this.outlineCount++;
                 }else{
-                  statusName="行程";
-                  className = "online";
-                  this.onlineCount++;
+                  if(entityType==="公务用车组" || entityType==="应急执法组"){
+                    this.parkCount++;
+                    statusName="停车";
+                    className = "park";
+                  }
                 }
               }
-              else if(onlineStatus==1){
+              else if(onlineStatus==2 && (entityType==="公务用车组" || entityType==="应急执法组" )){
                 if(isOnGarage){
                   statusName="入库";
                   this.outlineCount++;
                 }else{
-                  this.parkCount++;
-                  statusName="停车";
-                  className = "park";
+                  if(entityType==="公务用车组" || entityType==="应急执法组"){
+                    this.parkCount++;
+                    statusName="停车";
+                    className = "park";
+                  }
                 }
               }
-              else if(onlineStatus==2){
-                if(isOnGarage){
-                  statusName="入库";
-                  this.outlineCount++;
-                }else{
-                  this.parkCount++;
-                  statusName="停车";
-                  className = "park";
-                }
-              }
-              // if (onlineStatus == 1) {
-              //   statusName="离线";
-              // }
-              // else if (onlineStatus == 0) {
-              //   if (isMove == "静止") {
-              //     className = "park";
-              //     statusName="停车";
-              //   } else {
-              //     className = "online";
-              //     statusName="在线";
-              //   }
-              // }
-              // if(onlineStatus==0){
-              //   if (isMove == "静止") {
-              //     this.parkCount++;
-              //   }else{
-              //     this.onlineCount++;
-              //   }
-              // }else{
-              //   this.outlineCount++;
-              // }
               if(result[i].entityType == "公务用车组"){
                 treeData[0].children[0].children.push({id:1+'_'+i,className:className,desc:result[i].entity_desc,lat:result[i].latest_location.latitude,lng:result[i].latest_location.longitude,label:result[i].entity_desc+" ( "+statusName+" )"});
               }else if(result[i].entityType == "应急执法组") {
@@ -1338,7 +1362,7 @@ export default {
 
             var count0=treeData[0].children[0].children.length;
             var count1=treeData[0].children[1].children.length;
-            treeData[0].label+='('+result.length+'辆)';
+            treeData[0].label+='('+ (count0+count1)+'辆)';
             treeData[0].children[0].label+='('+count0+'辆)';
             treeData[0].children[1].label+='('+count1+'辆)';
             this.data2=treeData;
@@ -1348,7 +1372,6 @@ export default {
             }else {
               this.GetCheckEntities(this.checkData);
             }
-            console.log(this.commentList);
           }
         }
       })
@@ -1441,7 +1464,10 @@ export default {
           status:statusName,
           // locationDetail:'查看详细位置',
         };
-        that.markList.push(obj);
+        // 过滤2019年安装的车辆
+        if(obj.entityType ==="公务用车组" || obj.entityType ==="应急执法组"){
+          that.markList.push(obj);
+        }
       }
     },
     //获取Unix时间戳

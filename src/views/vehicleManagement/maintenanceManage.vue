@@ -111,20 +111,19 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('vehicleManageTable.applyer')" prop="userName">
-              <el-input v-model="addParam.applyer" style="width: 205px;"/>
+              <el-input v-model="addParam.applyer" style="width: 80%;"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
              <el-form-item :label="$t('vehicleManageTable.applyDate')" >
-              <el-date-picker v-model="addParam.applyDate" value-format="yyyy-MM-dd" :placeholder="$t('vehicleManageTable.applyDate')" type="date" style="width: 205px;"/>
+              <el-date-picker v-model="addParam.applyDate" value-format="yyyy-MM-dd" :placeholder="$t('vehicleManageTable.applyDate')" type="date" style="width: 80%;"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('vehicleManageTable.plateNumber')" >
-              <!-- <el-input v-model="addParam.plateNumber" style="width: 205px;"/> -->
-              <el-select v-model="addParam.plateNumber" filterable placeholder="请选择">
+              <el-select v-model="addParam.plateNumber" filterable placeholder="请选择" style="width: 80%;">
                 <el-option
                   v-for="item in plateOptions"
                   :key="item.value"
@@ -136,21 +135,21 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('vehicleManageTable.captain')" >
-              <el-input v-model="addParam.captain" style="width: 205px;"/>
+              <el-input v-model="addParam.captain" style="width: 80%;"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('vehicleManageTable.carProperty')" prop="dept">
-              <el-select v-model="addParam.carProperty" :placeholder="$t('vehicleManageTable.carProperty')"  style="width: 205px;">
+            <el-form-item :label="$t('vehicleManageTable.carProperty')">
+              <el-select v-model="addParam.carProperty" :placeholder="$t('vehicleManageTable.carProperty')"  style="width: 80%;">
                 <el-option v-for="item in carPropertyOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('vehicleManageTable.maintainType')">
-              <el-select v-model="addParam.maintainType" :placeholder="$t('vehicleManageTable.maintainType')" clearable style="width: 205px;">
+              <el-select v-model="addParam.maintainType" :placeholder="$t('vehicleManageTable.maintainType')" clearable style="width: 80%;">
                 <el-option v-for="item in maintainTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
               </el-select>
             </el-form-item>
@@ -158,7 +157,7 @@
         </el-row>       
         <el-row>
           <el-col :span="24" style="padding-right:30px;">
-            <el-form-item :label="$t('vehicleManageTable.subjectDetail')" prop="dept">
+            <el-form-item :label="$t('vehicleManageTable.subjectDetail')">
            <el-table
               :data="detailList"
               border
@@ -198,26 +197,50 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('vehicleManageTable.amountCount')" prop="dept">
-              <el-input v-model="addParam.amount" style="width: 205px;"/>
+            <el-form-item :label="$t('vehicleManageTable.amountCount')">
+              <el-input v-model="addParam.amount" style="width: 80%;"/>
             </el-form-item>
           </el-col>
         </el-row> 
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('vehicleManageTable.checker')" prop="dept">
-              <el-input v-model="addParam.checker" style="width: 205px;"/>
+            <el-form-item :label="$t('vehicleManageTable.checker')">
+              <el-input v-model="addParam.checker" style="width: 80%;"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('vehicleManageTable.watcher')">
-              <el-input v-model="addParam.watcher" style="width: 205px;"/>
+              <el-input v-model="addParam.watcher" style="width: 80%;"/>
             </el-form-item>
           </el-col>
         </el-row> 
-        <el-form-item :label="$t('vehicleManageTable.remark')">
-          <el-input :autosize="{ minRows: 2, maxRows: 4}" v-model="addParam.remark" type="textarea" placeholder="请输入" style="width: 540px;"/>
-        </el-form-item>
+       
+        <el-row>
+          <el-col :span="24">
+             <el-form-item :label="$t('vehicleManageTable.remark')">
+              <el-input :autosize="{ minRows: 2, maxRows: 4}" v-model="addParam.remark" type="textarea" placeholder="请输入" style="width: 80%;"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <!-- <el-row>
+          <el-col :span="12">
+            <el-form-item label="上传文件">
+              <el-upload
+                class="upload-demo"
+                action="https://jsonplaceholder.typicode.com/posts/"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :before-remove="beforeRemove"
+                multiple
+                :limit="3"
+                :on-exceed="handleExceed"
+                :file-list="fileList">
+                <el-button size="small" type="primary">点击上传</el-button>
+                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+              </el-upload>
+            </el-form-item>
+          </el-col>
+        </el-row> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{ $t('userAndCarTable.cancel') }}</el-button>

@@ -202,7 +202,6 @@ export default {
       statusOptions: ['published', 'deleted'],
       showReviewer: false,
       dialogFormVisible: false,
-      dialogVisible: false,
       dialogStatus: '',
       textMap: {
         edit: '编辑保养提醒',

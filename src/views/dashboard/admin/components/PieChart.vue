@@ -56,22 +56,22 @@ export default {
         legend: {
           left: 'center',
           bottom: '10',
-          data: ['Industries', 'Technology', 'Forex', 'Gold', 'Forecasts']
+          data: ['行程', '停车', '入库', '报警', '维修']
         },
         calculable: true,
         series: [
           {
-            name: 'WEEKLY WRITE ARTICLES',
+            name: '车辆数',
             type: 'pie',
             roseType: 'radius',
             radius: [15, 95],
             center: ['50%', '38%'],
             data: [
-              { value: 320, name: 'Industries' },
-              { value: 240, name: 'Technology' },
-              { value: 149, name: 'Forex' },
-              { value: 100, name: 'Gold' },
-              { value: 59, name: 'Forecasts' }
+              { value: 16, name: '行程' },
+              { value: 5, name: '停车' },
+              { value: 31, name: '入库' },
+              { value: 0, name: '报警' },
+              { value: 0, name: '维修' }
             ],
             animationEasing: 'cubicInOut',
             animationDuration: 2600

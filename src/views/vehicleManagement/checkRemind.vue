@@ -9,12 +9,12 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$t('vehicleManageTable.startTime')" label-width="80px" class="postInfo-container-item">
+            <el-form-item :label="$t('vehicleManageTable.startDate')" label-width="80px" class="postInfo-container-item">
               <el-date-picker v-model="listQuery.startTime" :placeholder="$t('applyTable.endTime')" type="date" format="yyyy-MM-dd"/>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$t('vehicleManageTable.endTime')" label-width="80px" class="postInfo-container-item">
+            <el-form-item :label="$t('vehicleManageTable.endDate')" label-width="80px" class="postInfo-container-item">
               <el-date-picker v-model="listQuery.endTime" :placeholder="$t('applyTable.beginTime')" type="date" format="yyyy-MM-dd"/>
             </el-form-item>
           </el-col>
@@ -100,7 +100,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('vehicleManageTable.motDate')" >
-              <el-date-picker v-model="addParam.motDate" :placeholder="$t('vehicleManageTable.startTime')" type="date" style="width: 205px;"/>
+              <el-date-picker v-model="addParam.motDate" :placeholder="$t('vehicleManageTable.motDate')" type="date" style="width: 205px;"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">

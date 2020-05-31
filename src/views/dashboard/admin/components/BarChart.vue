@@ -66,7 +66,7 @@ export default {
         },
         xAxis: [{
           type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          data: ['2020-01', '2020-02', '2020-03', '2020-04', '2020-05', '2020-06'],
           axisTick: {
             alignWithLabel: true
           }
@@ -78,27 +78,29 @@ export default {
           }
         }],
         series: [{
-          name: 'pageA',
+          name: '公务用车',
           type: 'bar',
           stack: 'vistors',
           barWidth: '60%',
-          data: [79, 52, 200, 334, 390, 330, 220],
+          data: [179, 352, 200, 134, 290, 0],
           animationDuration
         }, {
-          name: 'pageB',
+          name: '应急执法',
           type: 'bar',
           stack: 'vistors',
           barWidth: '60%',
-          data: [80, 52, 200, 334, 390, 330, 220],
+          data: [180, 241, 101, 164, 109, 0],
           animationDuration
-        }, {
-          name: 'pageC',
-          type: 'bar',
-          stack: 'vistors',
-          barWidth: '60%',
-          data: [30, 52, 200, 334, 390, 330, 220],
-          animationDuration
-        }]
+        }, 
+        // {
+        //   name: 'pageC',
+        //   type: 'bar',
+        //   stack: 'vistors',
+        //   barWidth: '60%',
+        //   data: [30, 52, 200, 334, 390, 330, 220],
+        //   animationDuration
+        // }
+        ]
       })
     }
   }
