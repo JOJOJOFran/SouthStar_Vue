@@ -36,7 +36,6 @@ export const constantRouterMap = getMenuByUserRole()
 
 export function getMenuByUserRole() {
   var role = getNewToken("RoleName")
-  debugger
   var menus = [
     {
       path: '/redirect',

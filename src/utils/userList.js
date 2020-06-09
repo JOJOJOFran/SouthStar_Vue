@@ -14,10 +14,10 @@ export function getUserList() {
           userName:'吴维波',
           userMobile:'13517275053'
         },
-        {
-          userName:'陈国梁',
-          userMobile:'18086456362'
-        },
+        // {
+        //   userName:'陈国梁',
+        //   userMobile:'18086456362'
+        // },
         {
           userName:'蔡宗正',
           userMobile:'13018088886'
@@ -92,6 +92,10 @@ export function getUserList() {
     {
       departmentName:'区水政监察大队',
       users:[
+        {
+          userName:'高洪波',
+          userMobile:'13659862008'
+        },
         {
           userName:'田辉',
           userMobile:'13071265618'
@@ -173,6 +177,14 @@ export function getUserList() {
     {
       departmentName:'区应急管理局',
       users:[
+        {
+          userName:'任忠',
+          userMobile:'18120551595'
+        },
+        {
+          userName:'陈凯',
+          userMobile:'13807195468'
+        },
         {
           userName:'陈江明',
           userMobile:'13807122773'

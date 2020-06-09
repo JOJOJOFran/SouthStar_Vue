@@ -1298,14 +1298,14 @@ export default {
               var lat = result[i].latest_location.latitude;
               var lng = result[i].latest_location.longitude;
               //解决定位在纸坊东站的问题
-              if(onlineStatus !=0 && lng.toFixed(2)==114.35){
-                  lng = 114.34506991838;
-              }
-              if(speed > 200 || radius>100){
-                lng=114.34426197814;
-                lat=30.360739347049;
-                speed=0;
-              }
+              // if(onlineStatus !=0 && lng.toFixed(2)==114.35){
+              //     lng = 114.34506991838;
+              // }
+              // if(speed > 200 || radius>100){
+              //   lng=114.34426197814;
+              //   lat=30.360739347049;
+              //   speed=0;
+              // }
               //解决初始化定位在坐标(0,0)的问题，初始化位置在车库
               if(lng==0 && lat==0){
                 lng=114.34424057114;
@@ -1377,6 +1377,7 @@ export default {
       })
     },
     loadEntities(data) {
+      debugger
       var that=this;
       that.markList=[];
 
@@ -1387,14 +1388,14 @@ export default {
         var speed=data[x].latest_location.speed?data[x].latest_location.speed:0;
         var radius = data[x].latest_location.radius;
         //解决定位在纸坊东站的问题
-        if(onlineStatus !=0 && lng.toFixed(2)==114.35){
-            lng = 114.34506991838;
-        }
-        if(speed > 200 || radius>100){
-          lng=114.34426197814;
-          lat=30.360739347049;
-          speed=0;
-        }
+        // if(onlineStatus !=0 && lng.toFixed(2)==114.35){
+        //     lng = 114.34506991838;
+        // }
+        // if(speed > 200 || radius>100){
+        //   lng=114.34426197814;
+        //   lat=30.360739347049;
+        //   speed=0;
+        // }
         //解决初始化定位在坐标(0,0)的问题，初始化位置在车库
         if(lng==0 && lat==0){
           lng=114.34424057114;

@@ -17,8 +17,35 @@ export function reportList(query) {
   })
 }
 
+//获取派车报表
+export function reportPlatenum(query) {
+  return request({
+    url: '/DispatchStatistics/Report1/report/platenum',
+    method: 'get',
+    params: query
+  })
+}
 
-//获取派车单报表
+
+//获取每月按用车性质出车次数
+export function monthCount(query) {
+  return request({
+    url: '/DispatchStatistics/MonthCount',
+    method: 'get',
+    params: query
+  })
+}
+
+//获取每天按用车性质出车次数
+export function dayCount(query) {
+  return request({
+    url: '/DispatchStatistics/DayCount',
+    method: 'get',
+    params: query
+  })
+}
+
+//核算
 export function setUnitPrice(data) {
   return request({
     url: '/Reciept/SetUnitPrice',

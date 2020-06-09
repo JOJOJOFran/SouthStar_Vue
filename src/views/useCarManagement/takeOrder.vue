@@ -1235,7 +1235,6 @@
         this.recieptApplyId=row.applyId;
         //详情
         dispatchItem(row.id).then(response => {
-          debugger
             this.addParam = response.data.datas;
             for(var i=0;i<this.deptList.length;i++){
                 if(this.deptList[i].id==this.addParam.departmentId){
