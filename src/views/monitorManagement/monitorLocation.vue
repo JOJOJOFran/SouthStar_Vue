@@ -1052,7 +1052,7 @@ export default {
         endTime:that.trajectoryParam.end_time
       }
       that.exportData=[];
-      var url = 'http://175.24.107.148:5000/tracelist?plateNum='+query.plateNum+'&startTime='+query.startTime+'&endTime='+query.endTime
+      var url = 'http://175.24.107.148:5090/tracelist?plateNum='+query.plateNum+'&startTime='+query.startTime+'&endTime='+query.endTime
       axios({
         method: 'get',
         url: url
@@ -1066,12 +1066,25 @@ export default {
               data[i].points[j].create_time = data[i].points[j].create_time.split('T')[0]+' '+data[i].points[j].create_time.split('T')[1];
               data[i].points[j].create_time = data[i].points[j].create_time.split('Z')[0];
               data[i].points[j].direction=that.getDirectionDesc(data[i].points[j].direction);
+              data[i].points[j].distance = '';
               that.exportData.push(data[i].points[j]);
             }
+            var obj = {
+              plateNumber:'',
+              create_time:'',
+              longitude:'',
+              latitude:'',
+              speed:'',
+              direction:'',
+              locate_mode:'',
+              formatted_address:'',
+              distance: (data[i].distance/1000).toFixed(2)+' 公里'//总里程
+            }
+            that.exportData.push(obj);
           }
           import('@/vendor/Export2Excel').then(excel => {
-            const tHeader = ['车牌号','时间','经度','纬度','速度','方向','定位','地理位置']
-            const filterVal = ['plateNumber','create_time','longitude','latitude','speed','direction','locate_mode','formatted_address'];
+            const tHeader = ['车牌号','时间','经度','纬度','速度','方向','定位','地理位置','总里程']
+            const filterVal = ['plateNumber','create_time','longitude','latitude','speed','direction','locate_mode','formatted_address','distance'];
             const data = that.formatJson(filterVal, that.exportData);
             excel.export_json_to_excel({
               header: tHeader,
@@ -1301,11 +1314,11 @@ export default {
               // if(onlineStatus !=0 && lng.toFixed(2)==114.35){
               //     lng = 114.34506991838;
               // }
-              // if(speed > 200 || radius>100){
-              //   lng=114.34426197814;
-              //   lat=30.360739347049;
-              //   speed=0;
-              // }
+              if(speed > 200 || radius>100){
+                lng=114.34426197814;
+                lat=30.360739347049;
+                speed=0;
+              }
               //解决初始化定位在坐标(0,0)的问题，初始化位置在车库
               if(lng==0 && lat==0){
                 lng=114.34424057114;
@@ -1391,11 +1404,11 @@ export default {
         // if(onlineStatus !=0 && lng.toFixed(2)==114.35){
         //     lng = 114.34506991838;
         // }
-        // if(speed > 200 || radius>100){
-        //   lng=114.34426197814;
-        //   lat=30.360739347049;
-        //   speed=0;
-        // }
+        if(speed > 200 || radius>100){
+          lng=114.34426197814;
+          lat=30.360739347049;
+          speed=0;
+        }
         //解决初始化定位在坐标(0,0)的问题，初始化位置在车库
         if(lng==0 && lat==0){
           lng=114.34424057114;

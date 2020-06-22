@@ -53,11 +53,13 @@ export default {
   methods: {
     initData() {
       var listQuery = {
-        startTime: this.getPreMonthDay(this.getLocalMonth(),6),
-        endTime: this.getLocalMonth()
+        startTime: this.getPreMonthDay(this.getLocalMonth(),6)+'-01',
+        endTime: this.getLocalMonth()+'-30'
       }
       this.monthArr = []
-      for(var i=5;i>0;i--){
+      var d = new Date()
+      var monthNum = d.getMonth()
+      for(var i=monthNum;i>0;i--){
         var month = this.getPreMonthDay(this.getLocalMonth(),i);
         this.monthArr.push(month)
       }

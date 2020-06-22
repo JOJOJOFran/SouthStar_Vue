@@ -5,12 +5,12 @@
         <el-row>
           <el-col :span="6">
             <el-form-item :label="'开始时间'">
-              <el-date-picker v-model="listQuery.startTime" type="date" style="width:200px" :placeholder="'开始时间'"/>
+              <el-date-picker v-model="listQuery.startTime" value-format="yyyy-MM-dd" type="date" style="width:200px" :placeholder="'开始时间'"/>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item :label="'结束时间'">
-              <el-date-picker v-model="listQuery.endTime" type="date" style="width:200px" :placeholder="'结束时间'"/>
+              <el-date-picker v-model="listQuery.endTime" value-format="yyyy-MM-dd" type="date" style="width:200px" :placeholder="'结束时间'"/>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -39,9 +39,9 @@
                 <el-select v-model="listQuery.vehicleId" clearable filterable placeholder="选择车辆">
                   <el-option
                     v-for="item in selectPlateList"
-                    :key="item.vehicleId"
+                    :key="item.plateNumber"
                     :label="item.value"
-                    :value="item.vehicleId">
+                    :value="item.plateNumber">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -178,7 +178,7 @@ export default {
   created() {
     this.getList();
     this.querySearchDept();
-    this.querySearchVehicle(0);
+    this.querySearchVehicle();
     this.querySearchDriver();
   },
   methods: {
@@ -208,6 +208,7 @@ export default {
       })
     },
     carPropertyChange(item){
+      debugger
       this.querySearchVehicle(item);
     },
     querySearchDept(){
@@ -230,12 +231,11 @@ export default {
           count = response.data.datas.length;
           this.selectPlateList=[];
           for(var i=0;i< count;i++){
-            if(type==0 && this.vehicleList[i].desc.toLowerCase().indexOf("公务用车") !=-1)//公务用车
+            if(type==this.vehicleList[i].vehicleProperties)
             {
               this.selectPlateList.push({value:this.vehicleList[i].desc,plateNumber:this.vehicleList[i].plateNumber,vehicleId:this.vehicleList[i].id});
             }
-            else if(type==1 && this.vehicleList[i].desc.toLowerCase().indexOf("应急执法") !=-1)
-            {
+            else if(type == undefined){
               this.selectPlateList.push({value:this.vehicleList[i].desc,plateNumber:this.vehicleList[i].plateNumber,vehicleId:this.vehicleList[i].id});
             }
           }
@@ -265,7 +265,8 @@ export default {
       var MM = objD.getMonth() + 1;
       if (MM < 10)
         MM = '0' + MM;
-      var str = yy + "-" + MM;
+      var dd = objD.getDate();
+      var str = yy + "-" + MM + '-' + dd;
       return str;
     },
     //获取当前年月

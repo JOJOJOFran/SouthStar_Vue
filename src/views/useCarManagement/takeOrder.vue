@@ -1258,7 +1258,7 @@
           driverId: this.addParam.driverId,
           driverName: this.addParam.driverName,
           driverPhone: this.addParam.driverPhone,
-          vehicleId: this.addParam.vehcileId,
+          vehicleId: this.addParam.vehicleId,
           plateNumber: this.addParam.plateNumber,
           departureTime: this.addParam.departureTime,
           dispatchType: this.addParam.dispatchType,
