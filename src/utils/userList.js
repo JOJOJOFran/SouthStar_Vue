@@ -7,6 +7,14 @@ export function getUserList() {
       departmentName:'区环境监察大队',
       users:[
         {
+          userName:'胡运旭',
+          userMobile:'18171454027'
+        },
+        {
+          userName:'王雪丹',
+          userMobile:'13971016008'
+        },
+        {
           userName:'吴志坤',
           userMobile:'13659828266'
         },
@@ -182,6 +190,18 @@ export function getUserList() {
           userMobile:'18120551595'
         },
         {
+          userName:'刘凯',
+          userMobile:'13545881688'
+        },
+        {
+          userName:'詹学法',
+          userMobile:'13618646323'
+        },
+        {
+          userName:'张献运',
+          userMobile:'13871218022'
+        },
+        {
           userName:'陈凯',
           userMobile:'13807195468'
         },
@@ -344,6 +364,14 @@ export function getUserList() {
       departmentName:'区国土和规划监察大队',
       users:[
         {
+          userName:'徐斌',
+          userMobile:'13667291476'
+        },
+        {
+          userName:'郭军',
+          userMobile:'13554430782'
+        },
+        {
           userName:'刘敦武',
           userMobile:'13071265618'
         },
@@ -397,6 +425,26 @@ export function getUserList() {
       departmentName:'区文化综合执法大队',
       users:[
         {
+          userName:'付嘉伟',
+          userMobile:'13135693530'
+        },
+        {
+          userName:'万诚',
+          userMobile:'15827476247'
+        },
+        {
+          userName:'陈琪',
+          userMobile:'15727059045'
+        },
+        {
+          userName:'刘康',
+          userMobile:'18872264227'
+        },
+        {
+          userName:'李红胜',
+          userMobile:'13212731992'
+        },
+        {
           userName:'王小丹',
           userMobile:'18971074399'
         },
@@ -426,6 +474,10 @@ export function getUserList() {
     {
       departmentName:'区卫生监督所',
       users:[
+        {
+          userName:'王浩',
+          userMobile:'15972181886'
+        },
         {
           userName:'严晚华',
           userMobile:'18062669315'
