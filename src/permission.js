@@ -20,7 +20,6 @@ router.beforeEach(async(to, from, next) => {
   NProgress.start() // start progress bar
   if (getToken()) { // determine if there has token
     /* has token*/
-    debugger
     if (to.path === '/login') {
       next({ path: '/' })
       NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it

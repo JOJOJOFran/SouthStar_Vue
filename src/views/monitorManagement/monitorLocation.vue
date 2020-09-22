@@ -459,7 +459,8 @@ export default {
       checkFenceOne:[],
       listQuery: {
         ak:'zGObvGv0ofXzW7TpsYCtwTgCp8OGtfTw',
-        service_id:'200846'
+        service_id:'200846',
+        page_size:200
       },
       checkData:[],
       checkKey:[],
@@ -1052,7 +1053,7 @@ export default {
         endTime:that.trajectoryParam.end_time
       }
       that.exportData=[];
-      var url = 'http://175.24.107.148:5000/tracelist?plateNum='+query.plateNum+'&startTime='+query.startTime+'&endTime='+query.endTime
+      var url = 'http://175.24.107.148:5090/tracelist?plateNum='+query.plateNum+'&startTime='+query.startTime+'&endTime='+query.endTime
       axios({
         method: 'get',
         url: url
@@ -1066,12 +1067,25 @@ export default {
               data[i].points[j].create_time = data[i].points[j].create_time.split('T')[0]+' '+data[i].points[j].create_time.split('T')[1];
               data[i].points[j].create_time = data[i].points[j].create_time.split('Z')[0];
               data[i].points[j].direction=that.getDirectionDesc(data[i].points[j].direction);
+              data[i].points[j].distance = '';
               that.exportData.push(data[i].points[j]);
             }
+            var obj = {
+              plateNumber:'',
+              create_time:'',
+              longitude:'',
+              latitude:'',
+              speed:'',
+              direction:'',
+              locate_mode:'',
+              formatted_address:'',
+              distance: (data[i].distance/1000).toFixed(2)+' 公里'//总里程
+            }
+            that.exportData.push(obj);
           }
           import('@/vendor/Export2Excel').then(excel => {
-            const tHeader = ['车牌号','时间','经度','纬度','速度','方向','定位','地理位置']
-            const filterVal = ['plateNumber','create_time','longitude','latitude','speed','direction','locate_mode','formatted_address'];
+            const tHeader = ['车牌号','时间','经度','纬度','速度','方向','定位','地理位置','总里程']
+            const filterVal = ['plateNumber','create_time','longitude','latitude','speed','direction','locate_mode','formatted_address','distance'];
             const data = that.formatJson(filterVal, that.exportData);
             excel.export_json_to_excel({
               header: tHeader,
@@ -1217,7 +1231,7 @@ export default {
     },
     queryCars(){
       var unixTime = this.GetUnixTime(this.getLocalDatetime());
-      jsonp('http://yingyan.baidu.com/api/v3/entity/list?ak=zGObvGv0ofXzW7TpsYCtwTgCp8OGtfTw&service_id=200846&_='+unixTime, this.listQuery, (err, response) => {
+      jsonp('http://yingyan.baidu.com/api/v3/entity/list?ak=zGObvGv0ofXzW7TpsYCtwTgCp8OGtfTw&service_id=200846&page_size=200&_='+unixTime, this.listQuery, (err, response) => {
         if (err) {
           Message({
             message: err.message,
@@ -1298,18 +1312,22 @@ export default {
               var lat = result[i].latest_location.latitude;
               var lng = result[i].latest_location.longitude;
               //解决定位在纸坊东站的问题
-              if(onlineStatus !=0 && lng.toFixed(2)==114.35){
-                  lng = 114.34506991838;
-              }
+              // if(onlineStatus !=0 && lng.toFixed(2)==114.35){
+              //     lng = 114.34506991838;
+              // }
               if(speed > 200 || radius>100){
-                lng=114.34426197814;
-                lat=30.360739347049;
+                // lng=114.34426197814;
+                // lat=30.360739347049;
+                lng=114.3476452236;
+                lat=30.366054363833;
                 speed=0;
               }
               //解决初始化定位在坐标(0,0)的问题，初始化位置在车库
               if(lng==0 && lat==0){
-                lng=114.34424057114;
-                lat=30.360944120379;
+                // lng=114.34424057114;
+                // lat=30.360944120379;
+                lng=114.3476452236;
+                lat=30.366054363833;
               }
               if(onlineStatus==0 && speed==0){
                 onlineStatus=2;
@@ -1387,18 +1405,22 @@ export default {
         var speed=data[x].latest_location.speed?data[x].latest_location.speed:0;
         var radius = data[x].latest_location.radius;
         //解决定位在纸坊东站的问题
-        if(onlineStatus !=0 && lng.toFixed(2)==114.35){
-            lng = 114.34506991838;
-        }
+        // if(onlineStatus !=0 && lng.toFixed(2)==114.35){
+        //     lng = 114.34506991838;
+        // }
         if(speed > 200 || radius>100){
-          lng=114.34426197814;
-          lat=30.360739347049;
+          // lng=114.34426197814;
+          // lat=30.360739347049;
+          lng=114.3476452236;
+          lat=30.366054363833;
           speed=0;
         }
         //解决初始化定位在坐标(0,0)的问题，初始化位置在车库
         if(lng==0 && lat==0){
-          lng=114.34424057114;
-          lat=30.360944120379;
+          // lng=114.34424057114;
+          // lat=30.360944120379;
+          lng=114.3476452236;
+          lat=30.366054363833;
         }
          //判断是否静止
         var isMove = this.getSpeed(speed);
@@ -1499,13 +1521,30 @@ export default {
     },
     getStatusName(lng,lat){
       var isOnGarage=false;
-      //车库坐标范围
-      var top_left={lng:114.34271,lat:30.361739};
-      var top_right={lng:114.348046,lat:30.361739};
-      var bottom_left={lng:114.34271,lat:30.35719};
-      var bottom_right={lng:114.348046,lat:30.35719};
+      var b0 = false;
+      var b1 = false;
+      //车库1坐标范围
+      // var top_left={lng:114.34271,lat:30.361739};
+      // var top_right={lng:114.348046,lat:30.361739};
+      // var bottom_left={lng:114.34271,lat:30.35719};
+      // var bottom_right={lng:114.348046,lat:30.35719};
+      var top_left=    {lng:114.346726,lat:30.366832};
+      var top_right=   {lng:114.348365,lat:30.366754};
+      var bottom_left= {lng:114.346614,lat:30.365103};
+      var bottom_right={lng:114.348379,lat:30.365083};
+      //车库2坐标范围
+      var top_left1={lng:114.342908,lat:30.359786};
+      var top_right1={lng:114.344116,lat:30.359743};
+      var bottom_left1={lng:114.342845,lat:30.358469};
+      var bottom_right1={lng:114.344004,lat:30.358602};
       if(lng>top_left.lng && lng<top_right.lng && lat>bottom_left.lat && lat < top_left.lat){
-        isOnGarage=true;
+        b0=true;
+      }
+      if(lng>top_left1.lng && lng<top_right1.lng && lat>bottom_left1.lat && lat < top_left1.lat){
+        b1=true;
+      }
+      if(b0 || b1){
+        isOnGarage = true;
       }
       return isOnGarage;
     },

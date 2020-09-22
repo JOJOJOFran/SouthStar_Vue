@@ -56,7 +56,7 @@ export default {
         legend: {
           left: 'center',
           bottom: '10',
-          data: ['行程', '停车', '入库', '报警', '维修']
+          data: ['行程', '停车', '入库', '报警']
         },
         calculable: true,
         series: [
@@ -68,10 +68,9 @@ export default {
             center: ['50%', '38%'],
             data: [
               { value: 16, name: '行程' },
-              { value: 5, name: '停车' },
-              { value: 31, name: '入库' },
-              { value: 0, name: '报警' },
-              { value: 0, name: '维修' }
+              { value: 10, name: '停车' },
+              { value: 27, name: '入库' },
+              { value: 0, name: '报警' }
             ],
             animationEasing: 'cubicInOut',
             animationDuration: 2600

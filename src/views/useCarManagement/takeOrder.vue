@@ -1235,7 +1235,6 @@
         this.recieptApplyId=row.applyId;
         //详情
         dispatchItem(row.id).then(response => {
-          debugger
             this.addParam = response.data.datas;
             for(var i=0;i<this.deptList.length;i++){
                 if(this.deptList[i].id==this.addParam.departmentId){
@@ -1259,7 +1258,7 @@
           driverId: this.addParam.driverId,
           driverName: this.addParam.driverName,
           driverPhone: this.addParam.driverPhone,
-          vehicleId: this.addParam.vehcileId,
+          vehicleId: this.addParam.vehicleId,
           plateNumber: this.addParam.plateNumber,
           departureTime: this.addParam.departureTime,
           dispatchType: this.addParam.dispatchType,

@@ -36,7 +36,6 @@ export const constantRouterMap = getMenuByUserRole()
 
 export function getMenuByUserRole() {
   var role = getNewToken("RoleName")
-  debugger
   var menus = [
     {
       path: '/redirect',
@@ -378,7 +377,7 @@ export function getMenuByUserRole() {
               path: 'excelFormwork',
               component: () => import('@/views/formworkManagement/excelFormwork'),
               name: 'excelFormwork',
-              meta: { title: 'excelFormwork' }
+              meta: { title: 'excelFormwork' }  
             },
           ]
         },
@@ -417,7 +416,7 @@ export function getMenuByUserRole() {
         //       meta: { title: '数据同步' }
         //     },
         //   ]
-        // }
+        // }  
       ]
     }
     else if(role === 'user')
